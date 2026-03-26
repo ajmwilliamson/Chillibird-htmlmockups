@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chilli Bird — Light Editorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f0e8;
+      --bg-surface: #ede8df;
+      --text-primary: #1a1410;
+      --text-secondary: #6b5e52;
+      --accent: #c4622d;
+      --accent-secondary: #8b9e6a;
+      --border: rgba(26, 20, 16, 0.1);
+      --transition: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Libre Baskerville', serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Version Label */
+    .version-label {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 1000;
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      pointer-events: none;
+    }
+
+    /* NAV */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 60px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .nav-stamp {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .nav-logo-text {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transition: transform var(--transition);
+      transform-origin: left;
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+
+    .nav-cart {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: none;
+      border: 1.5px solid var(--text-primary);
+      padding: 8px 16px;
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    .nav-cart:hover {
+      background: var(--text-primary);
+      color: var(--bg);
+    }
+
+    /* SCROLL REVEAL */
+    .reveal { opacity: 0; transition: opacity 600ms ease, transform 600ms ease; }
+    .reveal.from-left { transform: translateX(-30px); }
+    .reveal.from-right { transform: translateX(30px); }
+    .reveal.from-bottom { transform: translateY(30px); }
+    .reveal.scale-up { transform: scale(0.96); }
+    .reveal.visible {
+      opacity: 1;
+      transform: none;
+    }
+    .delay-1 { transition-delay: 100ms; }
+    .delay-2 { transition-delay: 200ms; }
+    .delay-3 { transition-delay: 300ms; }
+    .delay-4 { transition-delay: 400ms; }
+
+    /* HERO */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 90vh;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 60px 80px 60px;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-headline {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(52px, 7vw, 96px);
+      line-height: 0.92;
+      letter-spacing: -0.02em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 36px;
+      position: relative;
+    }
+
+    .hero-headline .accent-line {
+      color: var(--accent);
+      position: relative;
+      display: inline-block;
+    }
+
+    /* SVG scribble underline */
+    .hero-headline .accent-line::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      right: 0;
+      height: 6px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8'%3E%3Cpath d='M2 6 Q50 2 100 5 Q150 8 198 3' stroke='%23c4622d' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") bottom/contain no-repeat;
+    }
+
+    .hero-sub {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      max-width: 380px;
+      margin-bottom: 44px;
+    }
+
+    .hero-cta-row {
+      display: flex;
+      align-items: center;
+      gap: 28px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 16px 36px;
+      background: var(--accent);
+      color: white;
+      font-family: 'Archivo', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background var(--transition), transform var(--transition);
+    }
+
+    .btn-primary:hover {
+      background: #a8511f;
+      transform: translateY(-1px);
+    }
+
+    .hero-secondary-link {
+      font-family: 'Archivo', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      transition: color var(--transition), border-color var(--transition);
+    }
+
+    .hero-secondary-link:hover {
+      color: var(--text-primary);
+      border-color: var(--text-secondary);
+    }
+
+    .hero-chilli-watermark {
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      opacity: 0.06;
+      pointer-events: none;
+    }
+
+    .hero-right {
+      position: relative;
+      overflow: visible;
+    }
+
+    .hero-img-main {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .hero-img-overlap {
+      position: absolute;
+      bottom: 60px;
+      left: -60px;
+      width: 200px;
+      height: 260px;
+      object-fit: cover;
+      border: 6px solid var(--bg);
+      box-shadow: 0 20px 60px rgba(26,20,16,0.15);
+    }
+
+    .hero-tag {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      background: var(--accent);
+      color: white;
+      padding: 12px 20px;
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+    }
+
+    /* Botanical divider */
+    .botanical-divider {
+      text-align: center;
+      padding: 32px 0;
+      opacity: 0.25;
+    }
+
+    /* SECTION COMMONS */
+    .section-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    .section-label {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .section-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    hr.rule {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* PRODUCTS */
+    .products-section {
+      padding: 100px 0;
+    }
+
+    .products-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 60px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .product-card {
+      background: white;
+      overflow: hidden;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(26,20,16,0.1);
+    }
+
+    .product-card.featured .product-img-wrap { aspect-ratio: 3/4; }
+    .product-img-wrap { aspect-ratio: 1; overflow: hidden; }
+
+    .product-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 600ms cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .product-card:hover .product-img { transform: scale(1.04); }
+
+    .product-info { padding: 20px; }
+
+    .product-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .product-tag {
+      font-family: 'Archivo', sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 4px 8px;
+      background: var(--bg-surface);
+      color: var(--text-secondary);
+    }
+
+    .product-tag.hot { background: #fdf0ec; color: var(--accent); }
+    .product-tag.limited { background: #f0f4ea; color: var(--accent-secondary); }
+
+    .product-name {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 16px;
+      line-height: 1.2;
+      color: var(--text-primary);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .product-card.featured .product-name { font-size: 22px; }
+
+    .product-desc {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .product-price {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 18px;
+      color: var(--text-primary);
+    }
+
+    .btn-add {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 9px 16px;
+      background: var(--text-primary);
+      color: var(--bg);
+      border: none;
+      cursor: pointer;
+      transition: background var(--transition);
+    }
+
+    .btn-add:hover { background: var(--accent); }
+
+    .view-all-link {
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2px;
+      transition: color var(--transition);
+    }
+
+    .view-all-link:hover { color: var(--text-primary); }
+
+    /* BRAND STORY */
+    .story-section {
+      padding: 100px 0;
+      background: var(--bg-surface);
+    }
+
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .story-img-col {
+      position: relative;
+    }
+
+    .story-img-main {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+    }
+
+    .story-img-small {
+      position: absolute;
+      width: 45%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      bottom: -30px;
+      right: -30px;
+      border: 5px solid var(--bg-surface);
+    }
+
+    .story-botanical {
+      position: absolute;
+      top: -20px;
+      left: -20px;
+      opacity: 0.15;
+    }
+
+    .story-text-col {
+      padding-top: 20px;
+    }
+
+    .story-pull-quote {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(24px, 2.5vw, 38px);
+      line-height: 1.1;
+      text-transform: uppercase;
+      color: var(--text-primary);
+      margin-bottom: 32px;
+      padding-bottom: 32px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .story-pull-quote .flame-word {
+      color: var(--accent);
+      position: relative;
+    }
+
+    .story-body {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.85;
+      margin-bottom: 20px;
+    }
+
+    .inline-pull {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 18px;
+      font-style: italic;
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+      padding-left: 20px;
+      margin: 28px 0;
+      line-height: 1.5;
+    }
+
+    .story-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 36px;
+    }
+
+    .story-badge {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      padding: 8px 16px;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
+    .story-badge.filled {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    /* TESTIMONIALS */
+    .testimonials-section {
+      padding: 100px 0;
+    }
+
+    .testimonials-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 60px;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .testimonial-card {
+      background: var(--bg-surface);
+      padding: 40px;
+    }
+
+    .testimonial-card:nth-child(2) {
+      background: var(--accent);
+      color: white;
+    }
+
+    .testimonial-card:nth-child(2) .testimonial-text { color: rgba(255,255,255,0.95); }
+    .testimonial-card:nth-child(2) .testimonial-author { color: rgba(255,255,255,0.7); }
+    .testimonial-card:nth-child(2) .star { color: rgba(255,255,255,0.9); }
+    .testimonial-card:nth-child(2) .testimonial-product { color: rgba(255,255,255,0.6); }
+
+    .stars { display: flex; gap: 3px; margin-bottom: 20px; }
+    .star { color: var(--accent); font-size: 14px; }
+
+    .testimonial-text {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      font-style: italic;
+      line-height: 1.7;
+      color: var(--text-primary);
+      margin-bottom: 24px;
+    }
+
+    .testimonial-author {
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .testimonial-product {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      color: var(--accent-secondary);
+      margin-top: 4px;
+      letter-spacing: 0.08em;
+    }
+
+    .testimonial-card:nth-child(2) .testimonial-product { color: rgba(255,255,255,0.5); }
+
+    /* RECIPES */
+    .recipes-section {
+      padding: 100px 0;
+      background: var(--bg-surface);
+    }
+
+    .recipes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 60px;
+    }
+
+    .recipe-card {
+      background: white;
+      overflow: hidden;
+    }
+
+    .recipe-img-wrap {
+      position: relative;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+    }
+
+    .recipe-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 600ms ease;
+    }
+
+    .recipe-card:hover .recipe-img { transform: scale(1.04); }
+
+    .recipe-time-badge {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: white;
+      padding: 6px 12px;
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .recipe-info { padding: 24px; }
+
+    .recipe-category {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-secondary);
+      margin-bottom: 8px;
+    }
+
+    .recipe-name {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 22px;
+      text-transform: uppercase;
+      line-height: 1.1;
+      color: var(--text-primary);
+      margin-bottom: 10px;
+    }
+
+    .recipe-desc {
+      font-size: 13px;
+      font-style: italic;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .recipe-link {
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .recipe-link::after {
+      content: '→';
+      transition: transform var(--transition);
+    }
+
+    .recipe-link:hover::after { transform: translateX(4px); }
+
+    /* PRESS */
+    .press-section {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .press-inner {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .press-label-vertical {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .press-divider-v {
+      width: 1px;
+      height: 80px;
+      background: var(--border);
+      flex-shrink: 0;
+    }
+
+    .press-names {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex: 1;
+      gap: 32px;
+      flex-wrap: wrap;
+    }
+
+    .press-name {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 16px;
+      font-style: italic;
+      color: var(--text-secondary);
+      opacity: 0.45;
+      transition: opacity var(--transition);
+      white-space: nowrap;
+      cursor: default;
+    }
+
+    .press-name:hover { opacity: 0.8; }
+
+    /* EMAIL SIGNUP */
+    .email-section {
+      padding: 120px 0;
+      background: var(--text-primary);
+      color: var(--bg);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .email-section-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    .email-eyebrow {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .email-title {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: clamp(40px, 6vw, 80px);
+      line-height: 0.95;
+      text-transform: uppercase;
+      color: var(--bg);
+      margin-bottom: 20px;
+      letter-spacing: -0.02em;
+    }
+
+    .email-title span { color: var(--accent); }
+
+    .email-sub {
+      font-size: 15px;
+      color: rgba(245, 240, 232, 0.6);
+      margin-bottom: 48px;
+      font-style: italic;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .email-form {
+      display: flex;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    .email-input {
+      flex: 1;
+      padding: 15px 20px;
+      background: rgba(245,240,232,0.1);
+      border: 1px solid rgba(245,240,232,0.2);
+      border-right: none;
+      color: var(--bg);
+      font-family: 'Libre Baskerville', serif;
+      font-size: 14px;
+      outline: none;
+      transition: border-color var(--transition);
+    }
+
+    .email-input::placeholder { color: rgba(245,240,232,0.4); }
+    .email-input:focus { border-color: rgba(245,240,232,0.4); }
+
+    .email-btn {
+      padding: 15px 28px;
+      background: var(--accent);
+      border: 1px solid var(--accent);
+      color: white;
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background var(--transition);
+      white-space: nowrap;
+    }
+
+    .email-btn:hover { background: #a8511f; }
+
+    /* INSTAGRAM */
+    .instagram-section {
+      padding: 80px 0 0;
+    }
+
+    .instagram-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .instagram-eyebrow {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .instagram-handle {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 28px;
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .instagram-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+    }
+
+    .instagram-cell {
+      aspect-ratio: 1;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .instagram-cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 500ms ease, filter 500ms ease;
+    }
+
+    .instagram-cell:hover img {
+      transform: scale(1.06);
+      filter: brightness(0.8);
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--text-primary);
+      color: var(--bg);
+      padding: 80px 0 40px;
+    }
+
+    .footer-inner {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 80px;
+    }
+
+    .footer-brand .footer-logo {
+      font-family: 'Archivo Black', sans-serif;
+      font-size: 24px;
+      text-transform: uppercase;
+      color: var(--bg);
+      margin-bottom: 16px;
+    }
+
+    .footer-tagline {
+      font-size: 14px;
+      font-style: italic;
+      color: rgba(245,240,232,0.5);
+      line-height: 1.6;
+      max-width: 240px;
+    }
+
+    .footer-col-title {
+      font-family: 'Archivo', sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.4);
+      margin-bottom: 20px;
+    }
+
+    .footer-col ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .footer-col ul a {
+      font-size: 14px;
+      color: rgba(245,240,232,0.7);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    .footer-col ul a:hover { color: var(--bg); }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 40px;
+      border-top: 1px solid rgba(245,240,232,0.1);
+    }
+
+    .footer-copy {
+      font-size: 12px;
+      color: rgba(245,240,232,0.3);
+    }
+
+    .social-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .social-link {
+      font-family: 'Archivo', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.5);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+
+    .social-link:hover { color: var(--bg); }
+
+    /* RESPONSIVE */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-right { height: 60vw; max-height: 500px; }
+      .hero-left { padding: 60px 40px; }
+      .products-grid { grid-template-columns: repeat(2, 1fr); }
+      .story-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+      nav { padding: 16px 32px; }
+      .section-inner { padding: 0 32px; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .products-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .testimonials-grid { grid-template-columns: 1fr; }
+      .recipes-grid { grid-template-columns: 1fr; }
+      .instagram-grid { grid-template-columns: repeat(3, 1fr); }
+      .press-inner { flex-direction: column; }
+      .press-names { justify-content: center; }
+      .footer-top { grid-template-columns: 1fr; gap: 40px; }
+      .email-form { flex-direction: column; }
+      .email-input { border-right: 1px solid rgba(245,240,232,0.2); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="version-label">V2 — Light Editorial</div>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="nav-stamp">
+        <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
+          <path d="M9 2c-1.5 3-4 4.5-4 9a4 4 0 008 0c0-4.5-2.5-6-4-9z" fill="none" stroke="#c4622d" stroke-width="1.5"/>
+          <path d="M9 14c0 0-2-.5-2-2.5" stroke="#c4622d" stroke-width="1" opacity="0.5"/>
+        </svg>
+      </div>
+      <span class="nav-logo-text">Chilli Bird</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Shop</a></li>
+      <li><a href="#">Our Story</a></li>
+      <li><a href="#">Recipes</a></li>
+      <li><a href="#">Press</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <button class="nav-cart">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M1 1h2l2 7h6l2-4H4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="6.5" cy="12" r="0.8" fill="currentColor"/>
+        <circle cx="10.5" cy="12" r="0.8" fill="currentColor"/>
+      </svg>
+      Cart
+    </button>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <!-- Chilli watermark -->
+      <div class="hero-chilli-watermark">
+        <svg width="280" height="400" viewBox="0 0 280 400" fill="none">
+          <path d="M140 20C80 120 40 180 40 260a100 100 0 00200 0c0-80-40-140-100-240z" fill="#c4622d"/>
+          <path d="M140 20c20 60 40 100 40 160" stroke="#a8511f" stroke-width="2" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="hero-eyebrow reveal from-left">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <path d="M8 1c-1.5 3-4.5 5-4.5 9a4.5 4.5 0 009 0c0-4-3-6-4.5-9z" fill="#c4622d"/>
+        </svg>
+        Handmade in Fife, Scotland
+      </div>
+      <h1 class="hero-headline reveal from-left delay-1">
+        Put. It.<br>On. <span class="accent-line">Every</span><br>Thing.
+      </h1>
+      <p class="hero-sub reveal from-left delay-2">
+        Crispy Thai chilli oil — fragrant, aromatic, boldly handmade in small batches from a home kitchen in the Kingdom of Fife.
+      </p>
+      <div class="hero-cta-row reveal from-left delay-3">
+        <a href="#" class="btn-primary">Shop Now</a>
+        <a href="#" class="hero-secondary-link">Our Story</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <img class="hero-img-main" src="https://picsum.photos/seed/cb-hero-v2/800/900" alt="Chilli Bird">
+      <img class="hero-img-overlap" src="https://picsum.photos/seed/cb-hero-small/400/520" alt="">
+      <div class="hero-tag">Thai Aromatics · Small Batch</div>
+    </div>
+  </section>
+
+  <div class="botanical-divider">
+    <svg width="600" height="40" viewBox="0 0 600 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="0" y1="20" x2="220" y2="20" stroke="#1a1410" stroke-width="0.5"/>
+      <path d="M240 20 Q260 10 280 20 Q300 30 320 20" stroke="#8b9e6a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="270" cy="13" rx="8" ry="5" transform="rotate(-30 270 13)" fill="none" stroke="#8b9e6a" stroke-width="1"/>
+      <ellipse cx="310" cy="13" rx="8" ry="5" transform="rotate(30 310 13)" fill="none" stroke="#8b9e6a" stroke-width="1"/>
+      <circle cx="290" cy="20" r="3" fill="#c4622d" opacity="0.4"/>
+      <line x1="380" y1="20" x2="600" y2="20" stroke="#1a1410" stroke-width="0.5"/>
+    </svg>
+  </div>
+
+  <!-- FEATURED PRODUCTS -->
+  <section class="products-section">
+    <div class="section-inner">
+      <div class="products-header reveal from-bottom">
+        <div>
+          <div class="section-label">Small Batch Collection</div>
+          <h2 class="section-title">The Range</h2>
+        </div>
+        <a href="#" class="view-all-link">View all products →</a>
+      </div>
+      <div class="products-grid">
+
+        <div class="product-card featured reveal from-left">
+          <div class="product-img-wrap">
+            <img class="product-img" src="https://picsum.photos/seed/cb-v2-og-mild/500/667" alt="OG Aromatics MILD">
+          </div>
+          <div class="product-info">
+            <div class="product-tags">
+              <span class="product-tag">Bestseller</span>
+              <span class="product-tag">Mild</span>
+            </div>
+            <h3 class="product-name">OG Aromatics Mild</h3>
+            <p class="product-desc">The one that started it all. Lemongrass, lime leaves, crispy shallots — fragrant warmth with a gentle heat.</p>
+            <div class="product-footer">
+              <span class="product-price">£8.50</span>
+              <button class="btn-add">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card reveal from-bottom">
+          <div class="product-img-wrap">
+            <img class="product-img" src="https://picsum.photos/seed/cb-v2-og-spicy/400/400" alt="OG Aromatics SPICY">
+          </div>
+          <div class="product-info">
+            <div class="product-tags">
+              <span class="product-tag hot">Hot 🌶️🌶️</span>
+            </div>
+            <h3 class="product-name">OG Aromatics Spicy</h3>
+            <p class="product-desc">Same aromatics, bird's eye fire added. Proper Thai heat.</p>
+            <div class="product-footer">
+              <span class="product-price">£8.50</span>
+              <button class="btn-add">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card reveal from-bottom delay-1">
+          <div class="product-img-wrap">
+            <img class="product-img" src="https://picsum.photos/seed/cb-v2-pepper/400/400" alt="White Pepper & Extra Garlic">
+          </div>
+          <div class="product-info">
+            <div class="product-tags">
+              <span class="product-tag hot">Hot</span>
+            </div>
+            <h3 class="product-name">White Pepper & Extra Garlic</h3>
+            <p class="product-desc">Stir fry's best friend. Rich, punchy, garlicky.</p>
+            <div class="product-footer">
+              <span class="product-price">£8.50</span>
+              <button class="btn-add">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-card reveal from-bottom delay-2">
+          <div class="product-img-wrap">
+            <img class="product-img" src="https://picsum.photos/seed/cb-v2-honey/400/400" alt="Crispy Thai Hot Honey">
+          </div>
+          <div class="product-info">
+            <div class="product-tags">
+              <span class="product-tag limited">Limited</span>
+            </div>
+            <h3 class="product-name">Crispy Thai Hot Honey</h3>
+            <p class="product-desc">Fife honey, Thai heat. A new dawn of hot honey.</p>
+            <div class="product-footer">
+              <span class="product-price">£8.50</span>
+              <button class="btn-add">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <hr class="rule">
+
+  <!-- BRAND STORY -->
+  <section class="story-section">
+    <div class="section-inner">
+      <div class="story-grid">
+        <div class="story-img-col reveal scale-up">
+          <!-- Botanical decoration -->
+          <div class="story-botanical">
+            <svg width="100" height="120" viewBox="0 0 100 120" fill="none">
+              <path d="M50 110 Q50 60 50 10" stroke="#8b9e6a" stroke-width="1.5"/>
+              <ellipse cx="35" cy="40" rx="15" ry="8" transform="rotate(-40 35 40)" fill="none" stroke="#8b9e6a" stroke-width="1"/>
+              <ellipse cx="65" cy="60" rx="15" ry="8" transform="rotate(40 65 60)" fill="none" stroke="#8b9e6a" stroke-width="1"/>
+              <ellipse cx="30" cy="70" rx="12" ry="6" transform="rotate(-30 30 70)" fill="none" stroke="#8b9e6a" stroke-width="1" opacity="0.7"/>
+            </svg>
+          </div>
+          <img class="story-img-main" src="https://picsum.photos/seed/cb-v2-story/600/750" alt="Chilli Bird story">
+          <img class="story-img-small" src="https://picsum.photos/seed/cb-v2-kitchen/300/300" alt="Kitchen">
+        </div>
+        <div class="story-text-col reveal from-right delay-1">
+          <div class="section-label">Our Story</div>
+          <div class="story-pull-quote">
+            From a home kitchen<br>in Fife to <span class="flame-word">every table</span><br>in Scotland
+          </div>
+          <p class="story-body">
+            Chilli Bird was born from a simple hunger — not for heat, but for fragrance. Our founder grew up in Thailand surrounded by the scent of lemongrass sizzling in hot oil, lime leaves releasing their oils, garlic toasting golden.
+          </p>
+          <blockquote class="inline-pull">
+            "In Thailand, the aromatics come first. The heat is just the beginning."
+          </blockquote>
+          <p class="story-body">
+            When she moved to Scotland, she couldn't find a chilli oil that smelled like home. So she made one, in a kitchen in Fife, for friends and family. Then everyone started asking for jars.
+          </p>
+          <p class="story-body">
+            Today, every jar is still made by hand in small batches — cleaner ingredients, no shortcuts, the same aromatics that made that first batch unforgettable.
+          </p>
+          <div class="story-badges">
+            <span class="story-badge filled">Thai-Inspired</span>
+            <span class="story-badge">Small Batch</span>
+            <span class="story-badge">Made in Fife</span>
+            <span class="story-badge">Family Run</span>
+            <span class="story-badge">Clean Ingredients</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testimonials-section">
+    <div class="section-inner">
+      <div class="testimonials-header reveal">
+        <div>
+          <div class="section-label">What People Say</div>
+          <h2 class="section-title">The Reviews Are In</h2>
+        </div>
+      </div>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal from-left">
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <p class="testimonial-text">"I have introduced this to absolutely everyone I know. My family in Glasgow now have their own standing order. The OG Mild is everything — the lemongrass scent when you open the jar is extraordinary."</p>
+        <div class="testimonial-author">Anna R., Perth</div>
+        <div class="testimonial-product">OG Aromatics Mild</div>
+      </div>
+      <div class="testimonial-card reveal from-bottom delay-1">
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <p class="testimonial-text">"I genuinely did not know what I was missing until I tried this on fried eggs for the first time. I have had chilli oil from the supermarket, from restaurants, from importers — none of them come close."</p>
+        <div class="testimonial-author">David H., Edinburgh</div>
+        <div class="testimonial-product">OG Aromatics Spicy</div>
+      </div>
+      <div class="testimonial-card reveal from-right delay-2">
+        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
+        <p class="testimonial-text">"The Hot Honey collab is just inspired. I've drizzled it on cheese, on chicken, on ice cream (yes, really). It's a tiny bottle of absolute joy. Can't wait for the next limited edition."</p>
+        <div class="testimonial-author">Miriam O., Dundee</div>
+        <div class="testimonial-product">Crispy Thai Hot Honey</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECIPES -->
+  <section class="recipes-section">
+    <div class="section-inner">
+      <div class="reveal">
+        <div class="section-label">In the Kitchen</div>
+        <h2 class="section-title">Recipe Inspiration</h2>
+      </div>
+      <div class="recipes-grid">
+        <div class="recipe-card reveal from-bottom">
+          <div class="recipe-img-wrap">
+            <img class="recipe-img" src="https://picsum.photos/seed/cb-v2-eggs/600/450" alt="Chilli Oil Fried Eggs">
+            <div class="recipe-time-badge">5 min</div>
+          </div>
+          <div class="recipe-info">
+            <div class="recipe-category">Breakfast</div>
+            <h3 class="recipe-name">Chilli Oil Fried Eggs</h3>
+            <p class="recipe-desc">The recipe that convinced half of Scotland. Crispy-edged eggs in sizzling oil, finished with an unapologetic pour of OG Aromatics.</p>
+            <a href="#" class="recipe-link">View Recipe</a>
+          </div>
+        </div>
+        <div class="recipe-card reveal from-bottom delay-1">
+          <div class="recipe-img-wrap">
+            <img class="recipe-img" src="https://picsum.photos/seed/cb-v2-noodles/600/450" alt="Thai Chilli Noodles">
+            <div class="recipe-time-badge">15 min</div>
+          </div>
+          <div class="recipe-info">
+            <div class="recipe-category">Dinner</div>
+            <h3 class="recipe-name">Thai Chilli Noodles</h3>
+            <p class="recipe-desc">Silky noodles, toasted sesame, soy glaze — the White Pepper & Garlic does the heavy lifting. Weeknight perfection.</p>
+            <a href="#" class="recipe-link">View Recipe</a>
+          </div>
+        </div>
+        <div class="recipe-card reveal from-bottom delay-2">
+          <div class="recipe-img-wrap">
+            <img class="recipe-img" src="https://picsum.photos/seed/cb-v2-pizza/600/450" alt="Crispy Chilli Pizza">
+            <div class="recipe-time-badge">25 min</div>
+          </div>
+          <div class="recipe-info">
+            <div class="recipe-category">Weekend</div>
+            <h3 class="recipe-name">Crispy Chilli Pizza</h3>
+            <p class="recipe-desc">Add it after the bake, not before. The crunch survives. The aromatics bloom. You'll never call for delivery again.</p>
+            <a href="#" class="recipe-link">View Recipe</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRESS -->
+  <section class="press-section">
+    <div class="section-inner">
+      <div class="press-inner reveal">
+        <span class="press-label-vertical">As Seen In</span>
+        <div class="press-divider-v"></div>
+        <div class="press-names">
+          <span class="press-name">The Scotsman</span>
+          <span class="press-name">Delicious Magazine</span>
+          <span class="press-name">The Guardian Cook</span>
+          <span class="press-name">Great Taste Awards</span>
+          <span class="press-name">Scottish Food & Drink</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMAIL SIGNUP -->
+  <section class="email-section">
+    <div class="email-section-bg">
+      <svg width="500" height="500" viewBox="0 0 500 500" fill="none">
+        <path d="M250 30c-80 160-160 210-160 300a160 160 0 00320 0c0-90-80-140-160-300z" fill="#f5f0e8"/>
+      </svg>
+    </div>
+    <div class="section-inner">
+      <div class="reveal">
+        <div class="email-eyebrow">Join the Flock</div>
+        <h2 class="email-title">Get the <span>good stuff.</span></h2>
+        <p class="email-sub">Recipes, new drops, exclusive offers — and the occasional behind-the-scenes from the Fife kitchen.</p>
+        <form class="email-form" onsubmit="return false;">
+          <input type="email" class="email-input" placeholder="Your email address">
+          <button class="email-btn" type="submit">Subscribe</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM -->
+  <section class="instagram-section">
+    <div class="section-inner">
+      <div class="instagram-header reveal">
+        <div class="instagram-eyebrow">Follow Along</div>
+        <div class="instagram-handle">@chillibird</div>
+      </div>
+    </div>
+    <div class="instagram-grid">
+      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig1/400/400" alt=""></div>
+      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig2/400/400" alt=""></div>
+      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig3/400/400" alt=""></div>
+      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig4/400/400" alt=""></div>
+      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig5/400/400" alt=""></div>
+      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig6/400/400" alt=""></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <div class="footer-logo">Chilli Bird</div>
+          <p class="footer-tagline">Handmade crispy Thai chilli oil. Born in a home kitchen in Fife, Scotland. Made with obsession.</p>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Shop</div>
+          <ul>
+            <li><a href="#">All Products</a></li>
+            <li><a href="#">OG Aromatics</a></li>
+            <li><a href="#">Limited Editions</a></li>
+            <li><a href="#">Gift Sets</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Explore</div>
+          <ul>
+            <li><a href="#">Our Story</a></li>
+            <li><a href="#">Recipes</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Wholesale</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Help</div>
+          <ul>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span class="footer-copy">© 2024 Chilli Bird. Handmade in Scotland.</span>
+        <div class="social-links">
+          <a href="#" class="social-link">Instagram</a>
+          <a href="#" class="social-link">Facebook</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    reveals.forEach(el => observer.observe(el));
+
+    reveals.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight) el.classList.add('visible');
+    });
+  </script>
+</body>
+</html>

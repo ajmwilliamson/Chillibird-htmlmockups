@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C E:/Github/ChilliBird status)",
+      "Bash(gh auth:*)",
+      "Bash(sed -i 's|images/og aromatics\\\\.jpg|images/og aromatics.jpeg|g' variation-3.html)",
+      "Bash(sed -i 's|images/og aramatics soicy\\\\.jpg|images/oil close up.jpeg|g' variation-3.html)",
+      "Bash(sed -i 's|images/white pepper garlic\\\\.jpg|images/white pepper and garlic.jpeg|g' variation-3.html)",
+      "Bash(sed -i 's|images/thai mayo\\\\.jpg|images/hot honey.jpeg|g' variation-3.html)",
+      "Bash(sed -i 's|images/founder image\\\\.jpg|images/jen - best one.jpeg|g' variation-3.html)"
+    ]
+  }
+}

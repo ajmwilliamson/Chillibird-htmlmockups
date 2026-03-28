@@ -6,7 +6,7 @@
   <title>Chilli Bird — Bold Brutalist</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Prompt:wght@400;700;900&display=swap" rel="stylesheet">
   <style>
     :root {
       --red: #c44835;
@@ -1212,6 +1212,92 @@
     /* SCRAMBLE EFFECT TARGET */
     [data-scramble] { cursor: pointer; }
 
+    /* THAI DECORATIVE TEXT */
+    .nav-logo-name {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .nav-logo-thai {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 400;
+      font-size: 10px;
+      color: rgba(245,240,232,0.38);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+    .hero-headline-thai {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 900;
+      color: rgba(26,26,26,0.1);
+      -webkit-text-stroke: 1px rgba(26,26,26,0.18);
+      font-size: clamp(60px, 8vw, 140px);
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+    }
+    .products-title-thai {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 700;
+      font-size: clamp(22px, 3.5vw, 44px);
+      color: rgba(245,240,232,0.18);
+      line-height: 1;
+      letter-spacing: 0.02em;
+      align-self: flex-end;
+    }
+    .bento-thai-text {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 700;
+      font-size: clamp(18px, 2.2vw, 30px);
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      color: rgba(245,240,232,0.3);
+    }
+    .story-thai-label {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: rgba(245,240,232,0.45);
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+    .story-thai-bg {
+      position: absolute;
+      top: 20px;
+      right: -20px;
+      font-family: 'Prompt', sans-serif;
+      font-weight: 900;
+      font-size: clamp(80px, 10vw, 160px);
+      line-height: 1;
+      color: rgba(0,0,0,0.08);
+      pointer-events: none;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .story-right-thai {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 700;
+      font-size: clamp(22px, 2.8vw, 36px);
+      color: var(--white);
+      line-height: 1.1;
+      mix-blend-mode: difference;
+      opacity: 0.6;
+      margin-top: 10px;
+      letter-spacing: 0.02em;
+    }
+    .footer-logo-thai {
+      font-family: 'Prompt', sans-serif;
+      font-weight: 400;
+      font-size: 13px;
+      color: rgba(245,240,232,0.35);
+      letter-spacing: 0.05em;
+      display: block;
+      margin-top: 2px;
+      margin-bottom: 14px;
+      text-transform: none;
+    }
+
     /* RESPONSIVE */
     @media (max-width: 1024px) {
       nav, .products-section, .testimonials-section, .recipes-section, .press-section, .email-section, .instagram-header, footer { padding-left: 28px; padding-right: 28px; }
@@ -1257,7 +1343,10 @@
           <circle cx="11.5" cy="13" r="1.5" fill="#1a1a1a"/>
         </svg>
       </div>
-      <span class="nav-logo-text">Chilli Bird</span>
+      <div class="nav-logo-name">
+        <span class="nav-logo-text">Chilli Bird</span>
+        <span class="nav-logo-thai">ชิลลี่เบิร์ด</span>
+      </div>
     </a>
     <ul class="nav-links">
       <li><a href="#">Shop</a></li>
@@ -1293,6 +1382,7 @@
           <div>CHILLI</div>
           <div class="line-red">BIRD</div>
           <div class="line-outline">OIL</div>
+          <div class="hero-headline-thai">พริกนก</div>
         </h1>
         <p class="hero-tagline reveal delay-2" style="margin-bottom: 32px;">
           Crispy Thai chilli oil. Fragrant. Aromatic. Dangerously addictive. Handmade in small batches in Scotland by a Thai-born founder who just wanted the whole world to eat better.
@@ -1301,7 +1391,8 @@
           <span class="sticker">🌶️ Small Batch</span>
           <span class="sticker" style="transform: rotate(2deg);">Handmade in Scotland</span>
           <span class="sticker" style="transform: rotate(-1deg);">Put It On Everything</span>
-          <span class="sticker" style="transform: rotate(3deg);">⚡ Limited Runs</span>
+          <span class="sticker red" style="transform: rotate(3deg); font-family: 'Prompt', sans-serif; font-weight: 700; letter-spacing: 0.04em;">ทำด้วยมือ</span>
+          <span class="sticker" style="transform: rotate(-2deg);">⚡ Limited Runs</span>
         </div>
       </div>
     </div>
@@ -1388,7 +1479,10 @@
   <!-- FEATURED PRODUCTS -->
   <section class="products-section">
     <div class="products-header reveal">
-      <div class="products-title">The Range</div>
+      <div>
+        <div class="products-title">The Range</div>
+        <div class="products-title-thai">สินค้าของเรา</div>
+      </div>
       <div class="products-subtitle">// Four ways to ruin a bland meal</div>
     </div>
     <div class="bento-grid">
@@ -1410,6 +1504,7 @@
       <!-- Text cell -->
       <div class="bento-cell bento-text-cell red-bg reveal delay-1" style="min-height: 240px;">
         <div class="big-text">PUT.<br>IT.<br>ON.<br>EVERYTHING.</div>
+        <div class="bento-thai-text">ใส่ทุกอย่าง</div>
       </div>
 
       <!-- Card: OG Spicy -->
@@ -1454,6 +1549,7 @@
       <!-- Text cell green -->
       <div class="bento-cell bento-text-cell green-bg reveal delay-3" style="min-height: 240px;">
         <div class="big-text" style="color: var(--white);">Scotland<br>Made.<br>Thailand<br>Soul.</div>
+        <div class="bento-thai-text" style="color:rgba(245,240,232,0.28);">ทำในสกอตแลนด์<br>วิญญาณไทย</div>
         <div class="mono-text" style="color:rgba(245,240,232,0.7);">The fragrance of Thailand, made in Scotland.</div>
       </div>
 
@@ -1465,6 +1561,8 @@
   <section class="story-section">
     <div class="story-left reveal">
       <div class="story-left-bg-text">FIFE</div>
+      <div class="story-thai-bg">เรื่องราว</div>
+      <div class="story-thai-label">เรื่องราวของเรา — Our Story</div>
       <div class="story-title">Born In<br>A Home<br>Kitchen.</div>
       <p class="story-body">
         Chilli Bird started in a kitchen in Fife. A Thai-born founder. A desire for the fragrant, aromatic cooking of home — and zero interest in the bland, heat-only chilli oils on UK shelves.
@@ -1485,6 +1583,7 @@
       <img src="images/jen - best one.jpeg" alt="Chilli Bird story">
       <div class="story-right-overlay">
         <div class="story-right-headline">FIFE,<br>SCOTLAND.<br>FAMILY<br>RUN.</div>
+        <div class="story-right-thai">ไฟฟ์,<br>สกอตแลนด์.<br>กิจการ<br>ครอบครัว.</div>
       </div>
     </div>
   </section>
@@ -1619,6 +1718,7 @@
     <div class="footer-top">
       <div>
         <div class="footer-logo">Chilli Bird</div>
+        <span class="footer-logo-thai">ชิลลี่เบิร์ด — พริกนก</span>
         <p class="footer-tagline">Crispy Thai chilli oil. Handmade in Fife, Scotland. By a Thai-born founder who just wanted the world to eat better.</p>
       </div>
       <div class="footer-col">

@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chilli Bird — The Zine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Caveat:wght@400;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; }
+    a, button { cursor: none; }
+
+    /* ── TOKENS ── */
+    :root {
+      --paper:    #F5F0E8;
+      --paper-dk: #EAE3D5;
+      --ink:      #111111;
+      --red:      #C44835;
+      --grey:     #7A7268;
+      --grey-lt:  #B5AFA5;
+      --tape:     rgba(192,180,148,0.52);
+      --yellow:   #F5E04D;
+      --pink:     #FFD0DC;
+      --green:    #BEEFC5;
+      --blue:     #B8D8F5;
+      --ease:     cubic-bezier(0.16, 1, 0.3, 1);
+      --shadow-sticky: 3px 5px 20px rgba(0,0,0,0.16), 1px 2px 4px rgba(0,0,0,0.08);
+    }
+
+    /* ── BASE ── */
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── PAPER GRAIN ── */
+    #grain {
+      position: fixed; inset: 0; z-index: 9000; pointer-events: none;
+      opacity: .038;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 220px;
+    }
+
+    /* ── CURSOR ── */
+    #cur-dot {
+      position: fixed; width: 6px; height: 6px;
+      background: var(--red); border-radius: 50%;
+      pointer-events: none; z-index: 9999;
+      transform: translate(-50%,-50%);
+    }
+    #cur-ring {
+      position: fixed; width: 28px; height: 28px;
+      border: 1.5px solid rgba(17,17,17,.35); border-radius: 50%;
+      pointer-events: none; z-index: 9998;
+      transform: translate(-50%,-50%);
+      transition: width .4s var(--ease), height .4s var(--ease), border-color .3s;
+    }
+    body.hov #cur-ring { width: 50px; height: 50px; border-color: var(--red); }
+
+    /* ── VERSION ── */
+    .version-label {
+      position: fixed; bottom: 20px; left: 20px; z-index: 400;
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: rgba(17,17,17,.3); pointer-events: none;
+      transform: rotate(-1.5deg);
+    }
+
+    /* ── SCROLL PROGRESS ── */
+    #prog {
+      position: fixed; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--red); z-index: 9001; width: 0;
+      transform-origin: left;
+    }
+
+    /* ── REVEAL ── */
+    .reveal {
+      opacity: 0; transform: translateY(22px);
+      transition: opacity .85s var(--ease), transform .85s var(--ease);
+    }
+    .reveal.in { opacity: 1; transform: none; }
+    .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+    /* ─────────────────────────────
+       NAV
+    ───────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 56px;
+      transition: background .4s, backdrop-filter .4s;
+    }
+    nav.scrolled {
+      background: rgba(245,240,232,.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(17,17,17,.07);
+    }
+    .nav-logo { text-decoration: none; color: var(--ink); }
+    .nav-logo-name {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: 20px; letter-spacing: .01em; display: block; line-height: 1;
+    }
+    .nav-logo-annotation {
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: var(--grey); display: block; margin-top: 2px;
+      transform: rotate(-1deg); transform-origin: left;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-family: 'Inter', sans-serif; font-weight: 400;
+      font-size: 12px; letter-spacing: .06em;
+      color: var(--grey); text-decoration: none; transition: color .2s;
+    }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cart {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 13px; color: var(--ink); background: transparent;
+      border: 1.5px solid var(--ink); padding: 8px 18px;
+      transition: background .2s, color .2s;
+    }
+    .nav-cart:hover { background: var(--ink); color: var(--paper); }
+
+    /* ─────────────────────────────
+       HERO
+    ───────────────────────────── */
+    .hero {
+      min-height: 100vh; padding: 110px 56px 80px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 48px; align-items: center;
+      position: relative;
+    }
+    .hero-left { position: relative; z-index: 2; }
+
+    /* Duct-tape divider accent */
+    .hero-tape-top {
+      width: 48px; height: 16px;
+      background: var(--tape);
+      margin-bottom: 32px;
+      transform: rotate(-2deg);
+    }
+
+    .hero-eyebrow {
+      font-family: 'Caveat', cursive; font-size: 16px;
+      color: var(--grey); margin-bottom: 24px;
+      transform: rotate(-0.5deg); display: inline-block;
+    }
+    .hero-headline {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(60px, 7vw, 100px);
+      line-height: .92; letter-spacing: -.02em; color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .hero-headline em { font-style: italic; color: var(--red); }
+    .hero-underline-wrap { margin-bottom: 32px; line-height: 0; }
+    .hero-underline-wrap svg { width: 100%; max-width: 500px; }
+
+    .hero-sub {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 18px; color: var(--grey); line-height: 1.65;
+      max-width: 380px; margin-bottom: 40px;
+    }
+    .hero-ctas { display: flex; align-items: center; gap: 24px; }
+    .btn-primary {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 16px; color: var(--paper); background: var(--ink);
+      padding: 14px 32px; text-decoration: none;
+      transition: background .2s;
+    }
+    .btn-primary:hover { background: var(--red); }
+    .btn-secondary-hand {
+      font-family: 'Caveat', cursive; font-size: 18px; color: var(--grey);
+      text-decoration: none; display: flex; align-items: center; gap: 6px;
+      transition: color .2s;
+    }
+    .btn-secondary-hand:hover { color: var(--red); }
+
+    /* Floating annotation beside CTA */
+    .hero-cta-note {
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: var(--grey); position: absolute;
+      bottom: -24px; left: 0;
+      transform: rotate(-2deg);
+    }
+
+    /* Hero right: polaroid-style image + sticky notes */
+    .hero-right {
+      position: relative; display: flex;
+      align-items: flex-start; justify-content: center;
+      gap: 0;
+    }
+    .polaroid {
+      background: #fff;
+      padding: 12px 12px 40px;
+      box-shadow: var(--shadow-sticky);
+      position: relative;
+      transform: rotate(2deg);
+      z-index: 2;
+      max-width: 380px; width: 100%;
+    }
+    .polaroid img {
+      width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block;
+    }
+    .polaroid-caption {
+      font-family: 'Caveat', cursive; font-size: 16px;
+      text-align: center; padding-top: 10px; color: var(--ink);
+    }
+    /* Tape marks on polaroid */
+    .polaroid::before, .polaroid::after {
+      content: '';
+      position: absolute;
+      width: 52px; height: 20px;
+      background: var(--tape);
+    }
+    .polaroid::before { top: -10px; left: 32px; transform: rotate(-4deg); }
+    .polaroid::after  { bottom: 10px; right: -12px; transform: rotate(86deg); width: 20px; height: 52px; display: none; }
+
+    /* Small floating sticky note on hero */
+    .hero-sticky {
+      position: absolute; right: -20px; top: -30px; z-index: 3;
+      background: var(--yellow); padding: 18px 20px;
+      box-shadow: var(--shadow-sticky);
+      transform: rotate(4deg);
+      max-width: 180px;
+    }
+    .hero-sticky::before {
+      content: '';
+      position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(2deg);
+      width: 44px; height: 16px; background: var(--tape);
+    }
+    .hero-sticky-text {
+      font-family: 'Caveat', cursive; font-size: 18px;
+      line-height: 1.35; color: var(--ink);
+    }
+    .hero-sticky-sub {
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: var(--grey); margin-top: 8px;
+    }
+
+    /* Floating drawn arrow from sticky to image */
+    .hero-arrow {
+      position: absolute; right: 150px; top: 40px; z-index: 4;
+      pointer-events: none;
+    }
+
+    /* Small deco smiley */
+    .hero-deco-smiley {
+      position: absolute; bottom: 40px; left: -30px; z-index: 1;
+      opacity: .18;
+    }
+
+    /* ─────────────────────────────
+       MARQUEE
+    ───────────────────────────── */
+    .marquee-strip {
+      background: var(--ink); overflow: hidden; padding: 12px 0;
+      position: relative;
+    }
+    .marquee-track {
+      display: flex; width: max-content;
+      animation: ticker 28s linear infinite;
+    }
+    .marquee-track:hover { animation-play-state: paused; }
+    .mi {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 14px; letter-spacing: .04em;
+      color: rgba(245,240,232,.75); white-space: nowrap; padding: 0 28px;
+    }
+    .mi-sep { color: var(--red); margin: 0 4px; font-style: normal; }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ─────────────────────────────
+       PRODUCTS / STICKY BOARD
+    ───────────────────────────── */
+    .products-section {
+      background: var(--paper-dk);
+      padding: 100px 56px 120px;
+      position: relative;
+    }
+    /* Subtle grid lines like a notebook */
+    .products-section::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 27px,
+        rgba(17,17,17,.04) 27px, rgba(17,17,17,.04) 28px
+      );
+    }
+
+    .products-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 72px;
+    }
+    .products-title-wrap { position: relative; display: inline-block; }
+    .products-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(48px, 6vw, 80px); line-height: .95;
+      letter-spacing: -.02em;
+    }
+    .products-title-underline { position: absolute; bottom: -8px; left: 0; width: 100%; }
+    .products-annotation {
+      font-family: 'Caveat', cursive; font-size: 16px; color: var(--grey);
+      transform: rotate(-1deg); display: inline-block; margin-top: 12px;
+    }
+    .products-link {
+      font-family: 'Caveat', cursive; font-size: 18px;
+      color: var(--grey); text-decoration: none;
+      border-bottom: 1.5px solid var(--grey-lt);
+      padding-bottom: 2px; transition: color .2s, border-color .2s;
+    }
+    .products-link:hover { color: var(--red); border-color: var(--red); }
+
+    .sticky-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 32px; align-items: start;
+    }
+
+    /* Sticky card */
+    .sticky-card {
+      padding: 0; position: relative;
+      box-shadow: var(--shadow-sticky);
+      transition: transform .35s var(--ease), box-shadow .35s;
+    }
+    .sticky-card:hover {
+      transform: translateY(-6px) rotate(0deg) !important;
+      box-shadow: 6px 10px 28px rgba(0,0,0,0.22), 2px 3px 6px rgba(0,0,0,0.1);
+    }
+    .sticky-card:nth-child(1) { background: var(--yellow); transform: rotate(-2deg); }
+    .sticky-card:nth-child(2) { background: var(--pink);   transform: rotate(1.5deg); margin-top: 24px; }
+    .sticky-card:nth-child(3) { background: var(--green);  transform: rotate(-1deg); margin-top: -12px; }
+    .sticky-card:nth-child(4) { background: var(--blue);   transform: rotate(2.5deg); margin-top: 16px; }
+
+    /* Tape on each sticky */
+    .sticky-card::before {
+      content: '';
+      position: absolute; top: -11px; left: 50%;
+      transform: translateX(-50%);
+      width: 52px; height: 18px;
+      background: var(--tape);
+      z-index: 1;
+    }
+    .sticky-card:nth-child(1)::before { transform: translateX(-50%) rotate(-3deg); }
+    .sticky-card:nth-child(2)::before { transform: translateX(-50%) rotate(2deg); }
+    .sticky-card:nth-child(3)::before { transform: translateX(-50%) rotate(-1deg); }
+    .sticky-card:nth-child(4)::before { transform: translateX(-50%) rotate(3deg); }
+
+    /* Polaroid inside sticky */
+    .sticky-polaroid {
+      background: #fff; margin: 16px 16px 0;
+      padding: 8px 8px 32px;
+      position: relative; overflow: hidden;
+    }
+    .sticky-polaroid img {
+      width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block;
+    }
+    .sticky-polaroid-caption {
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: var(--grey); text-align: center;
+      padding-top: 6px; position: absolute;
+      bottom: 6px; left: 0; right: 0; text-align: center;
+    }
+
+    /* Scribble-out overlay for sold out */
+    .scribble-overlay {
+      position: absolute; inset: 0; z-index: 10;
+      pointer-events: none;
+    }
+    .scribble-overlay svg {
+      width: 100%; height: 100%;
+      position: absolute; inset: 0;
+    }
+    .gone-text {
+      position: absolute; inset: 0; z-index: 11;
+      display: flex; align-items: center; justify-content: center;
+      pointer-events: none;
+    }
+    .gone-text span {
+      font-family: 'Caveat', cursive; font-weight: 700;
+      font-size: clamp(52px, 8vw, 72px);
+      color: #111;
+      transform: rotate(-18deg);
+      text-shadow: 2px 3px 0 rgba(0,0,0,0.12);
+      letter-spacing: .02em;
+      display: inline-block;
+      line-height: 1;
+    }
+
+    .sticky-body {
+      padding: 14px 16px 18px;
+    }
+    .sticky-product-meta {
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: var(--grey); margin-bottom: 4px;
+    }
+    .sticky-product-name {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 19px; line-height: 1.2; letter-spacing: -.01em;
+      color: var(--ink); margin-bottom: 10px;
+    }
+    .sticky-heat {
+      display: flex; gap: 4px; margin-bottom: 12px;
+    }
+    .heat-mark {
+      font-family: 'Caveat', cursive; font-size: 16px; color: var(--red);
+    }
+    .heat-mark.empty { opacity: .25; }
+    .sticky-desc {
+      font-size: 11px; color: rgba(17,17,17,.6);
+      line-height: 1.65; margin-bottom: 14px;
+    }
+    .sticky-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1.5px dashed rgba(17,17,17,.2);
+      padding-top: 12px; margin-top: 4px;
+    }
+
+    /* Price callout — hand-drawn circle */
+    .price-callout {
+      position: relative; display: inline-block;
+    }
+    .price-callout-num {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 22px; letter-spacing: -.01em; color: var(--ink);
+      position: relative; z-index: 1;
+    }
+    .price-callout svg {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 70px; height: 38px;
+      pointer-events: none;
+    }
+
+    .sticky-add {
+      font-family: 'Caveat', cursive; font-size: 18px;
+      color: var(--ink); background: transparent;
+      border: none; padding: 0;
+      display: flex; align-items: center; gap: 6px;
+      transition: color .2s;
+    }
+    .sticky-add:hover { color: var(--red); }
+    .sticky-add-arrow { font-size: 20px; transition: transform .2s; }
+    .sticky-add:hover .sticky-add-arrow { transform: translateX(4px); }
+    .sticky-add:disabled {
+      color: var(--grey); cursor: not-allowed;
+    }
+
+    /* ─────────────────────────────
+       INGREDIENTS
+    ───────────────────────────── */
+    .ingredients-section {
+      padding: 120px 56px;
+      background: var(--paper);
+      border-top: 2px solid rgba(17,17,17,.06);
+    }
+    .ing-header { margin-bottom: 72px; }
+    .ing-header-label {
+      font-family: 'Caveat', cursive; font-size: 16px;
+      color: var(--grey); margin-bottom: 12px;
+      display: block; transform: rotate(-0.5deg);
+    }
+    .ing-header-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(44px, 5.5vw, 72px); line-height: .95;
+      letter-spacing: -.02em;
+    }
+    .ing-header-title em { font-style: italic; color: var(--red); }
+    .ing-grid {
+      display: grid; grid-template-columns: repeat(4,1fr);
+      gap: 2px;
+    }
+    .ing-cell {
+      padding: 40px 32px;
+      border-right: 1px dashed rgba(17,17,17,.12);
+      position: relative;
+    }
+    .ing-cell:last-child { border-right: none; }
+    .ing-num {
+      font-family: 'Caveat', cursive; font-size: 14px;
+      color: var(--grey); margin-bottom: 8px;
+    }
+    .ing-name {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 26px; letter-spacing: -.01em; margin-bottom: 6px;
+    }
+    .ing-thai {
+      font-family: 'Caveat', cursive; font-size: 16px;
+      color: var(--red); margin-bottom: 14px; display: block;
+    }
+    .ing-note {
+      font-size: 12px; color: var(--grey); line-height: 1.75;
+    }
+    /* Rough underline on ingredient name */
+    .ing-name-wrap { position: relative; display: inline-block; margin-bottom: 6px; }
+    .ing-name-wrap svg { position: absolute; bottom: -5px; left: 0; width: 100%; }
+    /* Annotation callout beside some ingredients */
+    .ing-annotation {
+      position: absolute; top: 36px; right: -20px;
+      font-family: 'Caveat', cursive; font-size: 14px;
+      color: var(--red); transform: rotate(6deg);
+      background: var(--yellow); padding: 4px 8px;
+      box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+      z-index: 2; white-space: nowrap;
+    }
+
+    /* ─────────────────────────────
+       STORY SECTION
+    ───────────────────────────── */
+    .story-section {
+      background: var(--ink); color: var(--paper);
+      padding: 120px 56px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 80px; align-items: center;
+      position: relative; overflow: hidden;
+    }
+    /* Notebook lines on dark bg */
+    .story-section::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 39px,
+        rgba(245,240,232,.04) 39px, rgba(245,240,232,.04) 40px
+      );
+    }
+    .story-label {
+      font-family: 'Caveat', cursive; font-size: 15px;
+      color: rgba(245,240,232,.45); margin-bottom: 20px;
+      display: block; transform: rotate(-0.5deg);
+    }
+    .story-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-style: italic;
+      font-size: clamp(48px, 6vw, 80px); line-height: .92;
+      letter-spacing: -.025em; margin-bottom: 32px;
+    }
+    .story-title em { font-style: normal; color: var(--red); }
+    .story-body {
+      font-size: 14px; color: rgba(245,240,232,.55);
+      line-height: 1.9; margin-bottom: 16px;
+    }
+    .story-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Caveat', cursive; font-size: 20px;
+      color: var(--paper); text-decoration: none;
+      border-bottom: 1.5px solid rgba(245,240,232,.3);
+      padding-bottom: 3px; margin-top: 24px;
+      transition: border-color .2s, color .2s;
+    }
+    .story-cta:hover { color: var(--red); border-color: var(--red); }
+    .story-badges {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 32px;
+    }
+    .badge {
+      font-family: 'Caveat', cursive; font-size: 15px;
+      padding: 5px 14px;
+      border: 1.5px solid rgba(245,240,232,.2);
+      color: rgba(245,240,232,.6);
+      transform: rotate(-1deg); display: inline-block;
+    }
+    .badge.red-badge { border-color: var(--red); color: var(--red); transform: rotate(1deg); }
+
+    /* Taped image */
+    .story-img-wrap {
+      position: relative;
+    }
+    .story-polaroid {
+      background: #fff; padding: 12px 12px 48px;
+      box-shadow: var(--shadow-sticky);
+      transform: rotate(-3deg);
+      position: relative;
+    }
+    .story-polaroid::before {
+      content: '';
+      position: absolute; top: -12px; left: 50%;
+      transform: translateX(-50%) rotate(2deg);
+      width: 72px; height: 22px; background: var(--tape);
+    }
+    .story-polaroid img { width: 100%; object-fit: cover; }
+    .story-polaroid-caption {
+      font-family: 'Caveat', cursive; font-size: 18px;
+      color: var(--ink); text-align: center; padding-top: 10px;
+    }
+    .story-sticky-float {
+      position: absolute; bottom: -20px; right: -24px;
+      background: var(--yellow); padding: 14px 18px;
+      box-shadow: var(--shadow-sticky);
+      transform: rotate(5deg); max-width: 160px;
+    }
+    .story-sticky-float::before {
+      content: '';
+      position: absolute; top: -10px; left: 50%;
+      transform: translateX(-50%) rotate(-3deg);
+      width: 40px; height: 14px; background: var(--tape);
+    }
+    .story-sticky-float-text {
+      font-family: 'Caveat', cursive; font-size: 16px;
+      color: var(--ink); line-height: 1.35;
+    }
+
+    /* ─────────────────────────────
+       STATS / NUMBERS
+    ───────────────────────────── */
+    .stats-section {
+      padding: 80px 56px;
+      background: var(--paper-dk);
+      display: grid; grid-template-columns: repeat(4,1fr);
+      border-top: 1px dashed rgba(17,17,17,.12);
+      border-bottom: 1px dashed rgba(17,17,17,.12);
+    }
+    .stat-cell {
+      padding: 32px 40px;
+      border-right: 1px dashed rgba(17,17,17,.12);
+      position: relative;
+    }
+    .stat-cell:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(48px, 5vw, 68px); line-height: .9;
+      letter-spacing: -.02em; color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .stat-num em { font-style: italic; color: var(--red); }
+    .stat-label {
+      font-family: 'Inter', sans-serif; font-size: 12px;
+      color: var(--grey); letter-spacing: .04em;
+    }
+    .stat-annotation {
+      position: absolute; bottom: 24px; right: 16px;
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: var(--grey-lt); transform: rotate(-2deg);
+    }
+
+    /* ─────────────────────────────
+       TESTIMONIALS
+    ───────────────────────────── */
+    .testimonials-section {
+      padding: 120px 56px;
+      background: var(--paper);
+      position: relative;
+    }
+    .test-header { margin-bottom: 72px; }
+    .test-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(40px, 5vw, 68px); line-height: .95;
+      letter-spacing: -.02em;
+    }
+    .test-title em { font-style: italic; color: var(--red); }
+    .test-count {
+      font-family: 'Caveat', cursive; font-size: 16px;
+      color: var(--grey); display: block; margin-top: 10px;
+      transform: rotate(-0.5deg);
+    }
+    .test-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 32px; align-items: start;
+    }
+    .test-sticky {
+      padding: 28px; position: relative;
+      box-shadow: var(--shadow-sticky);
+      transition: transform .35s var(--ease);
+    }
+    .test-sticky:nth-child(1) { background: var(--yellow); transform: rotate(-2.5deg); }
+    .test-sticky:nth-child(2) { background: var(--pink);   transform: rotate(1.5deg); margin-top: 32px; }
+    .test-sticky:nth-child(3) { background: var(--green);  transform: rotate(-1deg); }
+    .test-sticky:hover { transform: rotate(0deg) scale(1.02) !important; }
+    .test-sticky::before {
+      content: '';
+      position: absolute; top: -11px; left: 50%;
+      transform: translateX(-50%);
+      width: 52px; height: 18px; background: var(--tape);
+    }
+
+    .test-stars { display: flex; gap: 4px; margin-bottom: 18px; }
+    .test-star svg { width: 16px; height: 16px; }
+    .test-text {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 14px; color: var(--ink); line-height: 1.75;
+      margin-bottom: 20px;
+    }
+    .test-author {
+      font-family: 'Caveat', cursive; font-weight: 700;
+      font-size: 18px; color: var(--ink); margin-bottom: 4px;
+    }
+    .test-product {
+      font-family: 'Caveat', cursive; font-size: 14px; color: var(--grey);
+    }
+
+    /* ─────────────────────────────
+       RECIPES
+    ───────────────────────────── */
+    .recipes-section {
+      background: var(--paper-dk); padding: 120px 56px;
+    }
+    .recipes-header { margin-bottom: 72px; }
+    .recipes-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(44px, 5.5vw, 72px); line-height: .95;
+      letter-spacing: -.02em;
+    }
+    .recipes-title em { font-style: italic; color: var(--red); }
+    .recipes-annotation {
+      font-family: 'Caveat', cursive; font-size: 16px; color: var(--grey);
+      display: block; margin-top: 10px; transform: rotate(-0.5deg);
+    }
+    .recipes-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 28px; align-items: start;
+    }
+    .recipe-card { position: relative; }
+    /* Each recipe image is taped */
+    .recipe-img-wrap {
+      position: relative; background: #fff;
+      padding: 10px 10px 44px;
+      box-shadow: var(--shadow-sticky);
+    }
+    .recipe-card:nth-child(1) .recipe-img-wrap { transform: rotate(-1.5deg); }
+    .recipe-card:nth-child(2) .recipe-img-wrap { transform: rotate(2deg); }
+    .recipe-card:nth-child(3) .recipe-img-wrap { transform: rotate(-1deg); }
+
+    .recipe-img-wrap::before {
+      content: '';
+      position: absolute; top: -10px; left: 50%;
+      transform: translateX(-50%) rotate(1deg);
+      width: 60px; height: 20px; background: var(--tape);
+      z-index: 2;
+    }
+    .recipe-img-wrap img {
+      width: 100%; object-fit: cover; display: block;
+    }
+    .recipe-card:first-child .recipe-img-wrap img { aspect-ratio: 3/4; }
+    .recipe-card:not(:first-child) .recipe-img-wrap img { aspect-ratio: 4/3; }
+    .recipe-polaroid-caption {
+      font-family: 'Caveat', cursive; font-size: 15px;
+      color: var(--grey); text-align: center;
+      position: absolute; bottom: 8px; left: 0; right: 0;
+    }
+    .recipe-info { padding: 18px 10px 0; }
+    .recipe-tag {
+      font-family: 'Caveat', cursive; font-size: 14px;
+      color: var(--grey); margin-bottom: 6px;
+    }
+    .recipe-name {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 22px; line-height: 1.15; letter-spacing: -.01em;
+      margin-bottom: 8px; color: var(--ink);
+    }
+    .recipe-desc {
+      font-size: 12px; color: var(--grey); line-height: 1.7;
+      margin-bottom: 14px;
+    }
+    .recipe-link {
+      font-family: 'Caveat', cursive; font-size: 17px;
+      color: var(--ink); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      border-bottom: 1.5px solid rgba(17,17,17,.2);
+      padding-bottom: 2px; transition: color .2s, border-color .2s;
+    }
+    .recipe-link:hover { color: var(--red); border-color: var(--red); }
+
+    /* ─────────────────────────────
+       PRESS
+    ───────────────────────────── */
+    .press-section {
+      background: var(--paper); padding: 80px 56px;
+      border-top: 1px dashed rgba(17,17,17,.1);
+    }
+    .press-label {
+      font-family: 'Caveat', cursive; font-size: 15px;
+      color: var(--grey); margin-bottom: 48px;
+      display: block; transform: rotate(-0.5deg);
+    }
+    .press-list { list-style: none; display: flex; flex-direction: column; gap: 0; }
+    .press-item {
+      display: flex; align-items: baseline; justify-content: space-between;
+      padding: 20px 0;
+      border-bottom: 1px dashed rgba(17,17,17,.1);
+      position: relative;
+      transition: padding-left .3s var(--ease);
+    }
+    .press-item:hover { padding-left: 12px; }
+    .press-name {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 24px; letter-spacing: -.01em;
+      color: var(--ink); position: relative;
+    }
+    /* Wobbly underline on hover */
+    .press-name::after {
+      content: '';
+      position: absolute; bottom: -3px; left: 0; right: 0; height: 2px;
+      background: var(--red); transform: scaleX(0); transform-origin: left;
+      transition: transform .3s var(--ease);
+    }
+    .press-item:hover .press-name::after { transform: scaleX(1); }
+    .press-type {
+      font-family: 'Caveat', cursive; font-size: 15px; color: var(--grey);
+    }
+
+    /* ─────────────────────────────
+       EMAIL / NOTEBOOK FORM
+    ───────────────────────────── */
+    .email-section {
+      background: var(--ink); color: var(--paper);
+      padding: 120px 56px; position: relative;
+      overflow: hidden;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    /* Notebook lines */
+    .email-section::before {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: repeating-linear-gradient(
+        0deg, transparent, transparent 39px,
+        rgba(245,240,232,.04) 39px, rgba(245,240,232,.04) 40px
+      );
+    }
+    .email-left { position: relative; z-index: 1; }
+    .email-eyebrow {
+      font-family: 'Caveat', cursive; font-size: 16px;
+      color: rgba(245,240,232,.45); margin-bottom: 20px;
+      display: block; transform: rotate(-0.5deg);
+    }
+    .email-title {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-size: clamp(48px, 6vw, 80px); line-height: .92;
+      letter-spacing: -.025em; margin-bottom: 20px;
+    }
+    .email-title em { font-style: italic; color: var(--red); }
+    .email-sub {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 16px; color: rgba(245,240,232,.5);
+      line-height: 1.75; max-width: 380px;
+    }
+    .email-right { position: relative; z-index: 1; }
+
+    /* Notebook paper card for the form */
+    .email-notebook {
+      background: var(--paper);
+      padding: 36px 32px;
+      position: relative;
+      transform: rotate(-1deg);
+      box-shadow: var(--shadow-sticky);
+    }
+    .email-notebook::before {
+      content: '';
+      position: absolute; top: -12px; left: 50%;
+      transform: translateX(-50%) rotate(2deg);
+      width: 80px; height: 22px; background: var(--tape);
+    }
+    /* Red margin line */
+    .email-notebook::after {
+      content: '';
+      position: absolute; top: 0; bottom: 0; left: 48px;
+      width: 1.5px; background: rgba(196,72,53,.2);
+    }
+    .email-notebook-inner { padding-left: 20px; }
+    .email-form-label {
+      font-family: 'Caveat', cursive; font-size: 15px;
+      color: var(--grey); margin-bottom: 6px; display: block;
+    }
+    .email-form-title {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 28px; letter-spacing: -.01em; color: var(--ink);
+      margin-bottom: 24px; line-height: 1.1;
+    }
+    .email-form {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .email-input {
+      width: 100%; padding: 12px 0;
+      background: transparent;
+      border: none; border-bottom: 1.5px solid rgba(17,17,17,.2);
+      color: var(--ink); font-family: 'Playfair Display', serif;
+      font-style: italic; font-size: 15px; outline: none;
+      transition: border-color .2s;
+    }
+    .email-input::placeholder { color: var(--grey-lt); }
+    .email-input:focus { border-color: var(--ink); }
+    .email-btn {
+      font-family: 'Caveat', cursive; font-size: 20px;
+      font-weight: 700; color: var(--paper); background: var(--ink);
+      border: none; padding: 14px 24px;
+      text-align: left; cursor: none;
+      transition: background .2s;
+      display: flex; align-items: center; gap: 10px;
+      margin-top: 8px; align-self: flex-start;
+    }
+    .email-btn:hover { background: var(--red); }
+    .email-fine {
+      font-family: 'Caveat', cursive; font-size: 13px;
+      color: var(--grey); margin-top: 12px; line-height: 1.5;
+    }
+
+    /* ─────────────────────────────
+       INSTAGRAM
+    ───────────────────────────── */
+    .instagram-section { padding: 80px 56px; background: var(--paper-dk); }
+    .ig-header {
+      text-align: center; margin-bottom: 48px;
+    }
+    .ig-handle {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-weight: 700; font-size: 32px; color: var(--ink); margin-bottom: 6px;
+    }
+    .ig-sub {
+      font-family: 'Caveat', cursive; font-size: 15px; color: var(--grey);
+    }
+    .ig-grid {
+      display: grid; grid-template-columns: repeat(6,1fr); gap: 8px;
+    }
+    .ig-cell {
+      aspect-ratio: 1; overflow: hidden; position: relative;
+      background: #fff; padding: 4px; box-shadow: 2px 3px 10px rgba(0,0,0,.1);
+    }
+    .ig-cell img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block; transition: transform .5s var(--ease), filter .4s;
+      filter: saturate(.8);
+    }
+    .ig-cell:hover img { transform: scale(1.06); filter: saturate(1.1); }
+
+    /* ─────────────────────────────
+       FOOTER
+    ───────────────────────────── */
+    footer {
+      background: var(--ink); color: var(--paper);
+      padding: 80px 56px 40px;
+    }
+    .footer-logo {
+      font-family: 'Playfair Display', serif; font-weight: 900;
+      font-style: italic;
+      font-size: clamp(52px, 8vw, 100px);
+      line-height: .9; letter-spacing: -.025em;
+      margin-bottom: 64px; padding-bottom: 48px;
+      border-bottom: 1px dashed rgba(245,240,232,.08);
+      color: var(--paper);
+    }
+    .footer-logo em { font-style: normal; color: var(--red); }
+    .footer-body {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 64px;
+    }
+    .footer-tagline {
+      font-family: 'Playfair Display', serif; font-style: italic;
+      font-size: 15px; color: rgba(245,240,232,.35);
+      line-height: 1.8; max-width: 260px; margin-top: 12px;
+    }
+    .footer-col-title {
+      font-family: 'Caveat', cursive; font-size: 18px;
+      font-weight: 700; color: rgba(245,240,232,.45);
+      margin-bottom: 20px; display: block;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col ul a {
+      font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 300;
+      color: rgba(245,240,232,.35); text-decoration: none; transition: color .2s;
+    }
+    .footer-col ul a:hover { color: var(--paper); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 28px; border-top: 1px dashed rgba(245,240,232,.06);
+    }
+    .footer-copy {
+      font-family: 'Caveat', cursive; font-size: 14px;
+      color: rgba(245,240,232,.25);
+    }
+    .footer-socials { display: flex; gap: 20px; }
+    .footer-social {
+      font-family: 'Caveat', cursive; font-size: 16px;
+      color: rgba(245,240,232,.3); text-decoration: none;
+      transition: color .2s;
+    }
+    .footer-social:hover { color: var(--red); }
+
+    /* ─────────────────────────────
+       RESPONSIVE
+    ───────────────────────────── */
+    @media (max-width: 1100px) {
+      .hero        { grid-template-columns: 1fr; padding-top: 100px; }
+      .hero-right  { display: none; }
+      .sticky-grid { grid-template-columns: repeat(2,1fr); }
+      .ing-grid    { grid-template-columns: repeat(2,1fr); }
+      .story-section { grid-template-columns: 1fr; }
+      .stats-section { grid-template-columns: repeat(2,1fr); }
+      .test-grid   { grid-template-columns: 1fr; }
+      .recipes-grid { grid-template-columns: 1fr; }
+      .email-section { grid-template-columns: 1fr; }
+      .footer-body { grid-template-columns: 1fr 1fr; }
+      nav, .products-section, .ingredients-section, .story-section,
+      .stats-section, .testimonials-section, .recipes-section,
+      .press-section, .email-section, .instagram-section, footer { padding-left: 36px; padding-right: 36px; }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .sticky-grid { grid-template-columns: 1fr; }
+      .ing-grid    { grid-template-columns: 1fr; }
+      .stats-section { grid-template-columns: 1fr; }
+      .ig-grid { grid-template-columns: repeat(3,1fr); }
+      .footer-body { grid-template-columns: 1fr; }
+      nav, .products-section, .ingredients-section, .story-section,
+      .stats-section, .testimonials-section, .recipes-section,
+      .press-section, .email-section, .instagram-section, footer { padding-left: 20px; padding-right: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="grain" aria-hidden="true"></div>
+  <div id="prog"  aria-hidden="true"></div>
+
+  <!-- CURSOR -->
+  <div id="cur-dot"  aria-hidden="true"></div>
+  <div id="cur-ring" aria-hidden="true"></div>
+
+  <div class="version-label">V4 — Digital Zine</div>
+
+  <!-- ── NAV ── -->
+  <nav id="main-nav">
+    <a href="#" class="nav-logo">
+      <span class="nav-logo-name">Chilli Bird</span>
+      <span class="nav-logo-annotation">est. in a home kitchen →</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Shop</a></li>
+      <li><a href="#">Our Story</a></li>
+      <li><a href="#">Recipes</a></li>
+      <li><a href="#">Press</a></li>
+    </ul>
+    <button class="nav-cart">Cart (0)</button>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-left reveal">
+      <div class="hero-tape-top"></div>
+      <span class="hero-eyebrow">01 / Handmade in Fife, Scotland — Est. in a Home Kitchen</span>
+      <h1 class="hero-headline">
+        Chilli<br>
+        <em>Bird.</em>
+      </h1>
+      <div class="hero-underline-wrap">
+        <!-- Wobbly hand-drawn underline -->
+        <svg viewBox="0 0 460 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M4 10 C45 5 90 12 140 8 C190 4 240 11 290 7 C340 3 390 10 440 7 L455 8"
+                stroke="#C44835" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"
+                stroke-dasharray="500" stroke-dashoffset="500">
+            <animate attributeName="stroke-dashoffset" from="500" to="0"
+                     dur="0.9s" begin="0.3s" fill="freeze" calcMode="spline"
+                     keySplines="0.16 1 0.3 1" keyTimes="0;1"/>
+          </path>
+        </svg>
+      </div>
+      <p class="hero-sub">Crispy Thai chilli oil. Fragrant. Aromatic.<br>
+        Dangerously addictive. Handmade in small batches in Scotland.</p>
+      <div class="hero-ctas" style="position:relative;">
+        <a href="#" class="btn-primary">Shop the Range</a>
+        <a href="#" class="btn-secondary-hand">Our Story ↗</a>
+        <span class="hero-cta-note">* free delivery over £25</span>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <!-- Chunky hand-drawn arrow SVG (decorative) -->
+      <div class="hero-arrow" aria-hidden="true">
+        <svg width="90" height="50" viewBox="0 0 90 50" fill="none">
+          <path d="M8 25 C25 22 50 20 72 25 M62 14 L75 25 L62 36"
+                stroke="#111" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity=".25"/>
+        </svg>
+      </div>
+
+      <!-- X-eyes smiley deco -->
+      <div class="hero-deco-smiley" aria-hidden="true">
+        <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+          <circle cx="36" cy="36" r="32" stroke="#111" stroke-width="2.5"/>
+          <path d="M22 22 L28 28 M28 22 L22 28" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+          <path d="M44 22 L50 28 M50 22 L44 28" stroke="#111" stroke-width="2" stroke-linecap="round"/>
+          <path d="M24 50 C30 44 42 44 48 50" stroke="#111" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Floating sticky note -->
+      <div class="hero-sticky reveal d1">
+        <p class="hero-sticky-text">Small batch.<br>Real aromatics.<br>No shortcuts.</p>
+        <p class="hero-sticky-sub">— Jen, Fife 🌶️</p>
+      </div>
+
+      <!-- Main polaroid -->
+      <div class="polaroid reveal d2">
+        <img src="images/og aromatics.jpeg" alt="Chilli Bird OG Aromatics">
+        <p class="polaroid-caption">OG Aromatics — the one that started it all</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── MARQUEE ── -->
+  <div class="marquee-strip" aria-hidden="true">
+    <div class="marquee-track">
+      <span class="mi">Crispy Thai Chilli Oil <span class="mi-sep">·</span></span>
+      <span class="mi">Handmade in Scotland <span class="mi-sep">·</span></span>
+      <span class="mi">Small Batch <span class="mi-sep">·</span></span>
+      <span class="mi">Great Taste Award Winner <span class="mi-sep">·</span></span>
+      <span class="mi">Put It On Everything <span class="mi-sep">·</span></span>
+      <span class="mi">ชิลลี่เบิร์ด <span class="mi-sep">·</span></span>
+      <span class="mi">Fragrant &amp; Aromatic <span class="mi-sep">·</span></span>
+      <span class="mi">Fife, Scotland <span class="mi-sep">·</span></span>
+      <span class="mi">Crispy Thai Chilli Oil <span class="mi-sep">·</span></span>
+      <span class="mi">Handmade in Scotland <span class="mi-sep">·</span></span>
+      <span class="mi">Small Batch <span class="mi-sep">·</span></span>
+      <span class="mi">Great Taste Award Winner <span class="mi-sep">·</span></span>
+      <span class="mi">Put It On Everything <span class="mi-sep">·</span></span>
+      <span class="mi">ชิลลี่เบิร์ด <span class="mi-sep">·</span></span>
+      <span class="mi">Fragrant &amp; Aromatic <span class="mi-sep">·</span></span>
+      <span class="mi">Fife, Scotland <span class="mi-sep">·</span></span>
+    </div>
+  </div>
+
+  <!-- ── PRODUCTS ── -->
+  <section class="products-section">
+    <div class="products-header reveal">
+      <div>
+        <div class="products-title-wrap">
+          <h2 class="products-title">The Range.</h2>
+          <!-- Wobbly underline on title -->
+          <svg class="products-title-underline" viewBox="0 0 320 10" fill="none" aria-hidden="true">
+            <path d="M3 7 C40 3 80 9 120 5 C160 1 200 8 240 5 C280 2 310 7 318 6"
+                  stroke="#111" stroke-width="2" stroke-linecap="round" opacity=".18"/>
+          </svg>
+        </div>
+        <span class="products-annotation">// Four ways to ruin a bland meal forever</span>
+      </div>
+      <a href="#" class="products-link">Browse all →</a>
+    </div>
+
+    <div class="sticky-grid">
+
+      <!-- PRODUCT 01 — OG Aromatics Mild -->
+      <div class="sticky-card reveal">
+        <div class="sticky-polaroid">
+          <img src="images/og aramatics mild.jpeg" alt="OG Aromatics Mild">
+          <span class="sticky-polaroid-caption">the original</span>
+        </div>
+        <div class="sticky-body">
+          <div class="sticky-product-meta">SKU-001 / Mild Heat</div>
+          <h3 class="sticky-product-name">OG Aromatics<br>Mild</h3>
+          <div class="sticky-heat">
+            <span class="heat-mark">🌶</span>
+            <span class="heat-mark empty">🌶</span>
+            <span class="heat-mark empty">🌶</span>
+          </div>
+          <p class="sticky-desc">Lemongrass. Lime leaves. Crispy shallots. The one that started the obsession — fragrant, aromatic, completely addictive.</p>
+          <div class="sticky-footer">
+            <div class="price-callout">
+              <span class="price-callout-num">£8.50</span>
+              <!-- Hand-drawn callout circle -->
+              <svg viewBox="0 0 80 38" fill="none" aria-hidden="true">
+                <path d="M10 19 C8 9 18 3 30 2 C44 1 62 3 70 12 C78 20 76 32 64 36 C50 40 20 40 11 32 C3 26 7 19 10 19Z"
+                      stroke="#C44835" stroke-width="2" fill="none" stroke-linecap="round"
+                      stroke-dasharray="220" stroke-dashoffset="220">
+                  <animate attributeName="stroke-dashoffset" from="220" to="0"
+                           dur="0.8s" begin="0.8s" fill="freeze"/>
+                </path>
+              </svg>
+            </div>
+            <button class="sticky-add">
+              Add <span class="sticky-add-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 02 — OG Aromatics Spicy -->
+      <div class="sticky-card reveal d1">
+        <div class="sticky-polaroid">
+          <img src="images/og aromatics.jpeg" alt="OG Aromatics Spicy">
+          <span class="sticky-polaroid-caption">properly hot</span>
+        </div>
+        <div class="sticky-body">
+          <div class="sticky-product-meta">SKU-002 / Proper Heat</div>
+          <h3 class="sticky-product-name">OG Aromatics<br>Spicy</h3>
+          <div class="sticky-heat">
+            <span class="heat-mark">🌶</span>
+            <span class="heat-mark">🌶</span>
+            <span class="heat-mark">🌶</span>
+          </div>
+          <p class="sticky-desc">Everything you love about the OG — turned up. Bird's eye chillies. Serious Thai heat. You've been warned.</p>
+          <div class="sticky-footer">
+            <div class="price-callout">
+              <span class="price-callout-num">£8.50</span>
+              <svg viewBox="0 0 80 38" fill="none" aria-hidden="true">
+                <path d="M10 19 C8 9 18 3 30 2 C44 1 62 3 70 12 C78 20 76 32 64 36 C50 40 20 40 11 32 C3 26 7 19 10 19Z"
+                      stroke="#C44835" stroke-width="2" fill="none" stroke-linecap="round"
+                      stroke-dasharray="220" stroke-dashoffset="220">
+                  <animate attributeName="stroke-dashoffset" from="220" to="0"
+                           dur="0.8s" begin="1s" fill="freeze"/>
+                </path>
+              </svg>
+            </div>
+            <button class="sticky-add">
+              Add <span class="sticky-add-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 03 — White Pepper & Extra Garlic -->
+      <div class="sticky-card reveal d2">
+        <div class="sticky-polaroid">
+          <img src="images/white pepper and garlic.jpeg" alt="White Pepper & Garlic">
+          <span class="sticky-polaroid-caption">new! ✦</span>
+        </div>
+        <div class="sticky-body">
+          <div class="sticky-product-meta">SKU-003 / Stir Fry's Best Friend</div>
+          <h3 class="sticky-product-name">White Pepper &amp; Extra Garlic</h3>
+          <div class="sticky-heat">
+            <span class="heat-mark">🌶</span>
+            <span class="heat-mark">🌶</span>
+            <span class="heat-mark empty">🌶</span>
+          </div>
+          <p class="sticky-desc">Punchy white pepper. Obscene amounts of garlic. Built for noodles, rice, and literally everything else.</p>
+          <div class="sticky-footer">
+            <div class="price-callout">
+              <span class="price-callout-num">£8.50</span>
+              <svg viewBox="0 0 80 38" fill="none" aria-hidden="true">
+                <path d="M10 19 C8 9 18 3 30 2 C44 1 62 3 70 12 C78 20 76 32 64 36 C50 40 20 40 11 32 C3 26 7 19 10 19Z"
+                      stroke="#C44835" stroke-width="2" fill="none" stroke-linecap="round"
+                      stroke-dasharray="220" stroke-dashoffset="220">
+                  <animate attributeName="stroke-dashoffset" from="220" to="0"
+                           dur="0.8s" begin="1.2s" fill="freeze"/>
+                </path>
+              </svg>
+            </div>
+            <button class="sticky-add">
+              Add <span class="sticky-add-arrow">→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRODUCT 04 — Crispy Thai Hot Honey (SOLD OUT / GONE) -->
+      <div class="sticky-card reveal d3">
+        <div class="sticky-polaroid">
+          <img src="images/hot honey.jpeg" alt="Crispy Thai Hot Honey" style="filter:saturate(0.3) brightness(0.85);">
+          <span class="sticky-polaroid-caption">rip 🕯️</span>
+
+          <!-- Scribble-out overlay -->
+          <div class="scribble-overlay" aria-label="Sold out">
+            <svg viewBox="0 0 300 380" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- First scribble cross -->
+              <path d="M15 30 C80 55 160 40 220 65 C260 80 280 95 295 110"
+                    stroke="#111" stroke-width="9" stroke-linecap="round" fill="none" opacity=".75"/>
+              <path d="M20 70 C100 90 180 60 260 100 C278 108 290 118 295 128"
+                    stroke="#111" stroke-width="7" stroke-linecap="round" fill="none" opacity=".55"/>
+              <!-- Second scribble cross -->
+              <path d="M290 40 C210 80 140 60 60 100 C30 115 12 130 8 145"
+                    stroke="#111" stroke-width="9" stroke-linecap="round" fill="none" opacity=".75"/>
+              <path d="M285 80 C200 115 130 90 55 130 C28 145 10 165 6 178"
+                    stroke="#111" stroke-width="7" stroke-linecap="round" fill="none" opacity=".5"/>
+              <!-- Extra scribble loop -->
+              <path d="M40 280 C100 260 180 290 240 265 C265 255 280 240 285 228"
+                    stroke="#111" stroke-width="6" stroke-linecap="round" fill="none" opacity=".4"/>
+            </svg>
+            <div class="gone-text">
+              <span>GONE</span>
+            </div>
+          </div>
+        </div>
+        <div class="sticky-body">
+          <div class="sticky-product-meta">SKU-004 / Limited Run</div>
+          <h3 class="sticky-product-name" style="opacity:.45;text-decoration:line-through;">Crispy Thai Hot Honey</h3>
+          <div class="sticky-heat" style="opacity:.35;">
+            <span class="heat-mark">🌶</span>
+            <span class="heat-mark">🌶</span>
+            <span class="heat-mark empty">🌶</span>
+          </div>
+          <p class="sticky-desc" style="opacity:.5;">Fife heather honey. Thai chillies. Crispy bits throughout. Irresponsible on cheese. <em>Notify me when back.</em></p>
+          <div class="sticky-footer">
+            <div class="price-callout">
+              <span class="price-callout-num" style="opacity:.4;">£9.50</span>
+            </div>
+            <button class="sticky-add" disabled>Sold out</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── INGREDIENTS ── -->
+  <section class="ingredients-section">
+    <div class="ing-header reveal">
+      <span class="ing-header-label">03 / What goes in — the good stuff</span>
+      <h2 class="ing-header-title">The <em>Ingredients.</em></h2>
+    </div>
+    <div class="ing-grid">
+
+      <div class="ing-cell reveal">
+        <div class="ing-num">01</div>
+        <div class="ing-name-wrap">
+          <div class="ing-name">Lemongrass</div>
+          <svg viewBox="0 0 160 8" fill="none" style="width:140px;" aria-hidden="true">
+            <path d="M3 5 C30 2 60 7 90 4 C120 1 145 6 157 5"
+                  stroke="#C44835" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="ing-thai">ตะไคร้</span>
+        <p class="ing-note">The backbone of our aromatics. Fragrant, sharp, unmistakably Southeast Asian. Every jar starts here.</p>
+        <div class="ing-annotation">✓ imported!</div>
+      </div>
+
+      <div class="ing-cell reveal d1">
+        <div class="ing-num">02</div>
+        <div class="ing-name-wrap">
+          <div class="ing-name">Lime Leaves</div>
+          <svg viewBox="0 0 160 8" fill="none" style="width:140px;" aria-hidden="true">
+            <path d="M3 5 C30 2 60 7 90 4 C120 1 145 6 157 5"
+                  stroke="#C44835" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="ing-thai">ใบมะกรูด</span>
+        <p class="ing-note">Citrus. Floral. The note that lingers long after you've eaten. No substitute exists — we import them.</p>
+      </div>
+
+      <div class="ing-cell reveal d2">
+        <div class="ing-num">03</div>
+        <div class="ing-name-wrap">
+          <div class="ing-name">Crispy Shallots</div>
+          <svg viewBox="0 0 180 8" fill="none" style="width:160px;" aria-hidden="true">
+            <path d="M3 5 C40 2 80 7 120 4 C150 1 168 6 177 5"
+                  stroke="#C44835" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="ing-thai">หอมแดง</span>
+        <p class="ing-note">The crunch. The depth. The reason people eat the oil straight off the spoon. Fried low and slow until golden.</p>
+        <div class="ing-annotation">the secret!</div>
+      </div>
+
+      <div class="ing-cell reveal d3">
+        <div class="ing-num">04</div>
+        <div class="ing-name-wrap">
+          <div class="ing-name">Bird's Eye Chilli</div>
+          <svg viewBox="0 0 200 8" fill="none" style="width:180px;" aria-hidden="true">
+            <path d="M3 5 C45 2 90 7 130 4 C165 1 185 6 197 5"
+                  stroke="#C44835" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <span class="ing-thai">พริกนก</span>
+        <p class="ing-note">The namesake. In Thai, พริกนก means "bird chilli." Tiny. Fierce. Non-negotiable.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── STORY ── -->
+  <section class="story-section">
+    <div class="story-left reveal">
+      <span class="story-label">03 / เรื่องราวของเรา — Our Story</span>
+      <h2 class="story-title">Born In<br>A Home<br><em>Kitchen.</em></h2>
+      <p class="story-body">Chilli Bird started in a kitchen in Fife. A desire for the fragrant, aromatic cooking of home — and zero interest in the bland, heat-only chilli oils on UK shelves.</p>
+      <p class="story-body">So she made her own. Lemongrass. Lime leaves. Toasted garlic. Bird's eye chillies. Handmade in small batches. Her friends wanted jars. Then their friends did.</p>
+      <p class="story-body">Today it's still the same recipe, the same hands, the same obsession. Just more jars.</p>
+      <a href="#" class="story-cta">Read the full story →</a>
+      <div class="story-badges">
+        <span class="badge">🌶️ Thai-Inspired</span>
+        <span class="badge">Small Batch</span>
+        <span class="badge">Handmade</span>
+        <span class="badge red-badge">ทำด้วยมือ</span>
+      </div>
+    </div>
+    <div class="story-right reveal d2">
+      <div class="story-polaroid">
+        <img src="images/jen - best one.jpeg" alt="Jen — Founder of Chilli Bird">
+        <p class="story-polaroid-caption">Jen — Fife, Scotland</p>
+        <!-- Sticky float on polaroid -->
+        <div class="story-sticky-float">
+          <p class="story-sticky-float-text">"I just wanted it to taste like home."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS ── -->
+  <div class="stats-section">
+    <div class="stat-cell reveal">
+      <div class="stat-num"><em>500+</em></div>
+      <div class="stat-label">Five-star reviews</div>
+      <span class="stat-annotation">and counting!</span>
+    </div>
+    <div class="stat-cell reveal d1">
+      <div class="stat-num">4</div>
+      <div class="stat-label">Products in the range</div>
+      <span class="stat-annotation">(1 resting 😢)</span>
+    </div>
+    <div class="stat-cell reveal d2">
+      <div class="stat-num">1</div>
+      <div class="stat-label">Kitchen in Fife</div>
+      <span class="stat-annotation">home kitchen!</span>
+    </div>
+    <div class="stat-cell reveal d3">
+      <div class="stat-num"><em>∞</em></div>
+      <div class="stat-label">Jars eaten worldwide</div>
+      <span class="stat-annotation">approx.</span>
+    </div>
+  </div>
+
+  <!-- ── TESTIMONIALS ── -->
+  <section class="testimonials-section">
+    <div class="test-header reveal">
+      <h2 class="test-title">What They<br><em>Said.</em></h2>
+      <span class="test-count">// 500+ five-star reviews — unfiltered</span>
+    </div>
+    <div class="test-grid">
+
+      <div class="test-sticky reveal">
+        <div class="test-stars">
+          <!-- Hand-drawn stars -->
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-label="star"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+        </div>
+        <p class="test-text">"I put it on my morning eggs and now I can't eat breakfast any other way. I've given away four jars as gifts. I also immediately replace them for myself. It's a problem. A delicious problem."</p>
+        <div class="test-author">Callum P.</div>
+        <div class="test-product">OG Aromatics Spicy</div>
+      </div>
+
+      <div class="test-sticky reveal d1">
+        <div class="test-stars">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#111" stroke-width="1.8" stroke-linejoin="round" fill="#111"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#111" stroke-width="1.8" stroke-linejoin="round" fill="#111"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#111" stroke-width="1.8" stroke-linejoin="round" fill="#111"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#111" stroke-width="1.8" stroke-linejoin="round" fill="#111"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#111" stroke-width="1.8" stroke-linejoin="round" fill="#111"/></svg>
+        </div>
+        <p class="test-text">"My housemates thought I was exaggerating when I said this chilli oil changed my life. Then they tried it. We now have a dedicated shelf for Chilli Bird and a house rule: don't finish someone else's jar."</p>
+        <div class="test-author">Rhona T.</div>
+        <div class="test-product">White Pepper &amp; Extra Garlic</div>
+      </div>
+
+      <div class="test-sticky reveal d2">
+        <div class="test-stars">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z" stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/></svg>
+        </div>
+        <p class="test-text">"The Hot Honey is an actual event. We had it at a dinner party on cheese with crackers and people were asking about it all night. Got the details for six guests. You're welcome, Chilli Bird."</p>
+        <div class="test-author">Elspeth M.</div>
+        <div class="test-product">Crispy Thai Hot Honey</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── RECIPES ── -->
+  <section class="recipes-section">
+    <div class="recipes-header reveal">
+      <h2 class="recipes-title"><em>Cook</em> This.</h2>
+      <span class="recipes-annotation">// Three ways in. Infinite excuses to open a jar.</span>
+    </div>
+    <div class="recipes-grid">
+
+      <div class="recipe-card reveal">
+        <div class="recipe-img-wrap">
+          <img src="images/recipe1.jpeg" alt="Chilli Oil Fried Eggs">
+          <span class="recipe-polaroid-caption">eggs + oil = life</span>
+        </div>
+        <div class="recipe-info">
+          <div class="recipe-tag">Breakfast · 5 min</div>
+          <h3 class="recipe-name">Chilli Oil<br>Fried Eggs</h3>
+          <p class="recipe-desc">Crack eggs into sizzling oil. Add OG Aromatics without shame. Eat directly from the pan over the sink. No judgement.</p>
+          <a href="#" class="recipe-link">View Recipe →</a>
+        </div>
+      </div>
+
+      <div class="recipe-card reveal d1">
+        <div class="recipe-img-wrap">
+          <img src="images/recipe4 - noodles.jpeg" alt="Thai Chilli Noodles">
+          <span class="recipe-polaroid-caption">weeknight saviour</span>
+        </div>
+        <div class="recipe-info">
+          <div class="recipe-tag">Dinner · 15 min</div>
+          <h3 class="recipe-name">Thai Chilli<br>Noodles</h3>
+          <p class="recipe-desc">White Pepper &amp; Garlic. Soy. Sesame. Noodles. This is why you keep a jar at the office and one at home.</p>
+          <a href="#" class="recipe-link">View Recipe →</a>
+        </div>
+      </div>
+
+      <div class="recipe-card reveal d2">
+        <div class="recipe-img-wrap">
+          <img src="images/recipe3 - pizza.jpeg" alt="Crispy Chilli Pizza">
+          <span class="recipe-polaroid-caption">post-bake. always.</span>
+        </div>
+        <div class="recipe-info">
+          <div class="recipe-tag">Weekend · 25 min</div>
+          <h3 class="recipe-name">Crispy Chilli<br>Pizza</h3>
+          <p class="recipe-desc">Add it post-bake. The crunch survives. The aromatics bloom. The delivery app gets uninstalled. You're welcome.</p>
+          <a href="#" class="recipe-link">View Recipe →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── PRESS ── -->
+  <section class="press-section">
+    <div class="sec-inner">
+      <span class="press-label reveal">As seen in — external references / media log</span>
+      <ul class="press-list reveal">
+        <li class="press-item">
+          <span class="press-name">The Scotsman</span>
+          <span class="press-type">// Print &amp; Digital</span>
+        </li>
+        <li class="press-item">
+          <span class="press-name">Delicious Magazine</span>
+          <span class="press-type">// Food Media</span>
+        </li>
+        <li class="press-item">
+          <span class="press-name">The Guardian Cook</span>
+          <span class="press-type">// Weekend Supplement</span>
+        </li>
+        <li class="press-item">
+          <span class="press-name">Great Taste Awards</span>
+          <span class="press-type">// ★ Award Winner</span>
+        </li>
+        <li class="press-item">
+          <span class="press-name">Scottish Food &amp; Drink</span>
+          <span class="press-type">// Trade Press</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── EMAIL ── -->
+  <section class="email-section">
+    <div class="email-left reveal">
+      <span class="email-eyebrow">// Join the flock. No spam. Promise.</span>
+      <h2 class="email-title">Get the<br><em>Good</em><br>Stuff.</h2>
+      <p class="email-sub">Recipes, new drops, exclusive offers — and the occasional note from the Fife kitchen.</p>
+    </div>
+    <div class="email-right reveal d1">
+      <div class="email-notebook">
+        <div class="email-notebook-inner">
+          <span class="email-form-label">your details ↓</span>
+          <div class="email-form-title">Sign me up.</div>
+          <form class="email-form" onsubmit="return false;">
+            <input type="email" class="email-input" placeholder="your@email.com">
+            <button class="email-btn" type="submit">
+              Subscribe →
+            </button>
+          </form>
+          <p class="email-fine">Recipes · New drops · Exclusive offers · Behind the scenes from the Fife kitchen</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INSTAGRAM ── -->
+  <section class="instagram-section">
+    <div class="ig-header reveal">
+      <div class="ig-handle">@chillibird</div>
+      <div class="ig-sub">Visual archive — follow along</div>
+    </div>
+    <div class="ig-grid">
+      <div class="ig-cell"><img src="images/puttin on food.jpeg" alt=""></div>
+      <div class="ig-cell"><img src="images/lifestyle food table.jpeg" alt=""></div>
+      <div class="ig-cell"><img src="images/table2.jpeg" alt=""></div>
+      <div class="ig-cell"><img src="images/food close up.jpeg" alt=""></div>
+      <div class="ig-cell"><img src="images/ramen.jpeg" alt=""></div>
+      <div class="ig-cell"><img src="images/recipe5 - pad thai.jpeg" alt=""></div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-logo">Chilli <em>Bird.</em></div>
+    <div class="footer-body">
+      <div>
+        <p class="footer-tagline">Crispy Thai chilli oil. Handmade in Fife, Scotland. By a founder who just wanted the world to eat better.</p>
+      </div>
+      <div class="footer-col">
+        <span class="footer-col-title">Shop</span>
+        <ul>
+          <li><a href="#">All Products</a></li>
+          <li><a href="#">OG Aromatics</a></li>
+          <li><a href="#">Limited Editions</a></li>
+          <li><a href="#">Gift Sets</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <span class="footer-col-title">Explore</span>
+        <ul>
+          <li><a href="#">Our Story</a></li>
+          <li><a href="#">Recipes</a></li>
+          <li><a href="#">Press</a></li>
+          <li><a href="#">Wholesale</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <span class="footer-col-title">Help</span>
+        <ul>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Shipping</a></li>
+          <li><a href="#">Returns</a></li>
+          <li><a href="#">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2024 Chilli Bird. Made with fire in Scotland.</span>
+      <div class="footer-socials">
+        <a href="#" class="footer-social">Instagram</a>
+        <a href="#" class="footer-social">Facebook</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    /* ── CURSOR ── */
+    const dot  = document.getElementById('cur-dot');
+    const ring = document.getElementById('cur-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    });
+    (function loop() {
+      rx += (mx - rx) * .12; ry += (my - ry) * .12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(loop);
+    })();
+    document.querySelectorAll('a, button, .sticky-card, .test-sticky, .recipe-card, .ig-cell, .press-item, .polaroid, .story-polaroid').forEach(el => {
+      el.addEventListener('mouseenter', () => document.body.classList.add('hov'));
+      el.addEventListener('mouseleave', () => document.body.classList.remove('hov'));
+    });
+
+    /* ── NAV ── */
+    const nav  = document.getElementById('main-nav');
+    const prog = document.getElementById('prog');
+    window.addEventListener('scroll', () => {
+      const pct = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      prog.style.width = (pct * 100) + '%';
+      nav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ── SCROLL REVEAL ── */
+    const ro = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.07, rootMargin: '0px 0px -32px 0px' });
+    document.querySelectorAll('.reveal').forEach(el => {
+      ro.observe(el);
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('in');
+    });
+
+    /* ── RANDOM STICKY ROTATION (subtle variation on load) ── */
+    document.querySelectorAll('.sticky-card').forEach((card, i) => {
+      const base   = [-2, 1.5, -1, 2.5];
+      const jitter = (Math.random() - 0.5) * 0.8;
+      card.style.transform = `rotate(${base[i % base.length] + jitter}deg)`;
+    });
+    document.querySelectorAll('.test-sticky').forEach((card, i) => {
+      const base   = [-2.5, 1.5, -1];
+      const jitter = (Math.random() - 0.5) * 0.8;
+      card.style.transform = `rotate(${base[i % base.length] + jitter}deg)`;
+    });
+  </script>
+</body>
+</html>

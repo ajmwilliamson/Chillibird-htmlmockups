@@ -3,1130 +3,1343 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chilli Bird — Dark Luxury</title>
+  <title>CHILLI BIRD — BLOOD ARCHIVE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Metal+Mania&family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg: #0f0f0f;
-      --bg-surface: #1a1a1a;
-      --text-primary: #f0ebe3;
-      --text-secondary: #9a9085;
-      --accent: #c0392b;
-      --accent-warm: #d4843a;
-      --border: rgba(240, 235, 227, 0.08);
-      --transition-slow: 600ms cubic-bezier(0.4, 0, 0.2, 1);
-      --transition-medium: 400ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
+    /* ── RESET ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     html { scroll-behavior: smooth; }
+    img { display: block; max-width: 100%; }
 
-    body {
-      background: var(--bg);
-      color: var(--text-primary);
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      line-height: 1.6;
-      overflow-x: hidden;
+    /* ── TOKENS ── */
+    :root {
+      --void:        #000000;
+      --abyss:       #060000;
+      --dark:        #0F0000;
+      --pit:         #1A0000;
+      --blood-deep:  #3D0000;
+      --blood:       #8B0000;
+      --blood-mid:   #A80000;
+      --crimson:     #CC0000;
+      --arterial:    #E81010;
+      --rust:        #FF3333;
+      --bone:        #E8D4C0;
+      --ash:         #AA9080;
+      --grey:        #664444;
+      --grey-dim:    #3A2020;
+      --ease:        cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Version Label */
+    /* ── BASE ── */
+    body {
+      background: var(--abyss);
+      color: var(--bone);
+      font-family: 'Space Mono', monospace;
+      font-size: 11px;
+      line-height: 1.55;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* ── GRAIN OVERLAY ── */
+    .grain-overlay {
+      position: fixed; inset: 0; z-index: 9990;
+      pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: 0.055;
+      mix-blend-mode: overlay;
+      animation: grain-shift 0.18s steps(1) infinite;
+    }
+    @keyframes grain-shift {
+      0%   { background-position: 0px 0px; }
+      16%  { background-position: -60px 40px; }
+      33%  { background-position: 90px -30px; }
+      50%  { background-position: -40px -80px; }
+      66%  { background-position: 70px 60px; }
+      83%  { background-position: -90px 20px; }
+      100% { background-position: 30px -50px; }
+    }
+
+    /* ── GLITCH GRID ── */
+    .glitch-grid {
+      position: fixed; inset: 0; z-index: 1; pointer-events: none;
+      background-image:
+        linear-gradient(rgba(139,0,0,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,0,0,0.07) 1px, transparent 1px);
+      background-size: 64px 64px;
+      animation: grid-flicker 5s ease-in-out infinite;
+    }
+    @keyframes grid-flicker {
+      0%, 85%, 89%, 93%, 100% { opacity: 1; transform: none; }
+      86% { opacity: 0.35; transform: translateX(5px) scaleY(1.003); }
+      87% { opacity: 0.85; transform: translateX(-3px); }
+      88% { opacity: 0.15; transform: scaleX(1.002) translateY(3px); }
+      90% { opacity: 0.65; transform: translateX(2px); }
+      91% { opacity: 0.4;  transform: none; }
+      92% { opacity: 1;    transform: translateX(-4px); }
+      94% { opacity: 0.55; transform: none; }
+      95% { opacity: 1;    transform: translateX(2px) scaleY(1.001); }
+    }
+
+    /* ── CUSTOM CURSOR ── */
+    .crosshair {
+      position: fixed; z-index: 9999; pointer-events: none;
+      top: 0; left: 0;
+      width: 28px; height: 28px;
+      transform: translate(-50%, -50%);
+      will-change: transform;
+    }
+    .ch-h, .ch-v {
+      position: absolute; background: var(--crimson);
+    }
+    .ch-h {
+      width: 100%; height: 1px;
+      top: 50%; transform: translateY(-50%);
+      box-shadow: 0 0 4px var(--crimson);
+    }
+    .ch-v {
+      width: 1px; height: 100%;
+      left: 50%; transform: translateX(-50%);
+      box-shadow: 0 0 4px var(--crimson);
+    }
+    .ch-center {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px; height: 4px;
+      border: 1px solid var(--arterial);
+      background: var(--void);
+    }
+    .ch-outer {
+      position: absolute; inset: -8px;
+      border: 1px solid rgba(204,0,0,0.25);
+    }
+    .trail-dot {
+      position: fixed; z-index: 9985; pointer-events: none;
+      width: 3px; height: 3px; border-radius: 50%;
+      background: var(--crimson);
+      transform: translate(-50%, -50%);
+      transition: opacity 0.5s ease-out;
+      mix-blend-mode: screen;
+    }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 24px;
+      background: var(--void);
+      display: flex; align-items: center; gap: 0;
+      font-size: 8px; letter-spacing: .18em; text-transform: uppercase;
+      border-bottom: 1px solid var(--blood-deep);
+      overflow: hidden;
+    }
+    .status-item {
+      padding: 0 14px; color: rgba(139,0,0,0.65);
+      border-right: 1px solid var(--blood-deep);
+      height: 100%; display: flex; align-items: center; gap: 6px;
+      white-space: nowrap;
+    }
+    .status-item:first-child { color: var(--crimson); }
+    .status-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--crimson);
+      animation: blink 2s ease-in-out infinite;
+      display: inline-block;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
+    .status-bar-right { margin-left: auto; }
+    .status-time { padding: 0 14px; color: rgba(139,0,0,0.4); }
+
+    /* ── VERSION LABEL ── */
     .version-label {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 1000;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      padding: 6px 10px;
+      position: fixed; top: 32px; left: 16px; z-index: 198;
+      font-size: 7px; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(139,0,0,0.45);
+      border: 1px solid var(--blood-deep);
+      padding: 3px 9px;
       pointer-events: none;
     }
 
-    /* NAV */
+    /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 24px 48px;
-      background: linear-gradient(to bottom, rgba(15,15,15,0.95) 0%, transparent 100%);
-      backdrop-filter: blur(4px);
+      position: fixed; top: 24px; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 52px;
+      transition: background .4s, padding .4s, border-color .4s;
+      border-bottom: 1px solid transparent;
     }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
+    nav.stuck {
+      background: rgba(0,0,0,0.96);
+      padding: 12px 52px;
+      border-color: var(--blood-deep);
     }
-
+    .nav-logo { display: flex; flex-direction: column; text-decoration: none; color: var(--bone); }
     .nav-logo-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-primary);
+      font-family: 'Metal Mania', cursive;
+      font-size: 22px; letter-spacing: .08em; line-height: 1;
+      color: var(--crimson);
+      text-shadow: 0 0 20px rgba(204,0,0,0.5), 2px 2px 0 var(--blood-deep);
     }
-
-    .bird-icon {
-      width: 28px;
-      height: 28px;
-      opacity: 0.9;
+    .nav-logo-sub {
+      font-size: 7px; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(139,0,0,0.5); margin-top: 2px;
     }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 36px;
-      list-style: none;
-    }
-
+    .nav-links { display: flex; gap: 28px; list-style: none; }
     .nav-links a {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: color var(--transition-medium);
+      font-size: 8px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--grey); text-decoration: none; transition: color .2s;
+      position: relative;
     }
-
-    .nav-links a:hover { color: var(--text-primary); }
-
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 1px; background: var(--crimson);
+      transition: width .3s var(--ease);
+    }
+    .nav-links a:hover { color: var(--crimson); }
+    .nav-links a:hover::after { width: 100%; }
     .nav-cart {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
+      font-family: 'Space Mono', monospace;
+      font-size: 8px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--bone); background: transparent;
+      border: 1px solid var(--blood); padding: 8px 18px;
+      cursor: none;
+      transition: border-color .2s, color .2s, box-shadow .2s;
+    }
+    .nav-cart:hover {
+      border-color: var(--crimson); color: var(--crimson);
+      box-shadow: 0 0 12px rgba(204,0,0,0.25), inset 0 0 12px rgba(204,0,0,0.06);
     }
 
-    /* HERO */
-    .hero {
-      position: relative;
-      height: 100vh;
-      min-height: 700px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .hero-bg {
-      position: absolute;
-      inset: 0;
-      background-image: url('https://picsum.photos/seed/chillibird-hero/1600/900');
-      background-size: cover;
-      background-position: center;
-      filter: brightness(0.35) saturate(0.7);
-      transform: scale(1.05);
-      transition: transform 8s ease-out;
-    }
-
-    .hero-bg.loaded { transform: scale(1); }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(ellipse at center, transparent 30%, rgba(15,15,15,0.7) 100%);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      text-align: center;
-      max-width: 800px;
-      padding: 0 24px;
-    }
-
-    .hero-eyebrow {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--accent-warm);
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .hero-eyebrow::before,
-    .hero-eyebrow::after {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 1px;
-      background: var(--accent-warm);
-      opacity: 0.6;
-    }
-
-    .hero-headline {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(52px, 8vw, 110px);
-      font-weight: 300;
-      line-height: 1.0;
-      letter-spacing: -0.01em;
-      color: var(--text-primary);
-      margin-bottom: 32px;
-    }
-
-    .hero-headline em {
-      font-style: italic;
-      color: var(--accent-warm);
-    }
-
-    .hero-sub {
-      font-size: 15px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      letter-spacing: 0.04em;
-      max-width: 440px;
-      margin: 0 auto 48px;
-      line-height: 1.7;
-    }
-
-    .btn-primary {
-      display: inline-block;
-      padding: 14px 44px;
-      border: 1px solid var(--accent);
-      color: var(--text-primary);
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      transition: background var(--transition-medium), color var(--transition-medium);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn-primary::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: var(--accent);
-      transform: translateX(-100%);
-      transition: transform var(--transition-medium);
-      z-index: -1;
-    }
-
-    .btn-primary:hover::before { transform: translateX(0); }
-
-    .hero-drip {
-      position: absolute;
-      bottom: -1px;
-      left: 0;
-      right: 0;
-      z-index: 3;
-    }
-
-    /* SECTION COMMON */
-    section {
-      position: relative;
-    }
-
-    .section-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 48px;
-    }
-
-    .hairline {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 0;
-    }
-
-    /* SCROLL ANIMATION */
+    /* ── REVEAL ── */
     .reveal {
-      opacity: 0;
-      transform: translateY(28px);
-      transition: opacity var(--transition-slow), transform var(--transition-slow);
+      opacity: 0; transform: translateY(20px);
+      transition: opacity .9s var(--ease), transform .9s var(--ease);
     }
+    .reveal.in { opacity: 1; transform: none; }
+    .d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s} .d4{transition-delay:.4s}
 
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .reveal-delay-1 { transition-delay: 100ms; }
-    .reveal-delay-2 { transition-delay: 200ms; }
-    .reveal-delay-3 { transition-delay: 300ms; }
-    .reveal-delay-4 { transition-delay: 400ms; }
-
-    /* FEATURED PRODUCTS */
-    .products-section {
-      padding: 100px 0;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 60px;
-    }
-
-    .section-label {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .section-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(32px, 4vw, 52px);
-      font-weight: 300;
-      line-height: 1.1;
-      color: var(--text-primary);
-    }
-
-    .section-link {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 2px;
-      transition: color var(--transition-medium), border-color var(--transition-medium);
-    }
-
-    .section-link:hover {
-      color: var(--text-primary);
-      border-color: var(--text-secondary);
-    }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
-    }
-
-    .product-card {
-      background: var(--bg-surface);
+    /* ── HERO ── */
+    .hero {
+      position: relative; min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding-top: 100px;
       overflow: hidden;
-      border: 1px solid var(--border);
-      transition: border-color var(--transition-medium);
-      cursor: pointer;
+      border-bottom: 3px solid var(--blood);
     }
-
-    .product-card:hover {
-      border-color: rgba(240, 235, 227, 0.15);
+    .hero-bg-img {
+      position: absolute; inset: 0; z-index: 0;
     }
-
-    .product-card:hover .product-img {
+    .hero-bg-img img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(1) contrast(3.5) brightness(0.3) sepia(1) saturate(2.5) hue-rotate(310deg);
       transform: scale(1.04);
     }
-
-    .product-img-wrap {
-      position: relative;
-      aspect-ratio: 3/4;
+    .hero-bg-img::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom,
+        rgba(6,0,0,0.3) 0%,
+        rgba(6,0,0,0.1) 30%,
+        rgba(6,0,0,0.5) 70%,
+        rgba(6,0,0,0.95) 100%);
+    }
+    /* Halftone dots overlay on hero */
+    .hero-halftone {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(139,0,0,0.35) 1px, transparent 1px);
+      background-size: 8px 8px;
+      mix-blend-mode: multiply;
+    }
+    /* Scan line */
+    .hero-scanline {
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
       overflow: hidden;
     }
+    .hero-scanline::after {
+      content: '';
+      position: absolute; left: 0; right: 0; height: 2px;
+      background: linear-gradient(to right, transparent, rgba(204,0,0,0.4), transparent);
+      animation: hero-scan 5s linear infinite;
+      top: -2px;
+    }
+    @keyframes hero-scan { from{top:-2px} to{top:calc(100% + 2px)} }
 
-    .product-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1);
-      filter: saturate(0.8);
+    .hero-content {
+      position: relative; z-index: 3;
+      text-align: center;
+      padding: 0 40px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .hero-status {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 40px;
+      font-size: 8px; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(139,0,0,0.7);
+    }
+    .hero-logo {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(80px, 14vw, 180px);
+      line-height: .88;
+      letter-spacing: .04em;
+      color: var(--bone);
+      text-shadow:
+        0 0 60px rgba(204,0,0,0.6),
+        0 0 120px rgba(139,0,0,0.3),
+        4px 4px 0 var(--blood-deep),
+        6px 6px 0 rgba(61,0,0,0.5);
+      margin-bottom: 24px;
+      animation: hero-logo-in 1.2s var(--ease) .3s both;
+    }
+    @keyframes hero-logo-in {
+      from { opacity: 0; transform: scaleY(1.08) translateY(-20px); letter-spacing: .12em; }
+      to   { opacity: 1; transform: none; }
+    }
+    .hero-slash {
+      font-size: 28px; letter-spacing: .4em;
+      color: var(--blood);
+      margin-bottom: 24px;
+      animation: fu .6s var(--ease) .8s both;
+    }
+    @keyframes fu { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+    .hero-sub {
+      font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--ash); line-height: 2;
+      margin-bottom: 48px;
+      animation: fu .6s var(--ease) 1s both;
+    }
+    .hero-actions {
+      display: flex; align-items: center; gap: 20px;
+      animation: fu .6s var(--ease) 1.2s both;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Space Mono', monospace;
+      font-size: 9px; letter-spacing: .22em; text-transform: uppercase;
+      color: var(--void); background: var(--crimson);
+      text-decoration: none; padding: 14px 32px;
+      border: 1px solid var(--crimson); cursor: none;
+      transition: background .2s, box-shadow .2s;
+      clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px));
+    }
+    .btn-primary:hover {
+      background: var(--arterial);
+      box-shadow: 0 0 24px rgba(204,0,0,0.5), 0 0 48px rgba(204,0,0,0.2);
+    }
+    .btn-secondary {
+      font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--ash); text-decoration: none; cursor: none;
+      border-bottom: 1px solid var(--blood);
+      padding-bottom: 3px;
+      transition: color .2s, border-color .2s;
+    }
+    .btn-secondary:hover { color: var(--crimson); border-color: var(--crimson); }
+
+    /* Hero bottom readout bar */
+    .hero-readout {
+      position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
+      display: grid; grid-template-columns: repeat(4,1fr);
+      border-top: 1px solid var(--blood-deep);
+      background: rgba(0,0,0,0.8);
+    }
+    .readout-item {
+      padding: 16px 28px;
+      border-right: 1px solid var(--blood-deep);
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .readout-item:last-child { border-right: none; }
+    .readout-label {
+      font-size: 7px; letter-spacing: .22em; text-transform: uppercase;
+      color: rgba(139,0,0,0.5);
+    }
+    .readout-val {
+      font-size: 13px; font-weight: 700; letter-spacing: .08em;
+      color: var(--bone);
     }
 
-    .product-badge {
-      position: absolute;
-      top: 16px;
-      left: 16px;
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 5px 10px;
-      background: var(--accent);
-      color: white;
+    /* ── COUNTDOWN (Batch Drop) ── */
+    .countdown-section {
+      background: var(--void);
+      border-bottom: 1px solid var(--blood-deep);
+      padding: 32px 0;
+      text-align: center;
+      position: relative; z-index: 2;
+    }
+    .cd-label {
+      font-size: 8px; letter-spacing: .3em; text-transform: uppercase;
+      color: rgba(139,0,0,0.5); margin-bottom: 16px;
+    }
+    .countdown-grid {
+      display: flex; align-items: center; justify-content: center; gap: 0;
+    }
+    .cd-unit {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0 28px;
+      border-right: 1px solid var(--blood-deep);
+    }
+    .cd-unit:last-child { border-right: none; }
+    .cd-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 6vw, 72px);
+      color: var(--crimson); line-height: 1;
+      text-shadow: 0 0 30px rgba(204,0,0,0.4);
+      letter-spacing: .04em;
+    }
+    .cd-unit-label {
+      font-size: 7px; letter-spacing: .28em; text-transform: uppercase;
+      color: rgba(139,0,0,0.4); margin-top: 4px;
+    }
+
+    /* ── TICKER ── */
+    .ticker-strip {
+      background: var(--blood); overflow: hidden; padding: 10px 0;
+      position: relative; z-index: 2;
+      border-top: 1px solid var(--arterial);
+      border-bottom: 1px solid var(--blood-deep);
+    }
+    .ticker-track {
+      display: flex; width: max-content;
+      animation: ticker 24s linear infinite;
+    }
+    .ticker-track:hover { animation-play-state: paused; }
+    .t-item {
+      font-size: 9px; letter-spacing: .26em; text-transform: uppercase;
+      color: rgba(0,0,0,0.8); white-space: nowrap; padding: 0 24px;
+      font-weight: 700;
+    }
+    .t-sep { color: rgba(0,0,0,0.4); padding: 0 4px; }
+    @keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ── SECTION COMMON ── */
+    .sec-inner { max-width: 1400px; margin: 0 auto; padding: 0 64px; position: relative; z-index: 2; }
+    .sec-header { margin-bottom: 80px; }
+    .sec-num-label {
+      font-size: 8px; letter-spacing: .28em; text-transform: uppercase;
+      color: rgba(139,0,0,0.5); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .sec-num-label::before {
+      content: ''; display: inline-block; width: 40px; height: 1px;
+      background: var(--blood);
+    }
+    .sec-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 8vw, 120px);
+      line-height: .9; letter-spacing: .04em;
+      color: var(--bone);
+    }
+    .sec-title .accent { color: var(--crimson); }
+    .sec-link {
+      font-size: 8px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--grey); text-decoration: none;
+      border-bottom: 1px solid var(--blood-deep);
+      padding-bottom: 3px;
+      transition: color .2s, border-color .2s;
+    }
+    .sec-link:hover { color: var(--crimson); border-color: var(--crimson); }
+
+    /* ── ARCHIVE (PRODUCTS) ── */
+    .archive-section {
+      padding: 140px 0 120px;
+      background: var(--dark);
+      border-bottom: 3px solid var(--blood);
+      position: relative;
+    }
+    .archive-section::before {
+      content: '';
+      position: absolute; inset: 0; z-index: 0;
+      background-image: radial-gradient(circle, rgba(61,0,0,0.6) 1px, transparent 1px);
+      background-size: 10px 10px;
+      pointer-events: none;
+    }
+    .archive-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 80px;
+    }
+    .products-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 2px;
+    }
+
+    /* Product Card */
+    .product-card {
+      background: var(--abyss);
+      border: 1px solid var(--blood-deep);
+      overflow: hidden; position: relative; cursor: none;
+      transition: border-color .3s, box-shadow .3s;
+    }
+    .product-card:hover {
+      border-color: var(--blood);
+      box-shadow: 0 0 30px rgba(139,0,0,0.2), inset 0 0 30px rgba(139,0,0,0.04);
+    }
+    .card-header {
+      padding: 10px 12px;
+      background: var(--void);
+      border-bottom: 1px solid var(--blood-deep);
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(139,0,0,0.4);
+    }
+    .card-header-status {
+      display: flex; align-items: center; gap: 6px;
+    }
+    .product-img-wrap {
+      position: relative; aspect-ratio: 3/4; overflow: hidden;
+      background: var(--pit);
+    }
+    .product-img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(1) contrast(3) brightness(0.45) sepia(1) saturate(2) hue-rotate(315deg);
+      transition: filter .6s var(--ease);
+    }
+    .product-card:hover .product-img {
+      filter: grayscale(1) contrast(2.5) brightness(0.55) sepia(1) saturate(2.5) hue-rotate(315deg);
+    }
+    /* Halftone overlay on product images */
+    .product-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0; z-index: 2; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(61,0,0,0.8) 1px, transparent 1px);
+      background-size: 5px 5px;
+      mix-blend-mode: multiply;
+    }
+    /* Scan effect on card image */
+    .product-img-wrap::before {
+      content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.08) 3px,
+        rgba(0,0,0,0.08) 4px
+      );
+    }
+    .p-label {
+      position: absolute; z-index: 4;
+      font-size: 7px; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(232,212,192,0.5);
+      background: rgba(0,0,0,0.7); border: 1px solid rgba(139,0,0,0.3);
+      padding: 2px 6px;
+    }
+    .p-label.tl { top: 10px; left: 10px; }
+    .p-label.br { bottom: 10px; right: 10px; }
+    .p-badge {
+      position: absolute; top: 10px; right: 10px; z-index: 4;
+      font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
+      padding: 3px 8px;
+      background: var(--blood); color: var(--bone);
+      border: 1px solid var(--crimson);
+    }
+
+    /* DELETED stamp for sold out */
+    .deleted-stamp {
+      position: absolute; inset: 0; z-index: 20;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: rgba(0,0,0,0.65);
+    }
+    .stamp-text {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(44px, 8vw, 68px);
+      color: var(--crimson);
+      border: 4px solid var(--crimson);
+      padding: 6px 18px;
+      transform: rotate(-12deg);
+      text-shadow: 0 0 30px rgba(204,0,0,0.7);
+      box-shadow:
+        0 0 40px rgba(204,0,0,0.3),
+        inset 0 0 20px rgba(204,0,0,0.1);
+      letter-spacing: .06em; line-height: 1;
+    }
+    .stamp-code {
+      font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(139,0,0,0.6); margin-top: 12px;
+    }
+    .product-card.sold-out .product-img {
+      filter: grayscale(1) contrast(3.5) brightness(0.25) sepia(1) hue-rotate(320deg);
     }
 
     .product-info {
-      padding: 24px;
+      padding: 20px 18px 18px;
+      border-top: 1px solid var(--blood-deep);
     }
-
-    .product-heat {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 10px;
+    .heat-row { display: flex; gap: 4px; margin-bottom: 12px; }
+    .heat-pip {
+      width: 14px; height: 3px;
+      background: var(--blood);
     }
-
-    .heat-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
+    .heat-pip.empty { background: var(--blood-deep); opacity: 0.4; }
+    .product-meta {
+      font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(139,0,0,0.5); margin-bottom: 8px;
     }
-
-    .heat-dot.empty {
-      background: var(--bg);
-      border: 1px solid var(--border);
-    }
-
     .product-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 1.2;
-      color: var(--text-primary);
-      margin-bottom: 8px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 26px; letter-spacing: .04em; line-height: 1.05;
+      color: var(--bone); margin-bottom: 10px;
     }
-
+    .product-name.redacted {
+      position: relative; display: inline-block;
+    }
+    .product-name.redacted::after {
+      content: ''; position: absolute;
+      inset: 4px -3px; background: var(--blood-deep);
+    }
     .product-desc {
-      font-size: 12px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      line-height: 1.6;
+      font-size: 10px; color: var(--grey); line-height: 1.7;
       margin-bottom: 20px;
     }
-
     .product-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid var(--blood-deep); padding-top: 16px;
     }
-
     .product-price {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 300;
-      color: var(--text-primary);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px; letter-spacing: .04em; color: var(--bone);
     }
-
     .btn-add {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-primary);
-      background: none;
-      border: 1px solid var(--border);
-      padding: 9px 18px;
-      cursor: pointer;
-      transition: border-color var(--transition-medium), background var(--transition-medium);
+      font-size: 8px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--crimson); background: transparent;
+      border: 1px solid var(--blood); padding: 8px 14px; cursor: none;
+      transition: border-color .2s, color .2s, box-shadow .2s;
+    }
+    .btn-add:hover:not(:disabled) {
+      border-color: var(--crimson);
+      box-shadow: 0 0 10px rgba(204,0,0,0.2);
+    }
+    .btn-add:disabled {
+      color: var(--grey); border-color: var(--blood-deep);
+      cursor: not-allowed;
     }
 
-    .btn-add:hover {
-      border-color: var(--accent);
-      background: var(--accent);
+    /* ── STATS ── */
+    .stats-section {
+      padding: 0;
+      background: var(--void);
+      border-bottom: 3px solid var(--blood);
+      position: relative; overflow: hidden; z-index: 2;
     }
-
-    /* BRAND STORY */
-    .story-section {
-      padding: 120px 0;
-      background: var(--bg-surface);
-    }
-
-    .story-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 100px;
-      align-items: center;
-    }
-
-    .story-left .pull-quote {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(28px, 3.5vw, 46px);
-      font-style: italic;
-      font-weight: 300;
-      line-height: 1.25;
-      color: var(--text-primary);
-      margin-bottom: 32px;
-      border-left: 2px solid var(--accent);
-      padding-left: 32px;
-    }
-
-    .story-left .pull-quote em {
-      color: var(--accent-warm);
-      font-style: normal;
-    }
-
-    .story-body {
-      font-size: 15px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      line-height: 1.8;
-      margin-bottom: 20px;
-    }
-
-    .story-img-wrap {
-      position: relative;
-    }
-
-    .story-img {
-      width: 100%;
-      aspect-ratio: 4/5;
-      object-fit: cover;
-      filter: saturate(0.75) brightness(0.9);
-    }
-
-    .story-img-accent {
-      position: absolute;
-      bottom: -24px;
-      right: -24px;
-      width: 140px;
-      height: 140px;
-      border: 1px solid var(--accent);
-      z-index: -1;
-    }
-
-    .story-detail {
-      margin-top: 40px;
-      display: flex;
-      gap: 40px;
-    }
-
-    .story-stat .stat-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 36px;
-      font-weight: 300;
-      color: var(--accent-warm);
-    }
-
-    .story-stat .stat-label {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-    }
-
-    /* TESTIMONIALS */
-    .testimonials-section {
-      padding: 100px 0;
-    }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 32px;
-      margin-top: 60px;
-    }
-
-    .testimonial-card {
-      padding: 40px;
-      border: 1px solid var(--border);
-      position: relative;
-    }
-
-    .testimonial-card::before {
-      content: '\201C';
-      position: absolute;
-      top: 20px;
-      left: 36px;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 80px;
-      line-height: 1;
-      color: var(--accent);
-      opacity: 0.3;
-      font-weight: 300;
-    }
-
-    .stars {
-      display: flex;
-      gap: 3px;
-      margin-bottom: 20px;
-    }
-
-    .star { color: var(--accent-warm); font-size: 14px; }
-
-    .testimonial-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-style: italic;
-      font-weight: 300;
-      line-height: 1.6;
-      color: var(--text-primary);
-      margin-bottom: 24px;
-    }
-
-    .testimonial-author {
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-    }
-
-    .testimonial-product {
-      font-size: 11px;
-      color: var(--accent-warm);
-      margin-top: 4px;
-    }
-
-    /* RECIPES */
-    .recipes-section {
-      padding: 100px 0;
-      background: var(--bg-surface);
-    }
-
-    .recipes-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-      margin-top: 60px;
-    }
-
-    .recipe-card {
-      position: relative;
-      overflow: hidden;
-      aspect-ratio: 4/5;
-    }
-
-    .recipe-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: brightness(0.5) saturate(0.7);
-      transition: transform 700ms cubic-bezier(0.4, 0, 0.2, 1), filter 700ms;
-    }
-
-    .recipe-card:hover .recipe-img {
-      transform: scale(1.05);
-      filter: brightness(0.6) saturate(0.9);
-    }
-
-    .recipe-info {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 32px;
-      background: linear-gradient(to top, rgba(15,15,15,0.95) 0%, transparent 100%);
-    }
-
-    .recipe-tag {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent-warm);
-      margin-bottom: 8px;
-    }
-
-    .recipe-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 26px;
-      font-weight: 400;
-      line-height: 1.2;
-      color: var(--text-primary);
-      margin-bottom: 10px;
-    }
-
-    .recipe-desc {
-      font-size: 13px;
-      font-weight: 300;
-      color: rgba(240, 235, 227, 0.7);
-      margin-bottom: 16px;
-      line-height: 1.5;
-    }
-
-    .recipe-link {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-primary);
-      text-decoration: none;
-      border-bottom: 1px solid rgba(240,235,227,0.3);
-      padding-bottom: 2px;
-      transition: border-color var(--transition-medium);
-    }
-
-    .recipe-link:hover { border-color: var(--text-primary); }
-
-    /* PRESS */
-    .press-section {
-      padding: 80px 0;
-    }
-
-    .press-label {
-      text-align: center;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      margin-bottom: 48px;
-    }
-
-    .press-logos {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 60px;
-      flex-wrap: wrap;
-    }
-
-    .press-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      font-style: italic;
-      color: var(--text-secondary);
-      opacity: 0.5;
-      transition: opacity var(--transition-medium);
-      white-space: nowrap;
-    }
-
-    .press-name:hover { opacity: 0.8; }
-
-    /* EMAIL SIGNUP */
-    .email-section {
-      padding: 120px 0;
-      background: var(--bg-surface);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .email-bg-motif {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.03;
+    .stats-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(139,0,0,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,0,0,0.08) 1px, transparent 1px);
+      background-size: 64px 64px;
       pointer-events: none;
     }
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4,1fr);
+    }
+    .stat-item {
+      padding: 64px 52px;
+      border-right: 1px solid var(--blood-deep);
+      position: relative; overflow: hidden;
+      transition: background .3s;
+    }
+    .stat-item:hover { background: rgba(61,0,0,0.15); }
+    .stat-item:first-child { padding-left: 64px; }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(56px, 6vw, 80px); line-height: .9;
+      color: var(--crimson); margin-bottom: 10px; letter-spacing: .04em;
+      text-shadow: 0 0 40px rgba(204,0,0,0.4);
+    }
+    .stat-label {
+      font-size: 8px; letter-spacing: .24em; text-transform: uppercase;
+      color: rgba(139,0,0,0.6); margin-bottom: 4px;
+    }
+    .stat-desc {
+      font-size: 9px; color: rgba(232,212,192,0.2); letter-spacing: .04em;
+    }
+    .stat-bar {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--blood-deep);
+    }
+    .stat-bar-fill {
+      height: 100%; background: var(--crimson);
+      transition: width 1.8s var(--ease) .3s; width: 0;
+      box-shadow: 0 0 8px var(--crimson);
+    }
+    .stat-item.in .stat-bar-fill { width: var(--w, 80%); }
 
-    .email-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(36px, 5vw, 62px);
-      font-weight: 300;
-      line-height: 1.15;
-      color: var(--text-primary);
+    /* ── STORY ── */
+    .story-section {
+      padding: 160px 0;
+      background: var(--abyss);
+      border-bottom: 3px solid var(--blood);
+      position: relative; z-index: 2;
+    }
+    .story-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start;
+    }
+    .story-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 8px; letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(139,0,0,0.5);
+      border: 1px solid var(--blood-deep);
+      padding: 4px 12px; margin-bottom: 28px;
+    }
+    .story-eye-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--crimson); animation: blink 2s infinite; display: inline-block; }
+    .story-pull {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(48px, 5.5vw, 72px); line-height: .95;
+      letter-spacing: .04em; color: var(--bone);
+      margin-bottom: 36px;
+    }
+    .story-pull .accent { color: var(--crimson); }
+    .story-body {
+      font-size: 10px; color: var(--ash); line-height: 2;
       margin-bottom: 16px;
     }
-
-    .email-title em {
-      font-style: italic;
-      color: var(--accent-warm);
+    .story-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 28px;
+      font-size: 9px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--crimson); text-decoration: none; cursor: none;
+      border-bottom: 1px solid rgba(139,0,0,0.4);
+      padding-bottom: 4px; transition: border-color .2s;
     }
+    .story-cta:hover { border-color: var(--crimson); }
 
-    .email-sub {
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      margin-bottom: 48px;
-      line-height: 1.7;
-    }
-
-    .email-form {
-      display: flex;
-      gap: 0;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
-    .email-input {
-      flex: 1;
-      padding: 16px 24px;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-right: none;
-      color: var(--text-primary);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 13px;
-      font-weight: 300;
-      outline: none;
-      transition: border-color var(--transition-medium);
-    }
-
-    .email-input::placeholder { color: var(--text-secondary); }
-    .email-input:focus { border-color: rgba(240, 235, 227, 0.2); }
-
-    .email-btn {
-      padding: 16px 28px;
-      background: var(--accent);
-      border: 1px solid var(--accent);
-      color: white;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background var(--transition-medium);
-      white-space: nowrap;
-    }
-
-    .email-btn:hover { background: #a93226; }
-
-    /* INSTAGRAM */
-    .instagram-section {
-      padding: 80px 0;
-    }
-
-    .instagram-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .instagram-handle {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px;
-      font-style: italic;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .instagram-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 3px;
-    }
-
-    .instagram-cell {
-      aspect-ratio: 1;
-      overflow: hidden;
+    /* Story image */
+    .story-img-wrap {
       position: relative;
+      border: 1px solid var(--blood-deep);
+      overflow: hidden;
+    }
+    .story-img-wrap img {
+      width: 100%; display: block;
+      filter: grayscale(1) contrast(2.8) brightness(0.45) sepia(1) saturate(2) hue-rotate(315deg);
+    }
+    /* Halftone on story image */
+    .story-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(61,0,0,0.75) 1px, transparent 1px);
+      background-size: 6px 6px;
+      mix-blend-mode: multiply;
+    }
+    .story-img-overlay {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background: linear-gradient(to bottom, transparent 60%, rgba(6,0,0,0.8));
+    }
+    .story-img-tag {
+      position: absolute; bottom: 16px; left: 16px; z-index: 2;
+      font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(232,212,192,0.5);
+      background: rgba(0,0,0,0.75); border: 1px solid rgba(139,0,0,0.3);
+      padding: 3px 8px;
+    }
+    .story-stats {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border: 1px solid var(--blood-deep);
+      border-top: none;
+    }
+    .s-stat {
+      padding: 16px 18px; border-right: 1px solid var(--blood-deep);
+    }
+    .s-stat:last-child { border-right: none; }
+    .s-stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px; letter-spacing: .04em;
+      color: var(--crimson); line-height: 1;
+    }
+    .s-stat-label {
+      font-size: 7px; letter-spacing: .18em; text-transform: uppercase;
+      color: rgba(139,0,0,0.45); margin-top: 4px;
     }
 
-    .instagram-cell img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: saturate(0.7);
-      transition: filter var(--transition-medium), transform 400ms;
+    /* ── FIELD DISPATCHES (TESTIMONIALS) ── */
+    .dispatches-section {
+      padding: 140px 0;
+      background: var(--dark);
+      border-bottom: 3px solid var(--blood);
+      position: relative; z-index: 2;
+    }
+    .dispatches-grid {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      gap: 2px; margin-top: 80px;
+    }
+    .dispatch-card {
+      background: var(--abyss);
+      border: 1px solid var(--blood-deep);
+      overflow: hidden; cursor: none;
+      transition: border-color .3s;
+    }
+    .dispatch-card:hover { border-color: var(--blood); }
+    .dispatch-card-header {
+      padding: 10px 14px;
+      background: var(--void); border-bottom: 1px solid var(--blood-deep);
+      font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(139,0,0,0.4);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .dispatch-body { padding: 28px; }
+    .signal-strength { display: flex; gap: 3px; margin-bottom: 20px; }
+    .signal-bar {
+      width: 10px; height: 3px;
+      background: var(--crimson);
+    }
+    .dispatch-text {
+      font-size: 11px; color: var(--ash); line-height: 1.85;
+      margin-bottom: 24px; font-style: italic;
+    }
+    .dispatch-footer {
+      padding: 16px 28px;
+      border-top: 1px solid var(--blood-deep);
+      background: rgba(0,0,0,0.4);
+    }
+    .dispatch-author {
+      font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--bone); font-size: 9px;
+    }
+    .dispatch-ref {
+      font-size: 8px; color: rgba(139,0,0,0.45);
+      margin-top: 3px; letter-spacing: .06em;
     }
 
-    .instagram-cell:hover img {
-      filter: saturate(1);
+    /* ── RITUAL ARCHIVE (RECIPES) ── */
+    .rituals-section {
+      padding: 140px 0;
+      background: var(--abyss);
+      border-bottom: 3px solid var(--blood);
+      position: relative; z-index: 2;
+    }
+    .rituals-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 80px;
+    }
+    .rituals-grid {
+      display: grid; grid-template-columns: 1.4fr 1fr 1fr;
+      gap: 2px; align-items: start;
+    }
+    .ritual-card {
+      background: var(--dark);
+      border: 1px solid var(--blood-deep);
+      overflow: hidden; cursor: none;
+      transition: border-color .3s;
+    }
+    .ritual-card:hover { border-color: var(--blood); }
+    .ritual-card:first-child  { aspect-ratio: 3/4; display: flex; flex-direction: column; }
+    .ritual-card:not(:first-child) { aspect-ratio: 4/5; display: flex; flex-direction: column; }
+    .ritual-img-wrap {
+      position: relative; flex: 1; overflow: hidden; background: var(--pit);
+      min-height: 0;
+    }
+    .ritual-img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(1) contrast(3) brightness(0.4) sepia(1) saturate(2) hue-rotate(315deg);
+      transition: filter .6s var(--ease);
+    }
+    .ritual-card:hover .ritual-img {
+      filter: grayscale(1) contrast(2.5) brightness(0.5) sepia(1) saturate(2.5) hue-rotate(315deg);
+    }
+    .ritual-img-wrap::after {
+      content: '';
+      position: absolute; inset: 0; pointer-events: none;
+      background-image: radial-gradient(circle, rgba(61,0,0,0.7) 1px, transparent 1px);
+      background-size: 6px 6px;
+      mix-blend-mode: multiply;
+    }
+    .ritual-img-label {
+      position: absolute; bottom: 10px; left: 10px; z-index: 3;
+      font-size: 7px; letter-spacing: .14em; text-transform: uppercase;
+      color: rgba(232,212,192,0.45);
+      background: rgba(0,0,0,0.7); border: 1px solid rgba(139,0,0,0.25);
+      padding: 2px 6px;
+    }
+    .ritual-info {
+      padding: 18px; flex-shrink: 0;
+      border-top: 1px solid var(--blood-deep);
+    }
+    .ritual-tag {
+      font-size: 7px; letter-spacing: .2em; text-transform: uppercase;
+      color: rgba(139,0,0,0.45); margin-bottom: 8px;
+    }
+    .ritual-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px; letter-spacing: .04em; line-height: 1.05;
+      color: var(--bone); margin-bottom: 8px;
+    }
+    .ritual-desc {
+      font-size: 9px; color: var(--grey); line-height: 1.7; margin-bottom: 14px;
+    }
+    .ritual-link {
+      font-size: 8px; letter-spacing: .18em; text-transform: uppercase;
+      color: var(--crimson); text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: gap .3s;
+    }
+    .ritual-link:hover { gap: 12px; }
+
+    /* ── PRESS / EXTERNAL REFERENCES ── */
+    .press-section {
+      padding: 64px 0;
+      background: var(--void);
+      border-bottom: 1px solid var(--blood-deep);
+      position: relative; z-index: 2;
+    }
+    .press-label {
+      text-align: center;
+      font-size: 8px; letter-spacing: .3em; text-transform: uppercase;
+      color: rgba(139,0,0,0.35); margin-bottom: 48px;
+    }
+    .press-logos {
+      display: flex; align-items: center; justify-content: center;
+    }
+    .press-item {
+      flex: 1; text-align: center;
+      border-right: 1px solid var(--blood-deep); padding: 0 24px;
+    }
+    .press-item:last-child { border-right: none; }
+    .press-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; letter-spacing: .08em;
+      color: rgba(139,0,0,0.3); display: block;
+      transition: color .3s; white-space: nowrap;
+      cursor: none;
+    }
+    .press-name:hover { color: rgba(139,0,0,0.7); }
+
+    /* ── INFILTRATE (EMAIL) ── */
+    .infiltrate-section {
+      padding: 160px 0;
+      background: var(--dark);
+      border-bottom: 3px solid var(--blood);
+      text-align: center;
+      position: relative; z-index: 2; overflow: hidden;
+    }
+    .infiltrate-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 100%, rgba(139,0,0,0.12), transparent 70%);
+      pointer-events: none;
+    }
+    .infiltrate-inner {
+      max-width: 580px; margin: 0 auto;
+    }
+    .infiltrate-eyebrow {
+      font-size: 8px; letter-spacing: .28em; text-transform: uppercase;
+      color: rgba(139,0,0,0.45); margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .infiltrate-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(60px, 8vw, 100px); line-height: .9;
+      letter-spacing: .06em; color: var(--bone); margin-bottom: 20px;
+    }
+    .infiltrate-title .accent { color: var(--crimson); }
+    .infiltrate-sub {
+      font-size: 10px; color: var(--ash); line-height: 2;
+      margin-bottom: 44px; letter-spacing: .04em;
+    }
+    .infiltrate-form { display: flex; }
+    .infiltrate-input {
+      flex: 1; padding: 16px 18px;
+      background: var(--void);
+      border: 1px solid var(--blood-deep); border-right: none;
+      color: var(--bone); font-family: 'Space Mono', monospace;
+      font-size: 10px; outline: none; letter-spacing: .04em;
+      transition: border-color .2s;
+    }
+    .infiltrate-input::placeholder { color: rgba(139,0,0,0.3); }
+    .infiltrate-input:focus { border-color: var(--blood); }
+    .infiltrate-btn {
+      padding: 16px 22px;
+      background: var(--crimson); border: 1px solid var(--crimson);
+      color: var(--void); font-family: 'Space Mono', monospace;
+      font-size: 8px; letter-spacing: .2em; text-transform: uppercase;
+      cursor: none; white-space: nowrap;
+      transition: background .2s, box-shadow .2s;
+    }
+    .infiltrate-btn:hover {
+      background: var(--arterial);
+      box-shadow: 0 0 20px rgba(204,0,0,0.4);
+    }
+
+    /* ── VISUAL ARCHIVE (INSTAGRAM) ── */
+    .visual-section {
+      padding: 80px 0 0;
+      background: var(--abyss);
+      position: relative; z-index: 2;
+    }
+    .visual-header { text-align: center; margin-bottom: 40px; }
+    .visual-handle {
+      font-family: 'Metal Mania', cursive;
+      font-size: 36px; letter-spacing: .04em;
+      color: var(--crimson); margin-bottom: 8px;
+      text-shadow: 0 0 30px rgba(204,0,0,0.4);
+    }
+    .visual-sub {
+      font-size: 8px; letter-spacing: .26em; text-transform: uppercase;
+      color: rgba(139,0,0,0.4);
+    }
+    .visual-grid {
+      display: grid; grid-template-columns: repeat(6,1fr); gap: 2px;
+    }
+    .visual-cell { aspect-ratio: 1; overflow: hidden; position: relative; }
+    .visual-cell img {
+      width: 100%; height: 100%; object-fit: cover;
+      filter: grayscale(1) contrast(3) brightness(0.4) sepia(1) saturate(2) hue-rotate(315deg);
+      transition: filter .5s var(--ease), transform .6s var(--ease);
+    }
+    .visual-cell:hover img {
+      filter: grayscale(1) contrast(2.5) brightness(0.55) sepia(1) saturate(3) hue-rotate(315deg);
       transform: scale(1.05);
     }
-
-    .instagram-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(15,15,15,0.5);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity var(--transition-medium);
+    .visual-overlay {
+      position: absolute; inset: 0;
+      background: rgba(139,0,0,0.3);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity .3s;
+      font-size: 8px; letter-spacing: .2em; text-transform: uppercase;
+      color: var(--bone);
     }
+    .visual-cell:hover .visual-overlay { opacity: 1; }
 
-    .instagram-cell:hover .instagram-overlay { opacity: 1; }
-
-    /* FOOTER */
+    /* ── FOOTER ── */
     footer {
-      padding: 60px 0 40px;
-      border-top: 1px solid var(--border);
+      background: var(--void);
+      border-top: 3px solid var(--blood);
+      padding: 80px 0 40px;
+      position: relative; z-index: 2;
     }
-
-    .footer-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 48px;
+    .footer-inner { max-width: 1400px; margin: 0 auto; padding: 0 64px; }
+    .footer-logo-lg {
+      font-family: 'Metal Mania', cursive;
+      font-size: clamp(64px, 10vw, 130px);
+      line-height: .88; letter-spacing: .04em; color: var(--bone);
+      margin-bottom: 64px; padding-bottom: 48px;
+      border-bottom: 1px solid var(--blood-deep);
+      text-shadow:
+        0 0 60px rgba(204,0,0,0.3),
+        4px 4px 0 var(--blood-deep);
     }
-
-    .footer-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 60px;
+    .footer-logo-lg .accent { color: var(--crimson); }
+    .footer-body {
+      display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px; margin-bottom: 64px;
     }
-
-    .footer-logo {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-primary);
-    }
-
     .footer-tagline {
-      font-size: 12px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      margin-top: 6px;
+      font-size: 10px; color: rgba(232,212,192,0.25);
+      line-height: 2; max-width: 240px; margin-top: 12px;
     }
-
-    .footer-links {
-      display: flex;
-      gap: 60px;
-    }
-
     .footer-col-title {
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      margin-bottom: 16px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px; letter-spacing: .08em;
+      color: rgba(139,0,0,0.5); margin-bottom: 20px;
     }
-
-    .footer-col ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
     .footer-col ul a {
-      font-size: 13px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: color var(--transition-medium);
+      font-size: 10px; color: rgba(232,212,192,0.25);
+      text-decoration: none; letter-spacing: .04em;
+      transition: color .2s;
     }
-
-    .footer-col ul a:hover { color: var(--text-primary); }
-
+    .footer-col ul a:hover { color: var(--crimson); }
     .footer-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 32px;
-      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 32px; border-top: 1px solid var(--blood-deep);
     }
-
     .footer-copy {
-      font-size: 11px;
-      font-weight: 300;
-      color: var(--text-secondary);
-      opacity: 0.5;
+      font-size: 8px; color: rgba(139,0,0,0.3); letter-spacing: .1em;
     }
-
-    .social-links {
-      display: flex;
-      gap: 20px;
-    }
-
+    .social-links { display: flex; gap: 24px; }
     .social-link {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      transition: color var(--transition-medium);
+      font-size: 8px; letter-spacing: .16em; text-transform: uppercase;
+      color: rgba(139,0,0,0.3); text-decoration: none; transition: color .2s;
     }
+    .social-link:hover { color: var(--crimson); }
 
-    .social-link:hover { color: var(--text-primary); }
-
-    /* DIVIDER MOTIFS */
-    .flame-divider {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 16px;
-      padding: 40px 0;
-      opacity: 0.3;
-    }
-
-    .flame-divider-line {
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 1024px) {
-      .products-grid { grid-template-columns: repeat(2, 1fr); }
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .products-grid { grid-template-columns: repeat(2,1fr); }
       .story-grid { grid-template-columns: 1fr; gap: 60px; }
-      .story-img-wrap { order: -1; }
-      nav { padding: 20px 28px; }
-      .section-inner { padding: 0 28px; }
+      .stats-row { grid-template-columns: repeat(2,1fr); }
+      .stat-item:nth-child(2) { border-right: none; }
+      .stat-item:nth-child(n+3) { border-top: 1px solid var(--blood-deep); }
+      .footer-body { grid-template-columns: 1fr 1fr; }
+      .sec-inner { padding: 0 40px; }
     }
-
     @media (max-width: 768px) {
+      .status-bar { display: none; }
+      nav { top: 0; padding: 14px 24px; }
+      nav.stuck { padding: 10px 24px; }
       .nav-links { display: none; }
-      .products-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-      .testimonials-grid { grid-template-columns: 1fr; }
-      .recipes-grid { grid-template-columns: 1fr; }
-      .instagram-grid { grid-template-columns: repeat(3, 1fr); }
-      .press-logos { gap: 32px; }
-      .footer-top { flex-direction: column; gap: 40px; }
-      .footer-links { flex-direction: column; gap: 32px; }
-      .email-form { flex-direction: column; }
-      .email-input { border-right: 1px solid var(--border); }
+      .hero-readout { grid-template-columns: repeat(2,1fr); }
+      .dispatches-grid { grid-template-columns: 1fr; }
+      .rituals-grid { grid-template-columns: 1fr; }
+      .ritual-card:first-child, .ritual-card:not(:first-child) { aspect-ratio: 4/3; }
+      .visual-grid { grid-template-columns: repeat(3,1fr); }
+      .press-logos { flex-wrap: wrap; gap: 16px; }
+      .press-item { border-right: none; }
+      .infiltrate-form { flex-direction: column; }
+      .infiltrate-input { border-right: 1px solid var(--blood-deep); border-bottom: none; }
+      .footer-body { grid-template-columns: 1fr; gap: 28px; }
+      .footer-inner { padding: 0 28px; }
+      .sec-inner { padding: 0 24px; }
+      .countdown-grid { flex-wrap: wrap; }
     }
-
     @media (max-width: 480px) {
       .products-grid { grid-template-columns: 1fr; }
-      .section-inner { padding: 0 20px; }
-      .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+      .stats-row { grid-template-columns: 1fr; }
+      .stat-item { border-right: none; border-bottom: 1px solid var(--blood-deep); }
+      .visual-grid { grid-template-columns: repeat(2,1fr); }
+      .hero-readout { display: none; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Version Label -->
-  <div class="version-label">V1 — Dark Luxury</div>
+  <!-- GRAIN OVERLAY -->
+  <div class="grain-overlay" aria-hidden="true"></div>
+
+  <!-- GLITCH GRID -->
+  <div class="glitch-grid" aria-hidden="true"></div>
+
+  <!-- CUSTOM CURSOR -->
+  <div class="crosshair" id="crosshair" aria-hidden="true">
+    <div class="ch-h"></div>
+    <div class="ch-v"></div>
+    <div class="ch-center"></div>
+    <div class="ch-outer"></div>
+  </div>
+
+  <!-- STATUS BAR -->
+  <div class="status-bar" aria-hidden="true">
+    <div class="status-item">
+      <span class="status-dot"></span>
+      CHILLI_BIRD_OS // BLOOD_ARCHIVE // v2.01
+    </div>
+    <div class="status-item">BATCH: 012</div>
+    <div class="status-item">STATUS: OPERATIONAL</div>
+    <div class="status-item">56.2882°N · 3.1547°W</div>
+    <div class="status-item status-bar-right">SKU_LIB: 4 ENTRIES</div>
+    <div class="status-time" id="sysTime">00:00:00</div>
+  </div>
+
+  <!-- VERSION -->
+  <div class="version-label">V1 — BLOOD ARCHIVE</div>
 
   <!-- NAV -->
-  <nav>
+  <nav id="mainNav">
     <a href="#" class="nav-logo">
-      <svg class="bird-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M14 4C9 4 5 8 5 13c0 2 .7 4 2 5.5L14 24l7-5.5c1.3-1.5 2-3.5 2-5.5 0-5-4-9-9-9z" fill="none" stroke="#c0392b" stroke-width="1.2"/>
-        <path d="M11 11c-.5-1-1.5-2-3-1.5 1 .5 2 1.5 2 3" fill="#c0392b" opacity="0.7"/>
-        <circle cx="16" cy="12" r="1.2" fill="#f0ebe3"/>
-        <path d="M14 17c-1.5 0-3-.5-4-1.5" stroke="#f0ebe3" stroke-width="0.8" opacity="0.5"/>
-      </svg>
       <span class="nav-logo-text">Chilli Bird</span>
+      <span class="nav-logo-sub">Blood Archive // Fife, Scotland</span>
     </a>
     <ul class="nav-links">
-      <li><a href="#">Shop</a></li>
-      <li><a href="#">Our Story</a></li>
-      <li><a href="#">Recipes</a></li>
-      <li><a href="#">Press</a></li>
+      <li><a href="#">Archive</a></li>
+      <li><a href="#">Origin</a></li>
+      <li><a href="#">Rituals</a></li>
+      <li><a href="#">Dispatches</a></li>
       <li><a href="#">Contact</a></li>
     </ul>
-    <button class="nav-cart">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M2 2h2l2.4 8.4h6L14 5H5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="8" cy="13.5" r="1" fill="currentColor"/>
-        <circle cx="12" cy="13.5" r="1" fill="currentColor"/>
-      </svg>
-      Cart (0)
-    </button>
+    <button class="nav-cart">[VAULT (0)]</button>
   </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg" id="heroBg"></div>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <div class="hero-eyebrow reveal">Handmade in Fife, Scotland</div>
-      <h1 class="hero-headline reveal reveal-delay-1">
-        Flavours That<br><em>Demand</em> Your<br>Attention
-      </h1>
-      <p class="hero-sub reveal reveal-delay-2">
-        Crispy Thai chilli oil. Small batch. Fragrant, aromatic — and entirely addictive.
-      </p>
-      <a href="#" class="btn-primary reveal reveal-delay-3">Shop Now</a>
+    <div class="hero-bg-img">
+      <img src="images/lifestyle food table.jpeg" alt="Chilli Bird — Blood Archive">
+      <div class="hero-halftone"></div>
     </div>
-    <svg class="hero-drip" viewBox="0 0 1440 60" fill="none" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0 0 Q180 60 360 20 Q540 -20 720 30 Q900 80 1080 20 Q1260 -20 1440 40 L1440 60 L0 60 Z" fill="#0f0f0f"/>
-    </svg>
+    <div class="hero-scanline"></div>
+    <div class="hero-content">
+      <div class="hero-status">
+        <span class="status-dot"></span>
+        BATCH 012 // ALL ENTRIES VERIFIED // SYSTEM ARMED
+      </div>
+      <h1 class="hero-logo">CHILLI<br>BIRD</h1>
+      <div class="hero-slash">///</div>
+      <p class="hero-sub">
+        CRISPY THAI CHILLI OIL.<br>
+        SMALL BATCH. HANDMADE IN FIFE, SCOTLAND.<br>
+        FRAGRANT. AROMATIC. UNCOMPROMISING.
+      </p>
+      <div class="hero-actions">
+        <a href="#" class="btn-primary">ACCESS ARCHIVE</a>
+        <a href="#" class="btn-secondary">ORIGIN RECORD →</a>
+      </div>
+    </div>
+    <div class="hero-readout">
+      <div class="readout-item">
+        <span class="readout-label">Batch</span>
+        <span class="readout-val">012</span>
+      </div>
+      <div class="readout-item">
+        <span class="readout-label">Status</span>
+        <span class="readout-val">Operational</span>
+      </div>
+      <div class="readout-item">
+        <span class="readout-label">Origin</span>
+        <span class="readout-val">Fife, SCT</span>
+      </div>
+      <div class="readout-item">
+        <span class="readout-label">Active SKUs</span>
+        <span class="readout-val">4</span>
+      </div>
+    </div>
   </section>
 
-  <!-- FEATURED PRODUCTS -->
-  <section class="products-section">
-    <div class="section-inner">
-      <div class="section-header reveal">
+  <!-- NEXT DROP COUNTDOWN -->
+  <div class="countdown-section">
+    <div class="cd-label">// NEXT BATCH DROP INITIATES IN //</div>
+    <div class="countdown-grid">
+      <div class="cd-unit">
+        <span class="cd-num" id="cdDays">00</span>
+        <span class="cd-unit-label">Days</span>
+      </div>
+      <div class="cd-unit">
+        <span class="cd-num" id="cdHours">00</span>
+        <span class="cd-unit-label">Hours</span>
+      </div>
+      <div class="cd-unit">
+        <span class="cd-num" id="cdMins">00</span>
+        <span class="cd-unit-label">Mins</span>
+      </div>
+      <div class="cd-unit">
+        <span class="cd-num" id="cdSecs">00</span>
+        <span class="cd-unit-label">Secs</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker-strip">
+    <div class="ticker-track">
+      <span class="t-item">Handmade in Fife</span><span class="t-sep"> /// </span>
+      <span class="t-item">Small Batch</span><span class="t-sep"> /// </span>
+      <span class="t-item">Thai Aromatics</span><span class="t-sep"> /// </span>
+      <span class="t-item">Crispy Chilli Oil</span><span class="t-sep"> /// </span>
+      <span class="t-item">Bird's Eye Chilli</span><span class="t-sep"> /// </span>
+      <span class="t-item">Lemongrass &amp; Lime Leaves</span><span class="t-sep"> /// </span>
+      <span class="t-item">No Shortcuts</span><span class="t-sep"> /// </span>
+      <span class="t-item">No Compromise</span><span class="t-sep"> /// </span>
+      <span class="t-item">Handmade in Fife</span><span class="t-sep"> /// </span>
+      <span class="t-item">Small Batch</span><span class="t-sep"> /// </span>
+      <span class="t-item">Thai Aromatics</span><span class="t-sep"> /// </span>
+      <span class="t-item">Crispy Chilli Oil</span><span class="t-sep"> /// </span>
+      <span class="t-item">Bird's Eye Chilli</span><span class="t-sep"> /// </span>
+      <span class="t-item">Lemongrass &amp; Lime Leaves</span><span class="t-sep"> /// </span>
+      <span class="t-item">No Shortcuts</span><span class="t-sep"> /// </span>
+      <span class="t-item">No Compromise</span><span class="t-sep"> /// </span>
+    </div>
+  </div>
+
+  <!-- PRODUCTS / ARCHIVE -->
+  <section class="archive-section">
+    <div class="sec-inner">
+      <div class="archive-header reveal">
         <div>
-          <div class="section-label">
-            <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M6 1c-1 2-3 3-3 6a3 3 0 006 0c0-3-2-4-3-6z" fill="#c0392b"/></svg>
-            Small Batch Collection
-          </div>
-          <h2 class="section-title">The Full Range</h2>
+          <div class="sec-num-label">I — SKU Archive / Active Entries</div>
+          <h2 class="sec-title">THE<br><span class="accent">ARCHIVE</span></h2>
         </div>
-        <a href="#" class="section-link">View all products →</a>
+        <a href="#" class="sec-link">Browse All Entries //</a>
       </div>
       <div class="products-grid">
 
+        <!-- 01 -->
         <div class="product-card reveal">
+          <div class="card-header">
+            <span>SKU-001.jar</span>
+            <span class="card-header-status"><span class="status-dot" style="width:4px;height:4px;"></span> Live</span>
+          </div>
           <div class="product-img-wrap">
-            <img class="product-img" src="https://picsum.photos/seed/cb-og-mild/400/533" alt="OG Aromatics MILD">
-            <div class="product-badge">Bestseller</div>
+            <img class="product-img" src="images/og aramatics mild.jpeg" alt="OG Aromatics MILD">
+            <div class="p-badge">Bestseller</div>
+            <div class="p-label tl">MACRO / OIL_BASE</div>
+            <div class="p-label br">BATCH_012</div>
           </div>
           <div class="product-info">
-            <div class="product-heat">
-              <div class="heat-dot"></div>
-              <div class="heat-dot empty"></div>
-              <div class="heat-dot empty"></div>
+            <div class="heat-row">
+              <div class="heat-pip"></div><div class="heat-pip empty"></div><div class="heat-pip empty"></div>
             </div>
+            <div class="product-meta">SKU-001 / Aromatic Series / Mild</div>
             <h3 class="product-name">OG Aromatics<br>Mild</h3>
-            <p class="product-desc">The original. Fragrant lemongrass & lime leaves, satisfying crunch — without the fire.</p>
+            <p class="product-desc">The original. Fragrant lemongrass &amp; lime leaves, satisfying crunch — without the fire.</p>
             <div class="product-footer">
               <span class="product-price">£8.50</span>
-              <button class="btn-add">Add to Cart</button>
+              <button class="btn-add">+ Acquire</button>
             </div>
           </div>
         </div>
 
-        <div class="product-card reveal reveal-delay-1">
+        <!-- 02 -->
+        <div class="product-card reveal d1">
+          <div class="card-header">
+            <span>SKU-002.jar</span>
+            <span class="card-header-status"><span class="status-dot" style="width:4px;height:4px;"></span> Live</span>
+          </div>
           <div class="product-img-wrap">
-            <img class="product-img" src="https://picsum.photos/seed/cb-og-spicy/400/533" alt="OG Aromatics SPICY">
+            <img class="product-img" src="images/og aromatics.jpeg" alt="OG Aromatics SPICY">
+            <div class="p-label tl">MACRO / CHILLI_OIL</div>
+            <div class="p-label br">BATCH_011</div>
           </div>
           <div class="product-info">
-            <div class="product-heat">
-              <div class="heat-dot"></div>
-              <div class="heat-dot"></div>
-              <div class="heat-dot"></div>
+            <div class="heat-row">
+              <div class="heat-pip"></div><div class="heat-pip"></div><div class="heat-pip"></div>
             </div>
+            <div class="product-meta">SKU-002 / Aromatic Series / Spicy</div>
             <h3 class="product-name">OG Aromatics<br>Spicy</h3>
             <p class="product-desc">Same aromatic magic, now with bird's eye chillies. Proper Thai heat — the kind you miss when it's gone.</p>
             <div class="product-footer">
               <span class="product-price">£8.50</span>
-              <button class="btn-add">Add to Cart</button>
+              <button class="btn-add">+ Acquire</button>
             </div>
           </div>
         </div>
 
-        <div class="product-card reveal reveal-delay-2">
+        <!-- 03 -->
+        <div class="product-card reveal d2">
+          <div class="card-header">
+            <span>SKU-003.jar</span>
+            <span class="card-header-status"><span class="status-dot" style="width:4px;height:4px;"></span> Live</span>
+          </div>
           <div class="product-img-wrap">
-            <img class="product-img" src="https://picsum.photos/seed/cb-pepper-garlic/400/533" alt="White Pepper & Extra Garlic">
-            <div class="product-badge">New</div>
+            <img class="product-img" src="images/white pepper and garlic.jpeg" alt="White Pepper & Extra Garlic">
+            <div class="p-badge">New</div>
+            <div class="p-label tl">MACRO / PEPPER_BASE</div>
+            <div class="p-label br">BATCH_003</div>
           </div>
           <div class="product-info">
-            <div class="product-heat">
-              <div class="heat-dot"></div>
-              <div class="heat-dot"></div>
-              <div class="heat-dot empty"></div>
+            <div class="heat-row">
+              <div class="heat-pip"></div><div class="heat-pip"></div><div class="heat-pip empty"></div>
             </div>
-            <h3 class="product-name">White Pepper<br>& Extra Garlic</h3>
-            <p class="product-desc">Rich, warm, punchy. Coriander, white pepper heat, an obscene amount of garlic. Your stir fry's best friend.</p>
+            <div class="product-meta">SKU-003 / White Pepper Series</div>
+            <h3 class="product-name">White Pepper<br>&amp; Extra Garlic</h3>
+            <p class="product-desc">Rich, warm, punchy. Coriander, white pepper heat, an obscene amount of garlic.</p>
             <div class="product-footer">
               <span class="product-price">£8.50</span>
-              <button class="btn-add">Add to Cart</button>
+              <button class="btn-add">+ Acquire</button>
             </div>
           </div>
         </div>
 
-        <div class="product-card reveal reveal-delay-3">
+        <!-- 04 DELETED -->
+        <div class="product-card sold-out reveal d3">
+          <div class="card-header">
+            <span>SKU-004.jar — ERR</span>
+            <span style="color:rgba(204,0,0,0.5)">NULL</span>
+          </div>
           <div class="product-img-wrap">
-            <img class="product-img" src="https://picsum.photos/seed/cb-hot-honey/400/533" alt="Crispy Thai Hot Honey">
-            <div class="product-badge">Limited</div>
+            <img class="product-img" src="images/hot honey.jpeg" alt="Crispy Thai Hot Honey">
+            <div class="p-label tl">MACRO / HONEY_BASE</div>
+            <div class="p-label br">BATCH_001</div>
+            <div class="deleted-stamp">
+              <span class="stamp-text">DELETED</span>
+              <span class="stamp-code">SKU-004 // NULL // ERR:0x00000004</span>
+            </div>
           </div>
           <div class="product-info">
-            <div class="product-heat">
-              <div class="heat-dot"></div>
-              <div class="heat-dot"></div>
-              <div class="heat-dot empty"></div>
+            <div class="heat-row">
+              <div class="heat-pip"></div><div class="heat-pip"></div><div class="heat-pip empty"></div>
             </div>
-            <h3 class="product-name">Crispy Thai<br>Hot Honey</h3>
+            <div class="product-meta">SKU-004 / Honey Series / [REDACTED]</div>
+            <h3 class="product-name redacted">Crispy Thai Hot Honey</h3>
             <p class="product-desc">A collab with Fife's Mains Apiaries. Sweet, floral, warming. A new dawn of hot honey.</p>
             <div class="product-footer">
               <span class="product-price">£8.50</span>
-              <button class="btn-add">Add to Cart</button>
+              <button class="btn-add" disabled>Unavailable</button>
             </div>
           </div>
         </div>
@@ -1135,135 +1348,197 @@
     </div>
   </section>
 
-  <hr class="hairline">
+  <!-- STATS -->
+  <div class="stats-section">
+    <div class="stats-row">
+      <div class="stat-item reveal" style="--w:100%">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Small Batch</div>
+        <div class="stat-desc">Every jar made by hand</div>
+        <div class="stat-bar"><div class="stat-bar-fill"></div></div>
+      </div>
+      <div class="stat-item reveal d1" style="--w:88%">
+        <div class="stat-num">Fife</div>
+        <div class="stat-label">Made in Scotland</div>
+        <div class="stat-desc">From a home kitchen to yours</div>
+        <div class="stat-bar"><div class="stat-bar-fill"></div></div>
+      </div>
+      <div class="stat-item reveal d2" style="--w:75%">
+        <div class="stat-num">Thai</div>
+        <div class="stat-label">Inspired</div>
+        <div class="stat-desc">Lemongrass, lime leaf, chilli</div>
+        <div class="stat-bar"><div class="stat-bar-fill"></div></div>
+      </div>
+      <div class="stat-item reveal d3" style="--w:40%">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Active SKUs</div>
+        <div class="stat-desc">Mild to fire, sweet to savoury</div>
+        <div class="stat-bar"><div class="stat-bar-fill"></div></div>
+      </div>
+    </div>
+  </div>
 
-  <!-- BRAND STORY -->
+  <!-- STORY / ORIGIN RECORD -->
   <section class="story-section">
-    <div class="section-inner">
+    <div class="sec-inner">
       <div class="story-grid">
         <div class="story-left reveal">
-          <div class="section-label" style="margin-bottom:20px;">
-            <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M6 1c-1 2-3 3-3 6a3 3 0 006 0c0-3-2-4-3-6z" fill="#c0392b"/></svg>
-            Our Story
+          <div class="story-eyebrow">
+            <span class="story-eye-dot"></span>
+            II / Origin_Record.log — Reading
           </div>
-          <blockquote class="pull-quote">
-            "I wanted to bring the <em>fragrance of my home</em> to every kitchen in Scotland."
-          </blockquote>
-          <p class="story-body">
-            Chilli Bird began in a home kitchen in Fife — born from the desire to capture Thailand's aromatic, flavour-forward cooking and share it with the world.
-          </p>
-          <p class="story-body">
-            Our founder grew up with the scent of lemongrass, lime leaves and toasted garlic filling the kitchen. Moving to Scotland, she found something missing in the chilli oils available — all heat, no soul. So she made her own.
-          </p>
-          <p class="story-body">
-            Every jar is still handmade in small batches, using cleaner ingredients and the Thai aromatics that make all the difference. No shortcuts. No compromise.
-          </p>
-          <div class="story-detail">
-            <div class="story-stat">
-              <div class="stat-num">100%</div>
-              <div class="stat-label">Small Batch</div>
-            </div>
-            <div class="story-stat">
-              <div class="stat-num">Fife</div>
-              <div class="stat-label">Made in Scotland</div>
-            </div>
-            <div class="story-stat">
-              <div class="stat-num">Thai</div>
-              <div class="stat-label">Inspired</div>
-            </div>
-          </div>
+          <h2 class="story-pull">
+            Born from a<br>Home Kitchen.<br>
+            Built on <span class="accent">Fragrance.</span>
+          </h2>
+          <p class="story-body">Chilli Bird began in a home kitchen in Fife — born from the desire to capture Thailand's aromatic, flavour-forward cooking and share it with the world.</p>
+          <p class="story-body">Our founder grew up with the scent of lemongrass, lime leaves and toasted garlic filling the kitchen. Moving to Scotland, she found something missing — all heat, no soul. So she made her own.</p>
+          <p class="story-body">Every jar is still handmade in small batches, using cleaner ingredients and the Thai aromatics that make all the difference. No shortcuts. No compromise.</p>
+          <a href="#" class="story-cta">Open Full Record →</a>
         </div>
-        <div class="story-img-wrap reveal reveal-delay-2">
-          <img class="story-img" src="https://picsum.photos/seed/cb-story/600/750" alt="Chilli Bird Story">
-          <div class="story-img-accent"></div>
+        <div class="story-right reveal d2">
+          <div class="story-img-wrap">
+            <img src="images/jen - best one.jpeg" alt="Chilli Bird Origin Record">
+            <div class="story-img-overlay"></div>
+            <div class="story-img-tag">FOUNDER / jen_portrait.raw // ORIGIN</div>
+          </div>
+          <div class="story-stats">
+            <div class="s-stat">
+              <div class="s-stat-num">100%</div>
+              <div class="s-stat-label">Small Batch</div>
+            </div>
+            <div class="s-stat">
+              <div class="s-stat-num">Fife</div>
+              <div class="s-stat-label">Scotland</div>
+            </div>
+            <div class="s-stat">
+              <div class="s-stat-num">Thai</div>
+              <div class="s-stat-label">Inspired</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="testimonials-section">
-    <div class="section-inner">
-      <div class="section-header reveal">
-        <div>
-          <div class="section-label">
-            <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M6 1c-1 2-3 3-3 6a3 3 0 006 0c0-3-2-4-3-6z" fill="#c0392b"/></svg>
-            Customer Reviews
-          </div>
-          <h2 class="section-title">People Are Talking</h2>
-        </div>
+  <!-- FIELD DISPATCHES (TESTIMONIALS) -->
+  <section class="dispatches-section">
+    <div class="sec-inner">
+      <div class="sec-header reveal">
+        <div class="sec-num-label">III — Field Dispatch Log / Verified Entries</div>
+        <h2 class="sec-title">FIELD<br><span class="accent">DISPATCHES</span></h2>
       </div>
-      <div class="testimonials-grid">
-        <div class="testimonial-card reveal">
-          <div class="stars">
-            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+      <div class="dispatches-grid">
+        <div class="dispatch-card reveal">
+          <div class="dispatch-card-header">
+            <span>DISPATCH_001 / verified ✓</span>
+            <span>SKU-002</span>
           </div>
-          <p class="testimonial-text">"I've been putting the OG Spicy on literally everything — eggs, noodles, pizza, a cheese board once at 11pm. I have no regrets. My only complaint is that I go through it too fast."</p>
-          <div class="testimonial-author">Sarah M., Edinburgh</div>
-          <div class="testimonial-product">OG Aromatics Spicy</div>
+          <div class="dispatch-body">
+            <div class="signal-strength">
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+            </div>
+            <p class="dispatch-text">"I've been putting the OG Spicy on literally everything — eggs, noodles, pizza, a cheese board once at 11pm. I have no regrets. My only complaint is that I go through it too fast."</p>
+          </div>
+          <div class="dispatch-footer">
+            <div class="dispatch-author">Sarah M. — Edinburgh</div>
+            <div class="dispatch-ref">ref: SKU-002 / OG Aromatics Spicy</div>
+          </div>
         </div>
-        <div class="testimonial-card reveal reveal-delay-1">
-          <div class="stars">
-            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        <div class="dispatch-card reveal d1">
+          <div class="dispatch-card-header">
+            <span>DISPATCH_002 / verified ✓</span>
+            <span>SKU-003</span>
           </div>
-          <p class="testimonial-text">"The White Pepper & Garlic version is extraordinary. I used to make my own stir fry sauces from scratch — I've stopped. This is better. My partner keeps accusing me of adding it to things without telling them."</p>
-          <div class="testimonial-author">James T., Glasgow</div>
-          <div class="testimonial-product">White Pepper & Extra Garlic Spicy</div>
+          <div class="dispatch-body">
+            <div class="signal-strength">
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+            </div>
+            <p class="dispatch-text">"The White Pepper &amp; Garlic is extraordinary. I used to make my own stir fry sauces — I've stopped. This is better. My partner keeps accusing me of adding it to things without telling them."</p>
+          </div>
+          <div class="dispatch-footer">
+            <div class="dispatch-author">James T. — Glasgow</div>
+            <div class="dispatch-ref">ref: SKU-003 / White Pepper &amp; Extra Garlic</div>
+          </div>
         </div>
-        <div class="testimonial-card reveal reveal-delay-2">
-          <div class="stars">
-            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        <div class="dispatch-card reveal d2">
+          <div class="dispatch-card-header">
+            <span>DISPATCH_003 / verified ✓</span>
+            <span>SKU-004</span>
           </div>
-          <p class="testimonial-text">"Bought the Hot Honey as a gift. Kept it for myself. Bought another one as the gift. Worth every penny — there's nothing else like it. The floral heat is just stunning."</p>
-          <div class="testimonial-author">Freya L., St Andrews</div>
-          <div class="testimonial-product">Crispy Thai Hot Honey</div>
+          <div class="dispatch-body">
+            <div class="signal-strength">
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+              <div class="signal-bar"></div>
+            </div>
+            <p class="dispatch-text">"Bought the Hot Honey as a gift. Kept it for myself. Bought another one as the gift. Worth every penny — the floral heat is just stunning."</p>
+          </div>
+          <div class="dispatch-footer">
+            <div class="dispatch-author">Freya L. — St Andrews</div>
+            <div class="dispatch-ref">ref: SKU-004 / Crispy Thai Hot Honey [DEPLETED]</div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <hr class="hairline">
-
-  <!-- RECIPES -->
-  <section class="recipes-section">
-    <div class="section-inner">
-      <div class="section-header reveal">
+  <!-- RITUAL ARCHIVE (RECIPES) -->
+  <section class="rituals-section">
+    <div class="sec-inner">
+      <div class="rituals-header reveal">
         <div>
-          <div class="section-label">
-            <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M6 1c-1 2-3 3-3 6a3 3 0 006 0c0-3-2-4-3-6z" fill="#c0392b"/></svg>
-            In the Kitchen
+          <div class="sec-num-label">IV — Ritual Archive / Active Methods</div>
+          <h2 class="sec-title">RITUAL<br><span class="accent">ARCHIVE</span></h2>
+        </div>
+        <a href="#" class="sec-link">All Methods //</a>
+      </div>
+      <div class="rituals-grid">
+        <div class="ritual-card reveal">
+          <div class="ritual-img-wrap">
+            <img class="ritual-img" src="images/recipe1.jpeg" alt="Chilli Oil Fried Eggs">
+            <div class="ritual-img-label">PROTO_001 / eggs.method</div>
           </div>
-          <h2 class="section-title">Recipe Inspiration</h2>
+          <div class="ritual-info">
+            <div class="ritual-tag">Breakfast / Duration: 5 min</div>
+            <h3 class="ritual-name">Chilli Oil Fried Eggs</h3>
+            <p class="ritual-desc">Crispy edges, runny yolk, OG Aromatics poured over without restraint.</p>
+            <a href="#" class="ritual-link">View Method →</a>
+          </div>
         </div>
-        <a href="#" class="section-link">All recipes →</a>
-      </div>
-    </div>
-    <div class="recipes-grid">
-      <div class="recipe-card reveal">
-        <img class="recipe-img" src="https://picsum.photos/seed/cb-recipe-eggs/600/750" alt="Chilli Oil Fried Eggs">
-        <div class="recipe-info">
-          <div class="recipe-tag">Breakfast · 5 min</div>
-          <h3 class="recipe-name">Chilli Oil<br>Fried Eggs</h3>
-          <p class="recipe-desc">The best reason to get out of bed. Crispy edges, runny yolk, OG Aromatics poured over without restraint.</p>
-          <a href="#" class="recipe-link">View Recipe</a>
+        <div class="ritual-card reveal d1">
+          <div class="ritual-img-wrap">
+            <img class="ritual-img" src="images/recipe4 - noodles.jpeg" alt="Thai Chilli Noodles">
+            <div class="ritual-img-label">PROTO_002 / noodles.method</div>
+          </div>
+          <div class="ritual-info">
+            <div class="ritual-tag">Dinner / Duration: 15 min</div>
+            <h3 class="ritual-name">Thai Chilli Noodles</h3>
+            <p class="ritual-desc">Silky noodles, soy, sesame — finished with a heavy hand of White Pepper &amp; Garlic.</p>
+            <a href="#" class="ritual-link">View Method →</a>
+          </div>
         </div>
-      </div>
-      <div class="recipe-card reveal reveal-delay-1">
-        <img class="recipe-img" src="https://picsum.photos/seed/cb-recipe-noodles/600/750" alt="Thai Chilli Noodles">
-        <div class="recipe-info">
-          <div class="recipe-tag">Dinner · 15 min</div>
-          <h3 class="recipe-name">Thai Chilli<br>Noodles</h3>
-          <p class="recipe-desc">Silky noodles, soy, sesame — finished with a heavy hand of White Pepper & Garlic. Weeknight perfection.</p>
-          <a href="#" class="recipe-link">View Recipe</a>
-        </div>
-      </div>
-      <div class="recipe-card reveal reveal-delay-2">
-        <img class="recipe-img" src="https://picsum.photos/seed/cb-recipe-pizza/600/750" alt="Crispy Chilli Pizza">
-        <div class="recipe-info">
-          <div class="recipe-tag">Weekend · 25 min</div>
-          <h3 class="recipe-name">Crispy Chilli<br>Pizza</h3>
-          <p class="recipe-desc">Drizzled over post-bake, not pre. The crunch survives. The flavour explodes. You won't order delivery again.</p>
-          <a href="#" class="recipe-link">View Recipe</a>
+        <div class="ritual-card reveal d2">
+          <div class="ritual-img-wrap">
+            <img class="ritual-img" src="images/recipe3 - pizza.jpeg" alt="Crispy Chilli Pizza">
+            <div class="ritual-img-label">PROTO_003 / pizza.method</div>
+          </div>
+          <div class="ritual-info">
+            <div class="ritual-tag">Weekend / Duration: 25 min</div>
+            <h3 class="ritual-name">Crispy Chilli Pizza</h3>
+            <p class="ritual-desc">Drizzled over post-bake, not pre. The crunch survives. The flavour explodes.</p>
+            <a href="#" class="ritual-link">View Method →</a>
+          </div>
         </div>
       </div>
     </div>
@@ -1271,124 +1546,94 @@
 
   <!-- PRESS -->
   <section class="press-section">
-    <div class="section-inner">
-      <div class="press-label reveal">As Featured In</div>
+    <div class="sec-inner">
+      <div class="press-label reveal">External References / Media Log // Supported By</div>
       <div class="press-logos reveal">
-        <span class="press-name">The Scotsman</span>
-        <span class="press-name">Delicious Magazine</span>
-        <span class="press-name">The Guardian Cook</span>
-        <span class="press-name">Great Taste Awards</span>
-        <span class="press-name">Scottish Food & Drink</span>
+        <div class="press-item"><span class="press-name">The Scotsman</span></div>
+        <div class="press-item"><span class="press-name">Delicious Magazine</span></div>
+        <div class="press-item"><span class="press-name">The Guardian Cook</span></div>
+        <div class="press-item"><span class="press-name">Great Taste Awards</span></div>
+        <div class="press-item"><span class="press-name">Scottish Food &amp; Drink</span></div>
       </div>
     </div>
   </section>
 
-  <hr class="hairline">
-
-  <!-- EMAIL SIGNUP -->
-  <section class="email-section">
-    <div class="email-bg-motif">
-      <svg width="600" height="600" viewBox="0 0 600 600" fill="none">
-        <path d="M300 50c-100 200-200 250-200 350a200 200 0 00400 0c0-100-100-150-200-350z" fill="#c0392b"/>
-      </svg>
-    </div>
-    <div class="section-inner">
+  <!-- INFILTRATE (EMAIL) -->
+  <section class="infiltrate-section">
+    <div class="sec-inner">
       <div class="reveal">
-        <div class="section-label" style="justify-content:center; margin-bottom:20px;">
-          <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M6 1c-1 2-3 3-3 6a3 3 0 006 0c0-3-2-4-3-6z" fill="#c0392b"/></svg>
-          Stay in the Loop
+        <div class="infiltrate-inner">
+          <div class="infiltrate-eyebrow">
+            <span class="status-dot"></span>
+            Breach Protocol / Access Request
+          </div>
+          <h2 class="infiltrate-title">ENTER<br><span class="accent">THE PIT</span></h2>
+          <p class="infiltrate-sub">Recipes, new drops, exclusive offers — and the occasional dispatch from the Fife kitchen.</p>
+          <form class="infiltrate-form" onsubmit="return false;">
+            <input type="email" class="infiltrate-input" placeholder="user@domain.com">
+            <button class="infiltrate-btn" type="submit">INFILTRATE</button>
+          </form>
         </div>
-        <h2 class="email-title">Join <em>the Flock</em></h2>
-        <p class="email-sub">Recipes, new drops, exclusive offers — and the occasional behind-the-scenes from the Fife kitchen.</p>
-        <form class="email-form" onsubmit="return false;">
-          <input type="email" class="email-input" placeholder="Your email address">
-          <button class="email-btn" type="submit">Subscribe</button>
-        </form>
       </div>
     </div>
   </section>
 
-  <!-- INSTAGRAM -->
-  <section class="instagram-section">
-    <div class="section-inner">
-      <div class="instagram-header reveal">
-        <div class="section-label" style="justify-content:center; margin-bottom:12px;">
-          <svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M6 1c-1 2-3 3-3 6a3 3 0 006 0c0-3-2-4-3-6z" fill="#c0392b"/></svg>
-          Follow Along
-        </div>
-        <div class="instagram-handle">@chillibird</div>
+  <!-- VISUAL ARCHIVE (INSTAGRAM) -->
+  <section class="visual-section">
+    <div class="sec-inner">
+      <div class="visual-header reveal">
+        <div class="visual-handle">@chillibird</div>
+        <div class="visual-sub">Visual Archive // Transmission Feed</div>
       </div>
     </div>
-    <div class="instagram-grid">
-      <div class="instagram-cell">
-        <img src="https://picsum.photos/seed/cb-ig-1/400/400" alt="">
-        <div class="instagram-overlay">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg>
-        </div>
-      </div>
-      <div class="instagram-cell">
-        <img src="https://picsum.photos/seed/cb-ig-2/400/400" alt="">
-        <div class="instagram-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
-      </div>
-      <div class="instagram-cell">
-        <img src="https://picsum.photos/seed/cb-ig-3/400/400" alt="">
-        <div class="instagram-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
-      </div>
-      <div class="instagram-cell">
-        <img src="https://picsum.photos/seed/cb-ig-4/400/400" alt="">
-        <div class="instagram-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
-      </div>
-      <div class="instagram-cell">
-        <img src="https://picsum.photos/seed/cb-ig-5/400/400" alt="">
-        <div class="instagram-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
-      </div>
-      <div class="instagram-cell">
-        <img src="https://picsum.photos/seed/cb-ig-6/400/400" alt="">
-        <div class="instagram-overlay"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="20" rx="5" stroke="white" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="white" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="white"/></svg></div>
-      </div>
+    <div class="visual-grid">
+      <div class="visual-cell"><img src="images/puttin on food.jpeg" alt=""><div class="visual-overlay">VIEW</div></div>
+      <div class="visual-cell"><img src="images/lifestyle food table.jpeg" alt=""><div class="visual-overlay">VIEW</div></div>
+      <div class="visual-cell"><img src="images/table2.jpeg" alt=""><div class="visual-overlay">VIEW</div></div>
+      <div class="visual-cell"><img src="images/food close up.jpeg" alt=""><div class="visual-overlay">VIEW</div></div>
+      <div class="visual-cell"><img src="images/ramen.jpeg" alt=""><div class="visual-overlay">VIEW</div></div>
+      <div class="visual-cell"><img src="images/recipe5 - pad thai.jpeg" alt=""><div class="visual-overlay">VIEW</div></div>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
-      <div class="footer-top">
+      <div class="footer-logo-lg">Chilli <span class="accent">Bird</span></div>
+      <div class="footer-body">
         <div>
-          <div class="footer-logo">Chilli Bird</div>
-          <div class="footer-tagline">Handmade in Fife, Scotland</div>
+          <p class="footer-tagline">Handmade in Fife, Scotland. Thai aromatics, Scottish soul — no shortcuts, no compromise.</p>
         </div>
-        <div class="footer-links">
-          <div class="footer-col">
-            <div class="footer-col-title">Shop</div>
-            <ul>
-              <li><a href="#">All Products</a></li>
-              <li><a href="#">OG Aromatics</a></li>
-              <li><a href="#">Limited Editions</a></li>
-              <li><a href="#">Gift Sets</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <div class="footer-col-title">Info</div>
-            <ul>
-              <li><a href="#">Our Story</a></li>
-              <li><a href="#">Recipes</a></li>
-              <li><a href="#">Press</a></li>
-              <li><a href="#">Wholesale</a></li>
-            </ul>
-          </div>
-          <div class="footer-col">
-            <div class="footer-col-title">Help</div>
-            <ul>
-              <li><a href="#">FAQs</a></li>
-              <li><a href="#">Shipping</a></li>
-              <li><a href="#">Returns</a></li>
-              <li><a href="#">Contact</a></li>
-            </ul>
-          </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Archive</div>
+          <ul>
+            <li><a href="#">All Entries</a></li>
+            <li><a href="#">OG Aromatics</a></li>
+            <li><a href="#">Limited Editions</a></li>
+            <li><a href="#">Gift Sets</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Records</div>
+          <ul>
+            <li><a href="#">Origin</a></li>
+            <li><a href="#">Ritual Methods</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Wholesale</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <div class="footer-col-title">Support</div>
+          <ul>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Shipping</a></li>
+            <li><a href="#">Returns</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <span class="footer-copy">© 2024 Chilli Bird. Made with fire in Scotland.</span>
+        <span class="footer-copy">© 2024 Chilli Bird · BLOOD_ARCHIVE_OS v2.01 · 56.2882°N, 3.1547°W</span>
         <div class="social-links">
           <a href="#" class="social-link">Instagram</a>
           <a href="#" class="social-link">Facebook</a>
@@ -1398,30 +1643,96 @@
   </footer>
 
   <script>
-    // Scroll reveal
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    /* ── CROSSHAIR CURSOR WITH TRAIL ── */
+    const crosshair = document.getElementById('crosshair');
+    let mx = 0, my = 0;
+    let trailCount = 0;
 
-    reveals.forEach(el => observer.observe(el));
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      crosshair.style.left  = mx + 'px';
+      crosshair.style.top   = my + 'px';
 
-    // Hero image slow zoom on load
-    window.addEventListener('load', () => {
-      document.getElementById('heroBg').classList.add('loaded');
-    });
-
-    // Immediately reveal elements in viewport on load
-    reveals.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight) {
-        el.classList.add('visible');
+      // Trail dot every few moves
+      if (trailCount++ % 3 === 0) {
+        const dot = document.createElement('div');
+        dot.className = 'trail-dot';
+        dot.style.left = mx + 'px';
+        dot.style.top  = my + 'px';
+        dot.style.opacity = '0.5';
+        document.body.appendChild(dot);
+        requestAnimationFrame(() => {
+          dot.style.opacity = '0';
+        });
+        setTimeout(() => dot.remove(), 500);
       }
     });
+
+    document.querySelectorAll('a, button').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        crosshair.querySelector('.ch-outer').style.transform = 'scale(1.6)';
+        crosshair.querySelector('.ch-outer').style.borderColor = 'rgba(204,0,0,0.5)';
+      });
+      el.addEventListener('mouseleave', () => {
+        crosshair.querySelector('.ch-outer').style.transform = '';
+        crosshair.querySelector('.ch-outer').style.borderColor = '';
+      });
+    });
+
+    /* ── SYSTEM CLOCK ── */
+    const sysTime = document.getElementById('sysTime');
+    if (sysTime) {
+      setInterval(() => {
+        sysTime.textContent = new Date().toLocaleTimeString('en-GB', { hour12: false });
+      }, 1000);
+    }
+
+    /* ── COUNTDOWN ── */
+    const dropDate = new Date('2026-05-01T00:00:00');
+    function updateCountdown() {
+      const diff = dropDate - new Date();
+      if (diff <= 0) {
+        document.getElementById('cdDays').textContent  = '00';
+        document.getElementById('cdHours').textContent = '00';
+        document.getElementById('cdMins').textContent  = '00';
+        document.getElementById('cdSecs').textContent  = '00';
+        return;
+      }
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      document.getElementById('cdDays').textContent  = String(d).padStart(2,'0');
+      document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
+      document.getElementById('cdMins').textContent  = String(m).padStart(2,'0');
+      document.getElementById('cdSecs').textContent  = String(s).padStart(2,'0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    /* ── NAV STUCK ── */
+    const nav = document.getElementById('mainNav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('stuck', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ── SCROLL REVEAL + STAT BARS ── */
+    const reveals = document.querySelectorAll('.reveal, .stat-item');
+    const ro = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+    reveals.forEach(el => ro.observe(el));
+    reveals.forEach(el => {
+      if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('in');
+    });
+
+    /* ── GLITCH FLICKER on random intervals ── */
+    function triggerGlitch() {
+      const grid = document.querySelector('.glitch-grid');
+      grid.style.animationDuration = (Math.random() * 4 + 3) + 's';
+      setTimeout(triggerGlitch, Math.random() * 6000 + 3000);
+    }
+    triggerGlitch();
   </script>
 </body>
 </html>

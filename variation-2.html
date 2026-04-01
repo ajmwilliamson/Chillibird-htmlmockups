@@ -3,1484 +3,623 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chilli Bird — Light Editorial</title>
+  <title>CHILLI BIRD — DROP 004</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            mono:    ['"Space Mono"', 'monospace'],
+            display: ['"Archivo Black"', 'sans-serif'],
+            sans:    ['Archivo', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
   <style>
-    :root {
-      --bg: #f5f0e8;
-      --bg-surface: #ede8df;
-      --text-primary: #1a1410;
-      --text-secondary: #6b5e52;
-      --accent: #c4622d;
-      --accent-secondary: #8b9e6a;
-      --border: rgba(26, 20, 16, 0.1);
-      --transition: 500ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text-primary);
-      font-family: 'Libre Baskerville', serif;
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* Version Label */
-    .version-label {
-      position: fixed;
-      top: 16px;
-      left: 16px;
-      z-index: 1000;
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      background: var(--bg-surface);
-      border: 1px solid var(--border);
-      padding: 6px 10px;
-      pointer-events: none;
-    }
-
-    /* NAV */
-    nav {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 60px;
-    }
-
-    .nav-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
-    }
-
-    .nav-stamp {
-      width: 36px;
-      height: 36px;
-      border: 2px solid var(--accent);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .nav-logo-text {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 18px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--text-primary);
-    }
-
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 32px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      text-decoration: none;
-      transition: color var(--transition);
-      position: relative;
-    }
-
-    .nav-links a::after {
+    /* ── Blueprint grid overlay ── */
+    body::before {
       content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: var(--accent);
-      transform: scaleX(0);
-      transition: transform var(--transition);
-      transform-origin: left;
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(12,10,9,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(12,10,9,.05) 1px, transparent 1px);
+      background-size: 80px 80px;
+      pointer-events: none; z-index: 0;
     }
 
-    .nav-links a:hover { color: var(--text-primary); }
-    .nav-links a:hover::after { transform: scaleX(1); }
+    /* ── Marquee ── */
+    @keyframes mq { to { transform: translateX(-50%); } }
+    .mq-fwd { animation: mq 11s linear infinite; }
+    .mq-rev { animation: mq 8s  linear infinite reverse; }
 
-    .nav-cart {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      background: none;
-      border: 1.5px solid var(--text-primary);
-      padding: 8px 16px;
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-primary);
-      cursor: pointer;
-      transition: background var(--transition), color var(--transition);
+    /* ── IG halftone on hover ── */
+    .halftone { position: relative; }
+    .halftone::after {
+      content: ''; position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(12,10,9,.9) 1px, transparent 1px);
+      background-size: 4px 4px; opacity: 0; pointer-events: none;
+    }
+    .halftone:hover::after { opacity: 1; }
+
+    /* ── Sold-out stamp tilt ── */
+    .sold-stamp {
+      transform: translate(-50%,-50%) rotate(-14deg);
     }
 
-    .nav-cart:hover {
-      background: var(--text-primary);
-      color: var(--bg);
-    }
-
-    /* SCROLL REVEAL */
-    .reveal { opacity: 0; transition: opacity 600ms ease, transform 600ms ease; }
-    .reveal.from-left { transform: translateX(-30px); }
-    .reveal.from-right { transform: translateX(30px); }
-    .reveal.from-bottom { transform: translateY(30px); }
-    .reveal.scale-up { transform: scale(0.96); }
-    .reveal.visible {
-      opacity: 1;
-      transform: none;
-    }
-    .delay-1 { transition-delay: 100ms; }
-    .delay-2 { transition-delay: 200ms; }
-    .delay-3 { transition-delay: 300ms; }
-    .delay-4 { transition-delay: 400ms; }
-
-    /* HERO */
-    .hero {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      min-height: 90vh;
-      overflow: hidden;
-    }
-
-    .hero-left {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 80px 60px 80px 60px;
-      position: relative;
-    }
-
-    .hero-eyebrow {
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .hero-headline {
+    /* ── Brutalist hero headline ── */
+    .hero-line {
       font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(52px, 7vw, 96px);
-      line-height: 0.92;
-      letter-spacing: -0.02em;
+      font-size: clamp(80px, 13.5vw, 188px);
+      line-height: .84;
+      letter-spacing: -.04em;
       text-transform: uppercase;
-      color: var(--text-primary);
-      margin-bottom: 36px;
-      position: relative;
-    }
-
-    .hero-headline .accent-line {
-      color: var(--accent);
-      position: relative;
-      display: inline-block;
-    }
-
-    /* SVG scribble underline */
-    .hero-headline .accent-line::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      right: 0;
-      height: 6px;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 8'%3E%3Cpath d='M2 6 Q50 2 100 5 Q150 8 198 3' stroke='%23c4622d' stroke-width='2.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") bottom/contain no-repeat;
-    }
-
-    .hero-sub {
-      font-family: 'Libre Baskerville', serif;
-      font-size: 16px;
-      color: var(--text-secondary);
-      line-height: 1.75;
-      max-width: 380px;
-      margin-bottom: 44px;
-    }
-
-    .hero-cta-row {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-    }
-
-    .btn-primary {
-      display: inline-block;
-      padding: 16px 36px;
-      background: var(--accent);
-      color: white;
-      font-family: 'Archivo', sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: background var(--transition), transform var(--transition);
-    }
-
-    .btn-primary:hover {
-      background: #a8511f;
-      transform: translateY(-1px);
-    }
-
-    .hero-secondary-link {
-      font-family: 'Archivo', sans-serif;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 2px;
-      transition: color var(--transition), border-color var(--transition);
-    }
-
-    .hero-secondary-link:hover {
-      color: var(--text-primary);
-      border-color: var(--text-secondary);
-    }
-
-    .hero-chilli-watermark {
-      position: absolute;
-      right: -20px;
-      top: 50%;
-      transform: translateY(-50%);
-      opacity: 0.06;
-      pointer-events: none;
-    }
-
-    .hero-right {
-      position: relative;
-      overflow: visible;
-    }
-
-    .hero-img-main {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .hero-img-overlap {
-      position: absolute;
-      bottom: 60px;
-      left: -60px;
-      width: 200px;
-      height: 260px;
-      object-fit: cover;
-      border: 6px solid var(--bg);
-      box-shadow: 0 20px 60px rgba(26,20,16,0.15);
-    }
-
-    .hero-tag {
-      position: absolute;
-      top: 40px;
-      right: 40px;
-      background: var(--accent);
-      color: white;
-      padding: 12px 20px;
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-    }
-
-    /* Botanical divider */
-    .botanical-divider {
-      text-align: center;
-      padding: 32px 0;
-      opacity: 0.25;
-    }
-
-    /* SECTION COMMONS */
-    .section-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 60px;
-    }
-
-    .section-label {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .section-label::before {
-      content: '';
-      display: block;
-      width: 20px;
-      height: 1px;
-      background: var(--accent);
-    }
-
-    .section-title {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(32px, 4vw, 52px);
-      line-height: 1.0;
-      letter-spacing: -0.01em;
-      text-transform: uppercase;
-      color: var(--text-primary);
-    }
-
-    hr.rule {
-      border: none;
-      border-top: 1px solid var(--border);
-    }
-
-    /* PRODUCTS */
-    .products-section {
-      padding: 100px 0;
-    }
-
-    .products-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 60px;
-    }
-
-    .products-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 20px;
-      align-items: start;
-    }
-
-    .product-card {
-      background: white;
-      overflow: hidden;
-      transition: transform var(--transition), box-shadow var(--transition);
-    }
-
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 16px 48px rgba(26,20,16,0.1);
-    }
-
-    .product-card.featured .product-img-wrap { aspect-ratio: 3/4; }
-    .product-img-wrap { aspect-ratio: 1; overflow: hidden; }
-
-    .product-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 600ms cubic-bezier(0.4,0,0.2,1);
-    }
-
-    .product-card:hover .product-img { transform: scale(1.04); }
-
-    .product-info { padding: 20px; }
-
-    .product-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-    }
-
-    .product-tag {
-      font-family: 'Archivo', sans-serif;
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 4px 8px;
-      background: var(--bg-surface);
-      color: var(--text-secondary);
-    }
-
-    .product-tag.hot { background: #fdf0ec; color: var(--accent); }
-    .product-tag.limited { background: #f0f4ea; color: var(--accent-secondary); }
-
-    .product-name {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 16px;
-      line-height: 1.2;
-      color: var(--text-primary);
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    .product-card.featured .product-name { font-size: 22px; }
-
-    .product-desc {
-      font-family: 'Libre Baskerville', serif;
-      font-size: 12px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 16px;
-      font-style: italic;
-    }
-
-    .product-footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-
-    .product-price {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 18px;
-      color: var(--text-primary);
-    }
-
-    .btn-add {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 9px 16px;
-      background: var(--text-primary);
-      color: var(--bg);
-      border: none;
-      cursor: pointer;
-      transition: background var(--transition);
-    }
-
-    .btn-add:hover { background: var(--accent); }
-
-    .view-all-link {
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 2px;
-      transition: color var(--transition);
-    }
-
-    .view-all-link:hover { color: var(--text-primary); }
-
-    /* BRAND STORY */
-    .story-section {
-      padding: 100px 0;
-      background: var(--bg-surface);
-    }
-
-    .story-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-    }
-
-    .story-img-col {
-      position: relative;
-    }
-
-    .story-img-main {
-      width: 100%;
-      aspect-ratio: 4/5;
-      object-fit: cover;
-    }
-
-    .story-img-small {
-      position: absolute;
-      width: 45%;
-      aspect-ratio: 1;
-      object-fit: cover;
-      bottom: -30px;
-      right: -30px;
-      border: 5px solid var(--bg-surface);
-    }
-
-    .story-botanical {
-      position: absolute;
-      top: -20px;
-      left: -20px;
-      opacity: 0.15;
-    }
-
-    .story-text-col {
-      padding-top: 20px;
-    }
-
-    .story-pull-quote {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(24px, 2.5vw, 38px);
-      line-height: 1.1;
-      text-transform: uppercase;
-      color: var(--text-primary);
-      margin-bottom: 32px;
-      padding-bottom: 32px;
-      border-bottom: 2px solid var(--accent);
-    }
-
-    .story-pull-quote .flame-word {
-      color: var(--accent);
-      position: relative;
-    }
-
-    .story-body {
-      font-size: 15px;
-      color: var(--text-secondary);
-      line-height: 1.85;
-      margin-bottom: 20px;
-    }
-
-    .inline-pull {
-      font-family: 'Libre Baskerville', serif;
-      font-size: 18px;
-      font-style: italic;
-      color: var(--accent);
-      border-left: 3px solid var(--accent);
-      padding-left: 20px;
-      margin: 28px 0;
-      line-height: 1.5;
-    }
-
-    .story-badges {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 36px;
-    }
-
-    .story-badge {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      padding: 8px 16px;
-      border: 1px solid var(--border);
-      color: var(--text-secondary);
-    }
-
-    .story-badge.filled {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: white;
-    }
-
-    /* TESTIMONIALS */
-    .testimonials-section {
-      padding: 100px 0;
-    }
-
-    .testimonials-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 60px;
-    }
-
-    .testimonials-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2px;
-    }
-
-    .testimonial-card {
-      background: var(--bg-surface);
-      padding: 40px;
-    }
-
-    .testimonial-card:nth-child(2) {
-      background: var(--accent);
-      color: white;
-    }
-
-    .testimonial-card:nth-child(2) .testimonial-text { color: rgba(255,255,255,0.95); }
-    .testimonial-card:nth-child(2) .testimonial-author { color: rgba(255,255,255,0.7); }
-    .testimonial-card:nth-child(2) .star { color: rgba(255,255,255,0.9); }
-    .testimonial-card:nth-child(2) .testimonial-product { color: rgba(255,255,255,0.6); }
-
-    .stars { display: flex; gap: 3px; margin-bottom: 20px; }
-    .star { color: var(--accent); font-size: 14px; }
-
-    .testimonial-text {
-      font-family: 'Libre Baskerville', serif;
-      font-size: 16px;
-      font-style: italic;
-      line-height: 1.7;
-      color: var(--text-primary);
-      margin-bottom: 24px;
-    }
-
-    .testimonial-author {
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-    }
-
-    .testimonial-product {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      color: var(--accent-secondary);
-      margin-top: 4px;
-      letter-spacing: 0.08em;
-    }
-
-    .testimonial-card:nth-child(2) .testimonial-product { color: rgba(255,255,255,0.5); }
-
-    /* RECIPES */
-    .recipes-section {
-      padding: 100px 0;
-      background: var(--bg-surface);
-    }
-
-    .recipes-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin-top: 60px;
-    }
-
-    .recipe-card {
-      background: white;
-      overflow: hidden;
-    }
-
-    .recipe-img-wrap {
-      position: relative;
-      aspect-ratio: 4/3;
-      overflow: hidden;
-    }
-
-    .recipe-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 600ms ease;
-    }
-
-    .recipe-card:hover .recipe-img { transform: scale(1.04); }
-
-    .recipe-time-badge {
-      position: absolute;
-      bottom: 16px;
-      right: 16px;
-      background: white;
-      padding: 6px 12px;
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-    }
-
-    .recipe-info { padding: 24px; }
-
-    .recipe-category {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--accent-secondary);
-      margin-bottom: 8px;
-    }
-
-    .recipe-name {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 22px;
-      text-transform: uppercase;
-      line-height: 1.1;
-      color: var(--text-primary);
-      margin-bottom: 10px;
-    }
-
-    .recipe-desc {
-      font-size: 13px;
-      font-style: italic;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .recipe-link {
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .recipe-link::after {
-      content: '→';
-      transition: transform var(--transition);
-    }
-
-    .recipe-link:hover::after { transform: translateX(4px); }
-
-    /* PRESS */
-    .press-section {
-      padding: 80px 0;
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .press-inner {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-    }
-
-    .press-label-vertical {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-      white-space: nowrap;
-      flex-shrink: 0;
-    }
-
-    .press-divider-v {
-      width: 1px;
-      height: 80px;
-      background: var(--border);
-      flex-shrink: 0;
-    }
-
-    .press-names {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex: 1;
-      gap: 32px;
-      flex-wrap: wrap;
-    }
-
-    .press-name {
-      font-family: 'Libre Baskerville', serif;
-      font-size: 16px;
-      font-style: italic;
-      color: var(--text-secondary);
-      opacity: 0.45;
-      transition: opacity var(--transition);
-      white-space: nowrap;
-      cursor: default;
-    }
-
-    .press-name:hover { opacity: 0.8; }
-
-    /* EMAIL SIGNUP */
-    .email-section {
-      padding: 120px 0;
-      background: var(--text-primary);
-      color: var(--bg);
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .email-section-bg {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0.04;
-      pointer-events: none;
-    }
-
-    .email-eyebrow {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
-
-    .email-title {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: clamp(40px, 6vw, 80px);
-      line-height: 0.95;
-      text-transform: uppercase;
-      color: var(--bg);
-      margin-bottom: 20px;
-      letter-spacing: -0.02em;
-    }
-
-    .email-title span { color: var(--accent); }
-
-    .email-sub {
-      font-size: 15px;
-      color: rgba(245, 240, 232, 0.6);
-      margin-bottom: 48px;
-      font-style: italic;
-      max-width: 480px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .email-form {
-      display: flex;
-      max-width: 460px;
-      margin: 0 auto;
-    }
-
-    .email-input {
-      flex: 1;
-      padding: 15px 20px;
-      background: rgba(245,240,232,0.1);
-      border: 1px solid rgba(245,240,232,0.2);
-      border-right: none;
-      color: var(--bg);
-      font-family: 'Libre Baskerville', serif;
-      font-size: 14px;
-      outline: none;
-      transition: border-color var(--transition);
-    }
-
-    .email-input::placeholder { color: rgba(245,240,232,0.4); }
-    .email-input:focus { border-color: rgba(245,240,232,0.4); }
-
-    .email-btn {
-      padding: 15px 28px;
-      background: var(--accent);
-      border: 1px solid var(--accent);
-      color: white;
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background var(--transition);
       white-space: nowrap;
     }
 
-    .email-btn:hover { background: #a8511f; }
+    /* ── 2D hard shadow utility ── */
+    .shadow-hard    { box-shadow:  6px  6px 0 0 #0c0a09; }
+    .shadow-hard-sm { box-shadow:  3px  3px 0 0 #0c0a09; }
+    .shadow-hard-fire { box-shadow: 6px 6px 0 0 #c2410c; }
+    .shadow-hard-cream { box-shadow: 5px 5px 0 0 #f5f5f4; }
 
-    /* INSTAGRAM */
-    .instagram-section {
-      padding: 80px 0 0;
-    }
-
-    .instagram-header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .instagram-eyebrow {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    .instagram-handle {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 28px;
-      text-transform: uppercase;
-      color: var(--text-primary);
-    }
-
-    .instagram-grid {
-      display: grid;
-      grid-template-columns: repeat(6, 1fr);
-    }
-
-    .instagram-cell {
-      aspect-ratio: 1;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .instagram-cell img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 500ms ease, filter 500ms ease;
-    }
-
-    .instagram-cell:hover img {
-      transform: scale(1.06);
-      filter: brightness(0.8);
-    }
-
-    /* FOOTER */
-    footer {
-      background: var(--text-primary);
-      color: var(--bg);
-      padding: 80px 0 40px;
-    }
-
-    .footer-inner {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 0 60px;
-    }
-
-    .footer-top {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr 1fr 1fr;
-      gap: 60px;
-      margin-bottom: 80px;
-    }
-
-    .footer-brand .footer-logo {
-      font-family: 'Archivo Black', sans-serif;
-      font-size: 24px;
-      text-transform: uppercase;
-      color: var(--bg);
-      margin-bottom: 16px;
-    }
-
-    .footer-tagline {
-      font-size: 14px;
-      font-style: italic;
-      color: rgba(245,240,232,0.5);
-      line-height: 1.6;
-      max-width: 240px;
-    }
-
-    .footer-col-title {
-      font-family: 'Archivo', sans-serif;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(245,240,232,0.4);
-      margin-bottom: 20px;
-    }
-
-    .footer-col ul {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .footer-col ul a {
-      font-size: 14px;
-      color: rgba(245,240,232,0.7);
-      text-decoration: none;
-      transition: color var(--transition);
-    }
-
-    .footer-col ul a:hover { color: var(--bg); }
-
-    .footer-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 40px;
-      border-top: 1px solid rgba(245,240,232,0.1);
-    }
-
-    .footer-copy {
-      font-size: 12px;
-      color: rgba(245,240,232,0.3);
-    }
-
-    .social-links {
-      display: flex;
-      gap: 20px;
-    }
-
-    .social-link {
-      font-family: 'Archivo', sans-serif;
-      font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(245,240,232,0.5);
-      text-decoration: none;
-      transition: color var(--transition);
-    }
-
-    .social-link:hover { color: var(--bg); }
-
-    /* RESPONSIVE */
-    @media (max-width: 1024px) {
-      .hero { grid-template-columns: 1fr; min-height: auto; }
-      .hero-right { height: 60vw; max-height: 500px; }
-      .hero-left { padding: 60px 40px; }
-      .products-grid { grid-template-columns: repeat(2, 1fr); }
-      .story-grid { grid-template-columns: 1fr; }
-      .footer-top { grid-template-columns: 1fr 1fr; }
-      nav { padding: 16px 32px; }
-      .section-inner { padding: 0 32px; }
-    }
-
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .products-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-      .testimonials-grid { grid-template-columns: 1fr; }
-      .recipes-grid { grid-template-columns: 1fr; }
-      .instagram-grid { grid-template-columns: repeat(3, 1fr); }
-      .press-inner { flex-direction: column; }
-      .press-names { justify-content: center; }
-      .footer-top { grid-template-columns: 1fr; gap: 40px; }
-      .email-form { flex-direction: column; }
-      .email-input { border-right: 1px solid rgba(245,240,232,0.2); }
-    }
+    /* ── Instant transitions everywhere ── */
+    *, *::before, *::after { transition: none !important; }
   </style>
 </head>
-<body>
+<body class="bg-stone-100 text-stone-950 font-mono overflow-x-hidden">
 
-  <div class="version-label">V2 — Light Editorial</div>
+<!-- ═══════════════════════════════════════
+     SOLD OUT — FIXED TOP BAR
+═══════════════════════════════════════ -->
+<div class="fixed top-0 inset-x-0 z-50 bg-orange-700 border-b-2 border-stone-950 overflow-hidden whitespace-nowrap py-1.5" aria-hidden="true">
+  <div class="mq-fwd inline-flex">
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">SOLD OUT <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">RESTOCKING SOON <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">DROP 004 <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">LAST BATCH <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">LIMITED RUN <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">SOLD OUT <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">RESTOCKING SOON <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">DROP 004 <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">LAST BATCH <span class="text-stone-950">◆</span></span>
+    <span class="font-display text-[10px] tracking-[.2em] uppercase text-stone-100 px-6">LIMITED RUN <span class="text-stone-950">◆</span></span>
+  </div>
+</div>
 
-  <!-- NAV -->
-  <nav>
-    <a href="#" class="nav-logo">
-      <div class="nav-stamp">
-        <svg width="18" height="20" viewBox="0 0 18 20" fill="none">
-          <path d="M9 2c-1.5 3-4 4.5-4 9a4 4 0 008 0c0-4.5-2.5-6-4-9z" fill="none" stroke="#c4622d" stroke-width="1.5"/>
-          <path d="M9 14c0 0-2-.5-2-2.5" stroke="#c4622d" stroke-width="1" opacity="0.5"/>
-        </svg>
-      </div>
-      <span class="nav-logo-text">Chilli Bird</span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="#">Shop</a></li>
-      <li><a href="#">Our Story</a></li>
-      <li><a href="#">Recipes</a></li>
-      <li><a href="#">Press</a></li>
-      <li><a href="#">Contact</a></li>
+<!-- ═══════════════════════════════════════
+     NAV
+═══════════════════════════════════════ -->
+<nav class="fixed top-[37px] inset-x-0 z-40 grid grid-cols-[1fr_auto_1fr] bg-stone-100 border-b-2 border-stone-950 h-14">
+  <div class="flex flex-col justify-center px-5 gap-0.5">
+    <span class="font-mono text-[10px] tracking-widest text-stone-400 uppercase">56°19'N 3°00'W — FIFE, SCO</span>
+    <span class="font-mono text-[10px] tracking-widest text-stone-400 uppercase">BATCH #CB-004 / EST.2023</span>
+  </div>
+  <a href="#" class="font-display text-[10px] tracking-[.18em] uppercase text-stone-950 flex items-center justify-center px-8 border-x-2 border-stone-950 hover:bg-stone-950 hover:text-stone-100">
+    CHILLI BIRD
+  </a>
+  <div class="flex items-stretch justify-end">
+    <ul class="flex h-full list-none">
+      <li class="flex border-l border-stone-200"><a href="#" class="font-mono text-[9px] tracking-[.14em] uppercase flex items-center px-4 hover:bg-stone-950 hover:text-stone-100">SHOP</a></li>
+      <li class="flex border-l border-stone-200"><a href="#" class="font-mono text-[9px] tracking-[.14em] uppercase flex items-center px-4 hover:bg-stone-950 hover:text-stone-100">STORY</a></li>
+      <li class="flex border-l border-stone-200"><a href="#" class="font-mono text-[9px] tracking-[.14em] uppercase flex items-center px-4 hover:bg-stone-950 hover:text-stone-100">RECIPES</a></li>
+      <li class="flex border-l border-stone-200"><a href="#" class="font-mono text-[9px] tracking-[.14em] uppercase flex items-center px-4 hover:bg-stone-950 hover:text-stone-100">PRESS</a></li>
     </ul>
-    <button class="nav-cart">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M1 1h2l2 7h6l2-4H4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="6.5" cy="12" r="0.8" fill="currentColor"/>
-        <circle cx="10.5" cy="12" r="0.8" fill="currentColor"/>
-      </svg>
-      Cart
-    </button>
-  </nav>
+    <button class="font-mono text-[9px] tracking-[.14em] uppercase bg-stone-950 text-stone-100 border-l-2 border-stone-950 px-5 hover:bg-orange-700">CART (0)</button>
+  </div>
+</nav>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-left">
-      <!-- Chilli watermark -->
-      <div class="hero-chilli-watermark">
-        <svg width="280" height="400" viewBox="0 0 280 400" fill="none">
-          <path d="M140 20C80 120 40 180 40 260a100 100 0 00200 0c0-80-40-140-100-240z" fill="#c4622d"/>
-          <path d="M140 20c20 60 40 100 40 160" stroke="#a8511f" stroke-width="2" opacity="0.5"/>
-        </svg>
-      </div>
-      <div class="hero-eyebrow reveal from-left">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-          <path d="M8 1c-1.5 3-4.5 5-4.5 9a4.5 4.5 0 009 0c0-4-3-6-4.5-9z" fill="#c4622d"/>
-        </svg>
-        Handmade in Fife, Scotland
-      </div>
-      <h1 class="hero-headline reveal from-left delay-1">
-        Put. It.<br>On. <span class="accent-line">Every</span><br>Thing.
-      </h1>
-      <p class="hero-sub reveal from-left delay-2">
-        Crispy Thai chilli oil — fragrant, aromatic, boldly handmade in small batches from a home kitchen in the Kingdom of Fife.
-      </p>
-      <div class="hero-cta-row reveal from-left delay-3">
-        <a href="#" class="btn-primary">Shop Now</a>
-        <a href="#" class="hero-secondary-link">Our Story</a>
-      </div>
-    </div>
-    <div class="hero-right">
-      <img class="hero-img-main" src="https://picsum.photos/seed/cb-hero-v2/800/900" alt="Chilli Bird">
-      <img class="hero-img-overlap" src="https://picsum.photos/seed/cb-hero-small/400/520" alt="">
-      <div class="hero-tag">Thai Aromatics · Small Batch</div>
-    </div>
-  </section>
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section class="min-h-screen pt-[91px] border-b-[3px] border-stone-950 overflow-hidden relative">
 
-  <div class="botanical-divider">
-    <svg width="600" height="40" viewBox="0 0 600 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="0" y1="20" x2="220" y2="20" stroke="#1a1410" stroke-width="0.5"/>
-      <path d="M240 20 Q260 10 280 20 Q300 30 320 20" stroke="#8b9e6a" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-      <ellipse cx="270" cy="13" rx="8" ry="5" transform="rotate(-30 270 13)" fill="none" stroke="#8b9e6a" stroke-width="1"/>
-      <ellipse cx="310" cy="13" rx="8" ry="5" transform="rotate(30 310 13)" fill="none" stroke="#8b9e6a" stroke-width="1"/>
-      <circle cx="290" cy="20" r="3" fill="#c4622d" opacity="0.4"/>
-      <line x1="380" y1="20" x2="600" y2="20" stroke="#1a1410" stroke-width="0.5"/>
-    </svg>
+  <!-- Coords watermark -->
+  <div class="absolute top-28 left-4 font-mono text-[10px] text-stone-300 leading-loose z-10 pointer-events-none" aria-hidden="true">
+    X: 56.3242°N<br>Y: 03.0040°W<br>Z: FIFE/SCO<br>——————<br>DROP: 004<br>STATUS: LIVE ●
   </div>
 
-  <!-- FEATURED PRODUCTS -->
-  <section class="products-section">
-    <div class="section-inner">
-      <div class="products-header reveal from-bottom">
-        <div>
-          <div class="section-label">Small Batch Collection</div>
-          <h2 class="section-title">The Range</h2>
-        </div>
-        <a href="#" class="view-all-link">View all products →</a>
+  <div class="grid grid-cols-[1fr_420px] min-h-[calc(100vh-91px)]">
+
+    <!-- LEFT — headline + chilli drip -->
+    <div class="border-r-2 border-stone-950 flex flex-col">
+
+      <!-- Headline -->
+      <div class="pl-10 pt-10 pb-6 flex-1 overflow-hidden">
+        <div class="hero-line text-stone-950">PUT IT</div>
+        <div class="hero-line text-orange-700">ON EVERY</div>
+        <div class="hero-line" style="color:transparent;-webkit-text-stroke:3px #0c0a09;padding-left:10px;">THING.</div>
       </div>
-      <div class="products-grid">
 
-        <div class="product-card featured reveal from-left">
-          <div class="product-img-wrap">
-            <img class="product-img" src="https://picsum.photos/seed/cb-v2-og-mild/500/667" alt="OG Aromatics MILD">
-          </div>
-          <div class="product-info">
-            <div class="product-tags">
-              <span class="product-tag">Bestseller</span>
-              <span class="product-tag">Mild</span>
-            </div>
-            <h3 class="product-name">OG Aromatics Mild</h3>
-            <p class="product-desc">The one that started it all. Lemongrass, lime leaves, crispy shallots — fragrant warmth with a gentle heat.</p>
-            <div class="product-footer">
-              <span class="product-price">£8.50</span>
-              <button class="btn-add">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card reveal from-bottom">
-          <div class="product-img-wrap">
-            <img class="product-img" src="https://picsum.photos/seed/cb-v2-og-spicy/400/400" alt="OG Aromatics SPICY">
-          </div>
-          <div class="product-info">
-            <div class="product-tags">
-              <span class="product-tag hot">Hot 🌶️🌶️</span>
-            </div>
-            <h3 class="product-name">OG Aromatics Spicy</h3>
-            <p class="product-desc">Same aromatics, bird's eye fire added. Proper Thai heat.</p>
-            <div class="product-footer">
-              <span class="product-price">£8.50</span>
-              <button class="btn-add">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card reveal from-bottom delay-1">
-          <div class="product-img-wrap">
-            <img class="product-img" src="https://picsum.photos/seed/cb-v2-pepper/400/400" alt="White Pepper & Extra Garlic">
-          </div>
-          <div class="product-info">
-            <div class="product-tags">
-              <span class="product-tag hot">Hot</span>
-            </div>
-            <h3 class="product-name">White Pepper & Extra Garlic</h3>
-            <p class="product-desc">Stir fry's best friend. Rich, punchy, garlicky.</p>
-            <div class="product-footer">
-              <span class="product-price">£8.50</span>
-              <button class="btn-add">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="product-card reveal from-bottom delay-2">
-          <div class="product-img-wrap">
-            <img class="product-img" src="https://picsum.photos/seed/cb-v2-honey/400/400" alt="Crispy Thai Hot Honey">
-          </div>
-          <div class="product-info">
-            <div class="product-tags">
-              <span class="product-tag limited">Limited</span>
-            </div>
-            <h3 class="product-name">Crispy Thai Hot Honey</h3>
-            <p class="product-desc">Fife honey, Thai heat. A new dawn of hot honey.</p>
-            <div class="product-footer">
-              <span class="product-price">£8.50</span>
-              <button class="btn-add">Add to Cart</button>
-            </div>
-          </div>
-        </div>
-
+      <!-- Chilli drip strip — raw, textural, mix-blend-multiply -->
+      <div class="border-t-2 border-stone-950 overflow-hidden" style="height:200px;">
+        <img src="images/updates/guide-to-chili-crisp-te-main-210603.png"
+             alt=""
+             class="w-full object-cover mix-blend-multiply"
+             style="height:200px;object-position:center top;">
       </div>
-    </div>
-  </section>
 
-  <hr class="rule">
-
-  <!-- BRAND STORY -->
-  <section class="story-section">
-    <div class="section-inner">
-      <div class="story-grid">
-        <div class="story-img-col reveal scale-up">
-          <!-- Botanical decoration -->
-          <div class="story-botanical">
-            <svg width="100" height="120" viewBox="0 0 100 120" fill="none">
-              <path d="M50 110 Q50 60 50 10" stroke="#8b9e6a" stroke-width="1.5"/>
-              <ellipse cx="35" cy="40" rx="15" ry="8" transform="rotate(-40 35 40)" fill="none" stroke="#8b9e6a" stroke-width="1"/>
-              <ellipse cx="65" cy="60" rx="15" ry="8" transform="rotate(40 65 60)" fill="none" stroke="#8b9e6a" stroke-width="1"/>
-              <ellipse cx="30" cy="70" rx="12" ry="6" transform="rotate(-30 30 70)" fill="none" stroke="#8b9e6a" stroke-width="1" opacity="0.7"/>
-            </svg>
-          </div>
-          <img class="story-img-main" src="https://picsum.photos/seed/cb-v2-story/600/750" alt="Chilli Bird story">
-          <img class="story-img-small" src="https://picsum.photos/seed/cb-v2-kitchen/300/300" alt="Kitchen">
+      <!-- Bottom metadata strip -->
+      <div class="border-t-2 border-stone-950 grid grid-cols-4">
+        <div class="p-4 border-r border-stone-200">
+          <div class="font-mono text-[10px] text-stone-400 tracking-widest uppercase mb-1">// products</div>
+          <div class="font-display text-[19px]">04</div>
         </div>
-        <div class="story-text-col reveal from-right delay-1">
-          <div class="section-label">Our Story</div>
-          <div class="story-pull-quote">
-            From a home kitchen<br>in Fife to <span class="flame-word">every table</span><br>in Scotland
-          </div>
-          <p class="story-body">
-            Chilli Bird was born from a simple hunger — not for heat, but for fragrance. Our founder grew up in Thailand surrounded by the scent of lemongrass sizzling in hot oil, lime leaves releasing their oils, garlic toasting golden.
-          </p>
-          <blockquote class="inline-pull">
-            "In Thailand, the aromatics come first. The heat is just the beginning."
-          </blockquote>
-          <p class="story-body">
-            When she moved to Scotland, she couldn't find a chilli oil that smelled like home. So she made one, in a kitchen in Fife, for friends and family. Then everyone started asking for jars.
-          </p>
-          <p class="story-body">
-            Today, every jar is still made by hand in small batches — cleaner ingredients, no shortcuts, the same aromatics that made that first batch unforgettable.
-          </p>
-          <div class="story-badges">
-            <span class="story-badge filled">Thai-Inspired</span>
-            <span class="story-badge">Small Batch</span>
-            <span class="story-badge">Made in Fife</span>
-            <span class="story-badge">Family Run</span>
-            <span class="story-badge">Clean Ingredients</span>
-          </div>
+        <div class="p-4 border-r border-stone-200">
+          <div class="font-mono text-[10px] text-stone-400 tracking-widest uppercase mb-1">// made by</div>
+          <div class="font-mono text-[9px] font-bold uppercase text-stone-950">HANDMADE</div>
+        </div>
+        <div class="p-4 border-r border-stone-200">
+          <div class="font-mono text-[10px] text-stone-400 tracking-widest uppercase mb-1">// rating</div>
+          <div class="text-orange-700 tracking-widest text-[10px]">★★★★★</div>
+        </div>
+        <div class="p-4">
+          <div class="font-mono text-[10px] text-stone-400 tracking-widest uppercase mb-1">// status</div>
+          <div class="font-mono text-[10px] font-bold text-orange-700 uppercase">LIVE ●</div>
         </div>
       </div>
     </div>
-  </section>
 
-  <!-- TESTIMONIALS -->
-  <section class="testimonials-section">
-    <div class="section-inner">
-      <div class="testimonials-header reveal">
-        <div>
-          <div class="section-label">What People Say</div>
-          <h2 class="section-title">The Reviews Are In</h2>
+    <!-- RIGHT — product jar + CTA -->
+    <div class="flex flex-col bg-stone-100 p-6 gap-4">
+
+      <!-- Drop badge -->
+      <div class="inline-flex self-start bg-orange-700 text-stone-100 font-mono text-[10px] tracking-[.18em] uppercase px-3 py-1.5 border-2 border-stone-950 shadow-hard-sm">
+        DROP 004 — LIVE NOW
+      </div>
+
+      <!-- Jar PNG — huge, floating via mix-blend-multiply -->
+      <div class="flex-1 flex items-center justify-center overflow-hidden -mx-6">
+        <img src="images/updates/white%20pepper%20and%20garlic.png"
+             alt="Chilli Bird — White Pepper & Extra Garlic"
+             class="w-full mix-blend-multiply object-contain"
+             style="max-height:56vh;">
+      </div>
+
+      <!-- CTA -->
+      <div class="flex flex-col gap-2">
+        <p class="font-mono text-[10px] text-stone-500 leading-relaxed lowercase">crispy thai chilli oil. handmade in fife. fragrant, aromatic, brutally good.</p>
+        <a href="#" class="block text-center font-display text-[10px] tracking-[.18em] uppercase bg-stone-950 text-stone-100 px-6 py-4 border-2 border-stone-950 shadow-hard-fire hover:bg-orange-700 hover:shadow-hard">
+          SHOP THE DROP
+        </a>
+        <a href="#" class="block text-center font-mono text-[9px] tracking-[.14em] uppercase border-2 border-stone-950 px-6 py-3 hover:bg-stone-950 hover:text-stone-100">
+          OUR STORY →
+        </a>
+        <div class="font-mono text-[10px] text-stone-300 leading-loose mt-1">
+          SYS: 2025-12-19T09:41:00Z<br>
+          REF: CB/HOMEPAGE/HERO / VER: 2.3.1-PROD
         </div>
       </div>
     </div>
-    <div class="testimonials-grid">
-      <div class="testimonial-card reveal from-left">
-        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-        <p class="testimonial-text">"I have introduced this to absolutely everyone I know. My family in Glasgow now have their own standing order. The OG Mild is everything — the lemongrass scent when you open the jar is extraordinary."</p>
-        <div class="testimonial-author">Anna R., Perth</div>
-        <div class="testimonial-product">OG Aromatics Mild</div>
-      </div>
-      <div class="testimonial-card reveal from-bottom delay-1">
-        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-        <p class="testimonial-text">"I genuinely did not know what I was missing until I tried this on fried eggs for the first time. I have had chilli oil from the supermarket, from restaurants, from importers — none of them come close."</p>
-        <div class="testimonial-author">David H., Edinburgh</div>
-        <div class="testimonial-product">OG Aromatics Spicy</div>
-      </div>
-      <div class="testimonial-card reveal from-right delay-2">
-        <div class="stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-        <p class="testimonial-text">"The Hot Honey collab is just inspired. I've drizzled it on cheese, on chicken, on ice cream (yes, really). It's a tiny bottle of absolute joy. Can't wait for the next limited edition."</p>
-        <div class="testimonial-author">Miriam O., Dundee</div>
-        <div class="testimonial-product">Crispy Thai Hot Honey</div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     DUAL MARQUEE
+═══════════════════════════════════════ -->
+<div class="bg-stone-950 border-b-[3px] border-stone-950 overflow-hidden" aria-hidden="true">
+  <div class="py-3 border-b border-stone-800 overflow-hidden whitespace-nowrap">
+    <div class="mq-fwd inline-flex">
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">SOLD OUT</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-600 px-4">///</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">RESTOCKING SOON</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-600 px-4">///</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">LAST BATCH</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-600 px-4">///</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">DROP 004 — LIMITED RUN</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-600 px-4">///</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">SOLD OUT</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-600 px-4">///</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">RESTOCKING SOON</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-600 px-4">///</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">LAST BATCH</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-600 px-4">///</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">DROP 004 — LIMITED RUN</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-600 px-4">///</span>
+    </div>
+  </div>
+  <div class="py-3 overflow-hidden whitespace-nowrap">
+    <div class="mq-rev inline-flex">
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">CRISPY THAI CHILLI OIL</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">HANDMADE IN FIFE</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">SMALL BATCH ONLY</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">NO PRESERVATIVES</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">FREE RANGE EGGS</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">THAI AROMATICS</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">CRISPY THAI CHILLI OIL</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">HANDMADE IN FIFE</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-stone-100 px-7">SMALL BATCH ONLY</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+      <span class="font-display text-[10px] tracking-[.22em] uppercase text-orange-700 px-7">NO PRESERVATIVES</span>
+      <span class="font-display text-[10px] text-stone-600 px-4">◆</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     § 001 — PRODUCTS
+═══════════════════════════════════════ -->
+<section class="border-b-[3px] border-stone-950">
+  <!-- Section header -->
+  <div class="grid grid-cols-[auto_1fr_auto] border-b-2 border-stone-950">
+    <span class="font-mono text-[9px] tracking-[.12em] text-stone-400 px-5 py-3.5 border-r-2 border-stone-950 flex items-center">§ 001</span>
+    <span class="font-display text-[10px] tracking-[.24em] uppercase px-5 py-3.5 flex items-center">THE RANGE — DROP 004</span>
+    <span class="font-mono text-[10px] tracking-[.1em] text-stone-400 px-5 py-3.5 border-l-2 border-stone-950 flex items-center">SKU:CB-2025 / 4 UNITS / £8.50 EACH</span>
+  </div>
+
+  <!-- 4-col product grid -->
+  <div class="grid grid-cols-4">
+
+    <!-- Card 1 -->
+    <div class="border-r-2 border-stone-950 group hover:bg-stone-950">
+      <img class="w-full aspect-square object-cover group-hover:[filter:contrast(1.4)_saturate(0.15)]" style="filter:contrast(1.1)saturate(1.1)" src="images/og%20aramatics%20mild.jpeg" alt="OG Aromatics Mild">
+      <div class="p-4 border-t-2 border-stone-950 group-hover:border-stone-800">
+        <div class="font-mono text-[10px] text-stone-400 group-hover:text-stone-600 mb-2">BATCH: CB-001-2025 / MFD: 2025-11-01</div>
+        <span class="inline-block font-mono text-[10px] tracking-[.18em] uppercase px-2 py-1 border-[1.5px] border-stone-950 bg-stone-950 text-stone-100 mb-2">BESTSELLER</span>
+        <h3 class="font-display text-[15px] leading-tight uppercase mb-2 group-hover:text-stone-100">OG AROMATICS<br>MILD</h3>
+        <p class="font-mono text-[10px] text-stone-500 group-hover:text-stone-400 leading-relaxed lowercase mb-3">lemongrass, lime leaves, crispy shallots. fragrant warmth. gentle heat.</p>
+        <div class="flex items-center justify-between border-t border-stone-200 group-hover:border-stone-800 pt-3">
+          <span class="font-display text-[19px] group-hover:text-stone-100">£8.50</span>
+          <button class="font-mono text-[10px] tracking-[.14em] uppercase px-3 py-1.5 border-[1.5px] border-stone-950 bg-stone-100 text-stone-950 shadow-hard-sm hover:bg-orange-700 hover:text-stone-100 hover:border-orange-700">ADD TO CART</button>
+        </div>
       </div>
     </div>
-  </section>
 
-  <!-- RECIPES -->
-  <section class="recipes-section">
-    <div class="section-inner">
-      <div class="reveal">
-        <div class="section-label">In the Kitchen</div>
-        <h2 class="section-title">Recipe Inspiration</h2>
+    <!-- Card 2 -->
+    <div class="border-r-2 border-stone-950 group hover:bg-stone-950">
+      <img class="w-full aspect-square object-cover group-hover:[filter:contrast(1.4)_saturate(0.15)]" style="filter:contrast(1.1)saturate(1.1)" src="images/food%20shot.jpeg" alt="OG Aromatics Spicy">
+      <div class="p-4 border-t-2 border-stone-950 group-hover:border-stone-800">
+        <div class="font-mono text-[10px] text-stone-400 group-hover:text-stone-600 mb-2">BATCH: CB-002-2025 / MFD: 2025-11-01</div>
+        <span class="inline-block font-mono text-[10px] tracking-[.18em] uppercase px-2 py-1 border-[1.5px] border-orange-700 bg-orange-700 text-stone-100 mb-2">HOT ◆◆</span>
+        <h3 class="font-display text-[15px] leading-tight uppercase mb-2 group-hover:text-stone-100">OG AROMATICS<br>SPICY</h3>
+        <p class="font-mono text-[10px] text-stone-500 group-hover:text-stone-400 leading-relaxed lowercase mb-3">same aromatics. bird's eye fire added. proper thai heat.</p>
+        <div class="flex items-center justify-between border-t border-stone-200 group-hover:border-stone-800 pt-3">
+          <span class="font-display text-[19px] group-hover:text-stone-100">£8.50</span>
+          <button class="font-mono text-[10px] tracking-[.14em] uppercase px-3 py-1.5 border-[1.5px] border-stone-950 bg-stone-100 text-stone-950 shadow-hard-sm hover:bg-orange-700 hover:text-stone-100 hover:border-orange-700">ADD TO CART</button>
+        </div>
       </div>
-      <div class="recipes-grid">
-        <div class="recipe-card reveal from-bottom">
-          <div class="recipe-img-wrap">
-            <img class="recipe-img" src="https://picsum.photos/seed/cb-v2-eggs/600/450" alt="Chilli Oil Fried Eggs">
-            <div class="recipe-time-badge">5 min</div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="border-r-2 border-stone-950 group hover:bg-stone-950">
+      <img class="w-full aspect-square object-cover group-hover:[filter:contrast(1.4)_saturate(0.15)]" style="filter:contrast(1.1)saturate(1.1)" src="images/white%20pepper%20and%20garlic.jpeg" alt="White Pepper & Garlic">
+      <div class="p-4 border-t-2 border-stone-950 group-hover:border-stone-800">
+        <div class="font-mono text-[10px] text-stone-400 group-hover:text-stone-600 mb-2">BATCH: CB-003-2025 / MFD: 2025-11-01</div>
+        <span class="inline-block font-mono text-[10px] tracking-[.18em] uppercase px-2 py-1 border-[1.5px] border-orange-700 bg-orange-700 text-stone-100 mb-2">HOT ◆</span>
+        <h3 class="font-display text-[15px] leading-tight uppercase mb-2 group-hover:text-stone-100">WHITE PEPPER<br>&amp; GARLIC</h3>
+        <p class="font-mono text-[10px] text-stone-500 group-hover:text-stone-400 leading-relaxed lowercase mb-3">rich. punchy. garlicky. no compromise.</p>
+        <div class="flex items-center justify-between border-t border-stone-200 group-hover:border-stone-800 pt-3">
+          <span class="font-display text-[19px] group-hover:text-stone-100">£8.50</span>
+          <button class="font-mono text-[10px] tracking-[.14em] uppercase px-3 py-1.5 border-[1.5px] border-stone-950 bg-stone-100 text-stone-950 shadow-hard-sm hover:bg-orange-700 hover:text-stone-100 hover:border-orange-700">ADD TO CART</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 — SOLD OUT -->
+    <div class="group hover:bg-stone-950 relative">
+      <div class="relative overflow-hidden">
+        <img class="w-full aspect-square object-cover [filter:contrast(1.1)_saturate(1.1)] group-hover:[filter:contrast(1.4)_saturate(0.15)]" src="images/hot%20honey.jpeg" alt="Crispy Thai Hot Honey">
+        <div class="sold-stamp absolute top-1/2 left-1/2 bg-orange-700 text-stone-100 font-display text-[16px] tracking-[.1em] uppercase px-4 py-2 border-[3px] border-stone-950 shadow-hard whitespace-nowrap z-10 pointer-events-none">SOLD OUT</div>
+      </div>
+      <div class="p-4 border-t-2 border-stone-950 group-hover:border-stone-800">
+        <div class="font-mono text-[10px] text-stone-400 group-hover:text-stone-600 mb-2">BATCH: CB-004-2025 / STATUS: DEPLETED</div>
+        <span class="inline-block font-mono text-[10px] tracking-[.18em] uppercase px-2 py-1 border-[1.5px] border-stone-400 text-stone-400 mb-2">LIMITED DROP</span>
+        <h3 class="font-display text-[15px] leading-tight uppercase mb-2 group-hover:text-stone-100">CRISPY THAI<br>HOT HONEY</h3>
+        <p class="font-mono text-[10px] text-stone-500 group-hover:text-stone-400 leading-relaxed lowercase mb-3">fife honey meets thai heat. restocking q1 2026.</p>
+        <div class="flex items-center justify-between border-t border-stone-200 group-hover:border-stone-800 pt-3">
+          <span class="font-display text-[19px] text-stone-400 group-hover:text-stone-600">£8.50</span>
+          <button disabled class="font-mono text-[10px] tracking-[.14em] uppercase px-3 py-1.5 border-[1.5px] border-stone-300 text-stone-300 opacity-50 cursor-not-allowed">SOLD OUT</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     § 002 — ORIGIN STORY
+═══════════════════════════════════════ -->
+<section class="border-b-[3px] border-stone-950 grid grid-cols-[1fr_1fr]">
+
+  <!-- Left — Jen photo -->
+  <div class="border-r-2 border-stone-950 relative overflow-hidden">
+    <img src="images/jen%20-%20best%20one.jpeg" alt="Jen, founder"
+         class="w-full object-cover" style="min-height:600px;filter:contrast(1.18)saturate(1.1);">
+    <div class="absolute bottom-0 inset-x-0 bg-stone-950 px-5 py-4">
+      <span class="font-mono text-[10px] tracking-[.16em] uppercase text-stone-500 block">FOUNDER · MAKER · CHILLI OBSESSIVE</span>
+      <strong class="font-display text-[10px] tracking-[.08em] uppercase text-stone-100">JEN — KINGDOM OF FIFE</strong>
+    </div>
+  </div>
+
+  <!-- Right — story + nutritional label -->
+  <div class="flex flex-col">
+    <!-- Section header inset -->
+    <div class="grid grid-cols-[auto_1fr_auto] border-b-2 border-stone-950">
+      <span class="font-mono text-[9px] tracking-[.12em] text-stone-400 px-5 py-3.5 border-r-2 border-stone-950 flex items-center">§ 002</span>
+      <span class="font-display text-[10px] tracking-[.24em] uppercase px-5 py-3.5 flex items-center">ORIGIN STORY</span>
+      <span class="font-mono text-[10px] tracking-[.1em] text-stone-400 px-5 py-3.5 border-l-2 border-stone-950 flex items-center">EST. 2023 / FIFE, SCO</span>
+    </div>
+
+    <div class="p-10 flex flex-col justify-center flex-1 gap-6">
+
+      <!-- Nutritional label -->
+      <div class="border-[3px] border-stone-950 max-w-sm shadow-hard">
+        <div class="bg-stone-950 text-stone-100 px-4 pt-3 pb-1">
+          <div class="font-display text-[22px] leading-tight uppercase">CHILLI BIRD</div>
+          <div class="font-mono text-[9px] text-stone-400 tracking-[.08em] pb-2">crispy thai chilli oil · handmade · small batch</div>
+        </div>
+        <div class="h-2 bg-stone-950"></div>
+        <div class="p-3">
+          <div class="flex justify-between items-baseline py-1.5 border-b-[4px] border-stone-950">
+            <strong class="font-mono text-[10px]">Origin Facts</strong>
           </div>
-          <div class="recipe-info">
-            <div class="recipe-category">Breakfast</div>
-            <h3 class="recipe-name">Chilli Oil Fried Eggs</h3>
-            <p class="recipe-desc">The recipe that convinced half of Scotland. Crispy-edged eggs in sizzling oil, finished with an unapologetic pour of OG Aromatics.</p>
-            <a href="#" class="recipe-link">View Recipe</a>
-          </div>
+          <div class="flex justify-between items-baseline py-1.5 border-b border-stone-200 font-mono text-[10px]"><span>Founded</span><strong>2023</strong></div>
+          <div class="flex justify-between items-baseline py-1.5 border-b border-stone-200 font-mono text-[10px]"><span>Location</span><strong>FIFE, SCO</strong></div>
+          <div class="flex justify-between items-baseline py-1.5 border-b border-stone-200 font-mono text-[10px]"><span>Batch Size</span><strong>SMALL</strong></div>
+          <div class="flex justify-between items-baseline py-1.5 border-b border-stone-200 font-mono text-[10px]"><span>Preservatives</span><strong>NONE</strong></div>
+          <div class="flex justify-between items-baseline py-1.5 border-b border-stone-200 font-mono text-[10px]"><span>Eggs</span><strong>FREE-RANGE</strong></div>
+          <div class="flex justify-between items-baseline py-1.5 font-mono text-[10px]"><span>Heat Level</span><strong class="text-orange-700">★★★★★</strong></div>
         </div>
-        <div class="recipe-card reveal from-bottom delay-1">
-          <div class="recipe-img-wrap">
-            <img class="recipe-img" src="https://picsum.photos/seed/cb-v2-noodles/600/450" alt="Thai Chilli Noodles">
-            <div class="recipe-time-badge">15 min</div>
-          </div>
-          <div class="recipe-info">
-            <div class="recipe-category">Dinner</div>
-            <h3 class="recipe-name">Thai Chilli Noodles</h3>
-            <p class="recipe-desc">Silky noodles, toasted sesame, soy glaze — the White Pepper & Garlic does the heavy lifting. Weeknight perfection.</p>
-            <a href="#" class="recipe-link">View Recipe</a>
-          </div>
+        <div class="border-t-[3px] border-stone-950 p-3 font-mono text-[10px] text-stone-600 leading-relaxed">
+          <strong class="text-stone-950">INGREDIENTS:</strong> lemongrass, lime leaves, crispy shallots, bird's eye chilli, free-range eggs, scottish honey, rapeseed oil, dried aromatics, salt.
         </div>
-        <div class="recipe-card reveal from-bottom delay-2">
-          <div class="recipe-img-wrap">
-            <img class="recipe-img" src="https://picsum.photos/seed/cb-v2-pizza/600/450" alt="Crispy Chilli Pizza">
-            <div class="recipe-time-badge">25 min</div>
-          </div>
-          <div class="recipe-info">
-            <div class="recipe-category">Weekend</div>
-            <h3 class="recipe-name">Crispy Chilli Pizza</h3>
-            <p class="recipe-desc">Add it after the bake, not before. The crunch survives. The aromatics bloom. You'll never call for delivery again.</p>
-            <a href="#" class="recipe-link">View Recipe</a>
-          </div>
+        <div class="bg-orange-700 text-stone-100 px-3 py-2 font-mono text-[10px] tracking-[.12em] uppercase border-t-2 border-stone-950">
+          BEST BEFORE: WHENEVER IT RUNS OUT ◆ BATCH #CB-004
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- PRESS -->
-  <section class="press-section">
-    <div class="section-inner">
-      <div class="press-inner reveal">
-        <span class="press-label-vertical">As Seen In</span>
-        <div class="press-divider-v"></div>
-        <div class="press-names">
-          <span class="press-name">The Scotsman</span>
-          <span class="press-name">Delicious Magazine</span>
-          <span class="press-name">The Guardian Cook</span>
-          <span class="press-name">Great Taste Awards</span>
-          <span class="press-name">Scottish Food & Drink</span>
-        </div>
+      <p class="font-mono text-[10px] text-stone-500 leading-[1.85] lowercase">what started as a pandemic obsession became a full-blown flavour company. every jar still handmade. no shortcuts. no compromises. just heat.</p>
+
+      <blockquote class="font-mono text-[10px] italic text-orange-700 border-l-4 border-orange-700 pl-4 leading-relaxed">
+        "i just wanted something that would make every meal feel a bit more special."
+      </blockquote>
+    </div>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════
+     § 003 — PULL QUOTE
+═══════════════════════════════════════ -->
+<div class="border-b-[3px] border-stone-950 grid grid-cols-[auto_1fr]">
+  <div class="font-mono text-[10px] tracking-[.16em] text-stone-400 px-4 py-6 border-r-2 border-stone-950 flex items-center" style="writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;">
+    § 003 / PRESS QUOTE / VERIFIED / 2024
+  </div>
+  <div class="px-12 py-14">
+    <p class="font-display text-stone-950 uppercase leading-[.93]" style="font-size:clamp(28px,4.5vw,62px);letter-spacing:-.03em;">
+      the condiment that <span class="text-orange-700">changed</span> how scotland eats
+    </p>
+    <div class="flex items-center gap-3 mt-6">
+      <div class="w-7 h-0.5 bg-orange-700"></div>
+      <span class="font-mono text-[9px] tracking-[.14em] text-stone-400 uppercase">THE FIFE HERALD — 2024</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     § 004 — REVIEWS
+═══════════════════════════════════════ -->
+<section class="border-b-[3px] border-stone-950">
+  <div class="grid grid-cols-[auto_1fr_auto] border-b-2 border-stone-950">
+    <span class="font-mono text-[9px] tracking-[.12em] text-stone-400 px-5 py-3.5 border-r-2 border-stone-950 flex items-center">§ 004</span>
+    <span class="font-display text-[10px] tracking-[.24em] uppercase px-5 py-3.5 flex items-center">VERIFIED INTEL — CUSTOMER LOGS</span>
+    <span class="font-mono text-[10px] tracking-[.1em] text-stone-400 px-5 py-3.5 border-l-2 border-stone-950 flex items-center">AVG: 5.0/5.0 ◆ 100% RECOMMEND</span>
+  </div>
+  <div class="grid grid-cols-3">
+
+    <div class="p-8 border-r-2 border-stone-950">
+      <div class="text-orange-700 tracking-widest mb-4">★★★★★</div>
+      <p class="font-mono text-[10px] text-stone-950 leading-relaxed lowercase mb-5">"i literally put this on everything. eggs in the morning, noodles at lunch, pizza at night. my family has staged an intervention."</p>
+      <div class="font-mono text-[10px] tracking-[.14em] uppercase text-stone-400 leading-loose">SARAH M. — VERIFIED PURCHASE<br>PRODUCT: OG AROMATICS MILD</div>
+      <div class="font-mono text-[10px] tracking-[.08em] text-stone-300 mt-3">LOG: 2025-11-14T08:32:00Z / ORDER: CB-ORD-00847</div>
+    </div>
+
+    <div class="p-8 border-r-2 border-stone-950 bg-stone-950">
+      <div class="text-orange-700 tracking-widest mb-4">★★★★★</div>
+      <p class="font-mono text-[10px] text-stone-300 leading-relaxed lowercase mb-5">"ordered three jars thinking i'd gift two. kept all three. zero regrets."</p>
+      <div class="font-mono text-[10px] tracking-[.14em] uppercase text-stone-600 leading-loose">JAMES T. — VERIFIED PURCHASE<br>PRODUCT: OG AROMATICS SPICY</div>
+      <div class="font-mono text-[10px] tracking-[.08em] text-stone-700 mt-3">LOG: 2025-10-29T14:17:00Z / ORDER: CB-ORD-00731</div>
+    </div>
+
+    <div class="p-8">
+      <div class="text-orange-700 tracking-widest mb-4">★★★★★</div>
+      <p class="font-mono text-[10px] text-stone-950 leading-relaxed lowercase mb-5">"the hot honey is genuinely life-changing on fried chicken. and cheese. and everything else."</p>
+      <div class="font-mono text-[10px] tracking-[.14em] uppercase text-stone-400 leading-loose">PRIYA K. — VERIFIED PURCHASE<br>PRODUCT: CRISPY THAI HOT HONEY</div>
+      <div class="font-mono text-[10px] tracking-[.08em] text-stone-300 mt-3">LOG: 2025-12-01T19:44:00Z / ORDER: CB-ORD-01022</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     § 005 — RECIPES
+═══════════════════════════════════════ -->
+<section class="border-b-[3px] border-stone-950">
+  <div class="grid grid-cols-[auto_1fr_auto] border-b-2 border-stone-950">
+    <span class="font-mono text-[9px] tracking-[.12em] text-stone-400 px-5 py-3.5 border-r-2 border-stone-950 flex items-center">§ 005</span>
+    <span class="font-display text-[10px] tracking-[.24em] uppercase px-5 py-3.5 flex items-center">FIELD APPLICATIONS — RECIPES</span>
+    <span class="font-mono text-[10px] tracking-[.1em] text-stone-400 px-5 py-3.5 border-l-2 border-stone-950 flex items-center">3 ACTIVE PROTOCOLS / 2025</span>
+  </div>
+  <div class="grid grid-cols-[5fr_3fr_4fr]">
+
+    <div class="border-r-2 border-stone-950 group overflow-hidden">
+      <img class="w-full object-cover group-hover:[filter:contrast(1.45)_saturate(0.08)]" style="aspect-ratio:16/9;filter:contrast(1.1)saturate(1.1)" src="images/ramen.jpeg" alt="Chilli Bird Ramen">
+      <div class="p-5 border-t-2 border-stone-950">
+        <div class="font-mono text-[10px] tracking-[.2em] uppercase text-orange-700 mb-1.5">PROTOCOL: NOODLES</div>
+        <h3 class="font-display text-[24px] uppercase leading-tight mb-2">CHILLI BIRD RAMEN</h3>
+        <div class="font-mono text-[10px] text-stone-400 tracking-[.08em] mb-3">DEPLOY TIME: 30 MIN / SKILL: INTERMEDIATE</div>
+        <a href="#" class="font-mono text-[10px] tracking-[.14em] uppercase border-b-2 border-orange-700 pb-0.5 hover:bg-orange-700 hover:text-stone-100 hover:border-orange-700 hover:px-1.5">ACCESS RECIPE →</a>
       </div>
     </div>
-  </section>
 
-  <!-- EMAIL SIGNUP -->
-  <section class="email-section">
-    <div class="email-section-bg">
-      <svg width="500" height="500" viewBox="0 0 500 500" fill="none">
-        <path d="M250 30c-80 160-160 210-160 300a160 160 0 00320 0c0-90-80-140-160-300z" fill="#f5f0e8"/>
-      </svg>
-    </div>
-    <div class="section-inner">
-      <div class="reveal">
-        <div class="email-eyebrow">Join the Flock</div>
-        <h2 class="email-title">Get the <span>good stuff.</span></h2>
-        <p class="email-sub">Recipes, new drops, exclusive offers — and the occasional behind-the-scenes from the Fife kitchen.</p>
-        <form class="email-form" onsubmit="return false;">
-          <input type="email" class="email-input" placeholder="Your email address">
-          <button class="email-btn" type="submit">Subscribe</button>
-        </form>
+    <div class="border-r-2 border-stone-950 group overflow-hidden">
+      <img class="w-full object-cover group-hover:[filter:contrast(1.45)_saturate(0.08)]" style="aspect-ratio:3/2;filter:contrast(1.1)saturate(1.1)" src="images/recipe3%20-%20pizza.jpeg" alt="Hot Honey Pizza">
+      <div class="p-5 border-t-2 border-stone-950">
+        <div class="font-mono text-[10px] tracking-[.2em] uppercase text-orange-700 mb-1.5">PROTOCOL: PIZZA</div>
+        <h3 class="font-display text-[15px] uppercase leading-tight mb-2">HOT HONEY PIZZA</h3>
+        <div class="font-mono text-[10px] text-stone-400 tracking-[.08em] mb-3">DEPLOY TIME: 45 MIN / SKILL: BASIC</div>
+        <a href="#" class="font-mono text-[10px] tracking-[.14em] uppercase border-b-2 border-orange-700 pb-0.5 hover:bg-orange-700 hover:text-stone-100 hover:px-1.5">ACCESS RECIPE →</a>
       </div>
     </div>
-  </section>
 
-  <!-- INSTAGRAM -->
-  <section class="instagram-section">
-    <div class="section-inner">
-      <div class="instagram-header reveal">
-        <div class="instagram-eyebrow">Follow Along</div>
-        <div class="instagram-handle">@chillibird</div>
+    <div class="group overflow-hidden">
+      <img class="w-full object-cover group-hover:[filter:contrast(1.45)_saturate(0.08)]" style="aspect-ratio:3/2;filter:contrast(1.1)saturate(1.1)" src="images/recipe5%20-%20pad%20thai.jpeg" alt="Pad Thai">
+      <div class="p-5 border-t-2 border-stone-950">
+        <div class="font-mono text-[10px] tracking-[.2em] uppercase text-orange-700 mb-1.5">PROTOCOL: THAI</div>
+        <h3 class="font-display text-[15px] uppercase leading-tight mb-2">PAD THAI</h3>
+        <div class="font-mono text-[10px] text-stone-400 tracking-[.08em] mb-3">DEPLOY TIME: 25 MIN / SKILL: BASIC</div>
+        <a href="#" class="font-mono text-[10px] tracking-[.14em] uppercase border-b-2 border-orange-700 pb-0.5 hover:bg-orange-700 hover:text-stone-100 hover:px-1.5">ACCESS RECIPE →</a>
       </div>
     </div>
-    <div class="instagram-grid">
-      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig1/400/400" alt=""></div>
-      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig2/400/400" alt=""></div>
-      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig3/400/400" alt=""></div>
-      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig4/400/400" alt=""></div>
-      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig5/400/400" alt=""></div>
-      <div class="instagram-cell"><img src="https://picsum.photos/seed/cb-v2-ig6/400/400" alt=""></div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     PRESS STRIP
+═══════════════════════════════════════ -->
+<div class="border-b-2 border-stone-950 grid grid-cols-[auto_1fr]">
+  <div class="font-mono text-[10px] tracking-[.18em] uppercase text-stone-400 px-4 border-r-2 border-stone-950 flex items-center" style="writing-mode:vertical-rl;transform:rotate(180deg);">
+    AS SEEN IN
+  </div>
+  <div class="flex items-stretch flex-wrap">
+    <span class="font-mono text-[10px] text-stone-300 px-7 py-5 border-r border-stone-200 hover:text-stone-950 hover:bg-stone-200 cursor-default">The Fife Herald</span>
+    <span class="font-mono text-[10px] text-stone-300 px-7 py-5 border-r border-stone-200 hover:text-stone-950 hover:bg-stone-200 cursor-default">Scottish Food &amp; Drink</span>
+    <span class="font-mono text-[10px] text-stone-300 px-7 py-5 border-r border-stone-200 hover:text-stone-950 hover:bg-stone-200 cursor-default">The Courier</span>
+    <span class="font-mono text-[10px] text-stone-300 px-7 py-5 border-r border-stone-200 hover:text-stone-950 hover:bg-stone-200 cursor-default">Good Food Scotland</span>
+    <span class="font-mono text-[10px] text-stone-300 px-7 py-5 hover:text-stone-950 hover:bg-stone-200 cursor-default">Edinburgh Foodies</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     § 006 — EMAIL
+═══════════════════════════════════════ -->
+<section class="bg-stone-950 border-b-[3px] border-orange-700 grid grid-cols-[1fr_1fr]">
+
+  <div class="border-r-2 border-stone-800 p-14">
+    <!-- System log -->
+    <div class="font-mono text-[10px] text-stone-700 leading-loose mb-8 tracking-[.08em]">
+      <span class="text-orange-700">SYS LOG:</span> 2025-12-19T09:41:22Z<br>
+      <span class="text-orange-700">EVENT:</span> NEW_BATCH_INCOMING<br>
+      <span class="text-orange-700">DROP:</span> 005 / ETA: Q1-2026<br>
+      <span class="text-orange-700">STATUS:</span> SUBSCRIBE_TO_RECEIVE_ALERT<br>
+      ——————————————<br>
+      <span class="text-orange-700">INTEL:</span> SUBSCRIBERS_GET_FIRST_ACCESS<br>
+      <span class="text-orange-700">QUOTA:</span> LIMITED_UNITS_PER_DROP<br>
+      <span class="text-orange-700">PRIORITY:</span> FIFO — NO_EXCEPTIONS
     </div>
-  </section>
+    <span class="font-display text-stone-100 block uppercase leading-[.88]" style="font-size:clamp(38px,5.5vw,72px);letter-spacing:-.04em;">GET THE</span>
+    <span class="font-display text-orange-700 block uppercase leading-[.88]" style="font-size:clamp(38px,5.5vw,72px);letter-spacing:-.04em;">INSIDE</span>
+    <span class="font-display text-stone-100 block uppercase leading-[.88]" style="font-size:clamp(38px,5.5vw,72px);letter-spacing:-.04em;">SCOOP.</span>
+    <p class="font-mono text-[10px] text-stone-600 leading-relaxed lowercase mt-5">new batches, limited drops &amp; recipes. straight from jen's kitchen. no fluff. no spam.</p>
+  </div>
 
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-inner">
-      <div class="footer-top">
-        <div class="footer-brand">
-          <div class="footer-logo">Chilli Bird</div>
-          <p class="footer-tagline">Handmade crispy Thai chilli oil. Born in a home kitchen in Fife, Scotland. Made with obsession.</p>
-        </div>
-        <div class="footer-col">
-          <div class="footer-col-title">Shop</div>
-          <ul>
-            <li><a href="#">All Products</a></li>
-            <li><a href="#">OG Aromatics</a></li>
-            <li><a href="#">Limited Editions</a></li>
-            <li><a href="#">Gift Sets</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <div class="footer-col-title">Explore</div>
-          <ul>
-            <li><a href="#">Our Story</a></li>
-            <li><a href="#">Recipes</a></li>
-            <li><a href="#">Press</a></li>
-            <li><a href="#">Wholesale</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <div class="footer-col-title">Help</div>
-          <ul>
-            <li><a href="#">FAQs</a></li>
-            <li><a href="#">Shipping</a></li>
-            <li><a href="#">Returns</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <span class="footer-copy">© 2024 Chilli Bird. Handmade in Scotland.</span>
-        <div class="social-links">
-          <a href="#" class="social-link">Instagram</a>
-          <a href="#" class="social-link">Facebook</a>
-        </div>
+  <div class="flex flex-col justify-center p-14">
+    <label class="font-mono text-[10px] tracking-[.2em] uppercase text-stone-600 mb-2">// your email address</label>
+    <form onsubmit="return false;" class="flex flex-col gap-3">
+      <input type="email" placeholder="you@domain.com"
+             class="w-full px-4 py-3.5 bg-stone-900 border-2 border-stone-700 text-stone-100 font-mono text-[10px] outline-none placeholder:text-stone-700 focus:border-orange-700">
+      <button type="submit" class="w-full py-4 bg-orange-700 text-stone-100 font-display text-[10px] tracking-[.18em] uppercase border-2 border-orange-700 shadow-hard-cream hover:bg-stone-100 hover:text-stone-950 hover:border-stone-100">
+        JOIN THE LIST →
+      </button>
+    </form>
+    <p class="font-mono text-[10px] text-stone-700 leading-relaxed mt-4">no spam. no algorithms. pure heat intel only. unsubscribe anytime. gdpr compliant. ref: CB/MAIL/v1.2</p>
+  </div>
+
+</section>
+
+<!-- ═══════════════════════════════════════
+     INSTAGRAM
+═══════════════════════════════════════ -->
+<div class="grid grid-cols-[auto_1fr_auto] border-b-2 border-stone-950 border-t-[3px] border-t-stone-950">
+  <span class="font-mono text-[9px] tracking-[.12em] text-stone-400 px-5 py-3.5 border-r-2 border-stone-950 flex items-center">§ 007</span>
+  <span class="font-display text-[15px] tracking-[-.01em] uppercase px-5 py-3 flex items-center">@CHILLIBIRDSCOTLAND</span>
+  <span class="font-mono text-[10px] tracking-[.1em] text-stone-400 px-5 py-3.5 border-l-2 border-stone-950 flex items-center">FOLLOW FOR DROP ALERTS</span>
+</div>
+<div class="grid grid-cols-6 border-b-[3px] border-stone-950">
+  <div class="halftone aspect-square overflow-hidden border-r-2 border-stone-950 group"><img src="images/puttin%20on%20food.jpeg" alt="" class="w-full h-full object-cover group-hover:[filter:contrast(1.5)_saturate(0)_brightness(.65)]" style="filter:contrast(1.12)saturate(1.08)"></div>
+  <div class="halftone aspect-square overflow-hidden border-r-2 border-stone-950 group"><img src="images/food%20close%20up.jpeg"   alt="" class="w-full h-full object-cover group-hover:[filter:contrast(1.5)_saturate(0)_brightness(.65)]" style="filter:contrast(1.12)saturate(1.08)"></div>
+  <div class="halftone aspect-square overflow-hidden border-r-2 border-stone-950 group"><img src="images/pizza%20lifestyle.jpeg"   alt="" class="w-full h-full object-cover group-hover:[filter:contrast(1.5)_saturate(0)_brightness(.65)]" style="filter:contrast(1.12)saturate(1.08)"></div>
+  <div class="halftone aspect-square overflow-hidden border-r-2 border-stone-950 group"><img src="images/noodles%20close%20up.jpeg" alt="" class="w-full h-full object-cover group-hover:[filter:contrast(1.5)_saturate(0)_brightness(.65)]" style="filter:contrast(1.12)saturate(1.08)"></div>
+  <div class="halftone aspect-square overflow-hidden border-r-2 border-stone-950 group"><img src="images/honey%20close%20up.jpeg"   alt="" class="w-full h-full object-cover group-hover:[filter:contrast(1.5)_saturate(0)_brightness(.65)]" style="filter:contrast(1.12)saturate(1.08)"></div>
+  <div class="halftone aspect-square overflow-hidden group">                               <img src="images/table.jpeg"              alt="" class="w-full h-full object-cover group-hover:[filter:contrast(1.5)_saturate(0)_brightness(.65)]" style="filter:contrast(1.12)saturate(1.08)"></div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer class="bg-stone-950 text-stone-100">
+  <div class="grid grid-cols-[2fr_1fr_1fr_1fr] border-b border-stone-800">
+
+    <div class="p-10 border-r border-stone-800">
+      <div class="font-display text-[20px] uppercase tracking-[.02em] mb-3">CHILLI BIRD</div>
+      <p class="font-mono text-[10px] text-stone-500 leading-loose lowercase max-w-[220px] mb-6">crispy thai chilli oil. handmade in the kingdom of fife. small batch only.</p>
+      <div class="font-mono text-[10px] text-stone-700 leading-loose tracking-[.08em]">
+        COORDS: 56°19'N 3°00'W<br>
+        LOC: FIFE, SCOTLAND, UK<br>
+        POST: KY15 · UNITED KINGDOM<br>
+        ——————————<br>
+        BUILD: CB-2025-PROD<br>
+        VER: 2.3.1 / V2-BRUTALIST
       </div>
     </div>
-  </footer>
 
-  <script>
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    <div class="p-10 border-r border-stone-800">
+      <div class="font-mono text-[10px] tracking-[.22em] uppercase text-stone-600 mb-4">// shop</div>
+      <ul class="flex flex-col gap-2.5 list-none">
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">OG Aromatics Mild</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">OG Aromatics Spicy</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">White Pepper &amp; Garlic</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Crispy Thai Hot Honey</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Gift Sets</a></li>
+      </ul>
+    </div>
 
-    reveals.forEach(el => observer.observe(el));
+    <div class="p-10 border-r border-stone-800">
+      <div class="font-mono text-[10px] tracking-[.22em] uppercase text-stone-600 mb-4">// company</div>
+      <ul class="flex flex-col gap-2.5 list-none">
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Our Story</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Recipes</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Press</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Wholesale</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Contact</a></li>
+      </ul>
+    </div>
 
-    reveals.forEach(el => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top < window.innerHeight) el.classList.add('visible');
-    });
-  </script>
+    <div class="p-10">
+      <div class="font-mono text-[10px] tracking-[.22em] uppercase text-stone-600 mb-4">// help</div>
+      <ul class="flex flex-col gap-2.5 list-none">
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Shipping &amp; Returns</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">FAQ</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Track Order</a></li>
+        <li><a href="#" class="font-mono text-[10px] text-stone-500 hover:text-stone-100 hover:bg-orange-700 hover:px-1">Privacy Policy</a></li>
+      </ul>
+    </div>
+
+  </div>
+  <div class="flex items-center justify-between px-10 py-5">
+    <span class="font-mono text-[10px] text-stone-700 tracking-[.08em]">© 2025 CHILLI BIRD · FIFE, SCOTLAND · ALL RIGHTS RESERVED · BATCH #CB-2025</span>
+    <div class="flex">
+      <a href="#" class="font-mono text-[10px] tracking-[.14em] uppercase text-stone-600 px-4 py-2 border-l border-stone-800 hover:text-stone-100 hover:bg-orange-700">INSTAGRAM</a>
+      <a href="#" class="font-mono text-[10px] tracking-[.14em] uppercase text-stone-600 px-4 py-2 border-l border-stone-800 hover:text-stone-100 hover:bg-orange-700">TIKTOK</a>
+      <a href="#" class="font-mono text-[10px] tracking-[.14em] uppercase text-stone-600 px-4 py-2 border-l border-stone-800 hover:text-stone-100 hover:bg-orange-700">FACEBOOK</a>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>

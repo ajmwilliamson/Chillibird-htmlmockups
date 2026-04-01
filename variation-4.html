@@ -138,7 +138,7 @@
       gap: 48px; align-items: center;
       position: relative;
     }
-    .hero-left { position: relative; z-index: 2; }
+    .hero-left { position: relative; z-index: 2; padding-left: 24px; }
 
     /* Duct-tape divider accent */
     .hero-tape-top {
@@ -191,70 +191,137 @@
       transform: rotate(-2deg);
     }
 
-    /* Hero right: polaroid-style image + sticky notes */
+    /* Hero right: polaroid collage board */
     .hero-right {
-      position: relative; display: flex;
-      align-items: flex-start; justify-content: center;
-      gap: 0;
+      position: relative;
+      height: 640px;
+      min-height: 560px;
     }
+
+    /* All polaroids are absolute within the board */
     .polaroid {
       background: #fff;
-      padding: 12px 12px 40px;
+      padding: 10px 10px 38px;
       box-shadow: var(--shadow-sticky);
-      position: relative;
-      transform: rotate(2deg);
-      z-index: 2;
-      max-width: 380px; width: 100%;
+      position: absolute;
+      transition: transform .4s var(--ease), box-shadow .4s, z-index 0s .4s;
+    }
+    .polaroid:hover {
+      box-shadow: 8px 14px 36px rgba(0,0,0,.22), 2px 3px 6px rgba(0,0,0,.1);
+      z-index: 10 !important;
     }
     .polaroid img {
-      width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block;
+      width: 100%; object-fit: cover; display: block;
     }
     .polaroid-caption {
-      font-family: 'Caveat', cursive; font-size: 16px;
-      text-align: center; padding-top: 10px; color: var(--ink);
+      font-family: 'Caveat', cursive; font-size: 15px;
+      text-align: center; padding-top: 8px; color: var(--ink);
     }
-    /* Tape marks on polaroid */
-    .polaroid::before, .polaroid::after {
+    /* Tape mark — default top-centre */
+    .polaroid::before {
       content: '';
       position: absolute;
-      width: 52px; height: 20px;
+      width: 52px; height: 18px;
       background: var(--tape);
+      top: -9px; left: 50%; transform: translateX(-50%) rotate(-2deg);
     }
-    .polaroid::before { top: -10px; left: 32px; transform: rotate(-4deg); }
-    .polaroid::after  { bottom: 10px; right: -12px; transform: rotate(86deg); width: 20px; height: 52px; display: none; }
 
-    /* Small floating sticky note on hero */
+    /* Individual polaroid positions & rotations */
+    .polaroid-back {
+      width: 220px; left: 0; top: 100px;
+      transform: rotate(-7deg); z-index: 1;
+    }
+    .polaroid-back::before { transform: translateX(-50%) rotate(4deg); }
+    .polaroid-back img { aspect-ratio: 1/1; }
+
+    .polaroid-top-right {
+      width: 200px; right: 30px; top: 0;
+      transform: rotate(6deg); z-index: 2;
+    }
+    .polaroid-top-right::before { transform: translateX(-50%) rotate(-5deg); }
+    .polaroid-top-right img { aspect-ratio: 3/4; }
+
+    .polaroid-main {
+      width: 275px; left: 100px; top: 55px;
+      transform: rotate(1.5deg); z-index: 3;
+    }
+    .polaroid-main::before { transform: translateX(-50%) rotate(-3deg); width: 64px; }
+    .polaroid-main img { aspect-ratio: 4/5; }
+
+    .polaroid-sm {
+      width: 170px; right: 20px; bottom: 30px;
+      transform: rotate(-5deg); z-index: 4;
+    }
+    .polaroid-sm::before { transform: translateX(-50%) rotate(3deg); width: 40px; height: 14px; }
+    .polaroid-sm img { aspect-ratio: 1/1; }
+
+    /* Floating sticky note on hero */
     .hero-sticky {
-      position: absolute; right: -20px; top: -30px; z-index: 3;
-      background: var(--yellow); padding: 18px 20px;
+      position: absolute; left: 28px; bottom: 32px; z-index: 5;
+      background: var(--pink); padding: 16px 18px;
       box-shadow: var(--shadow-sticky);
-      transform: rotate(4deg);
-      max-width: 180px;
+      transform: rotate(-4deg);
+      width: 158px;
     }
     .hero-sticky::before {
       content: '';
-      position: absolute; top: -10px; left: 50%; transform: translateX(-50%) rotate(2deg);
+      position: absolute; top: -10px; left: 50%;
+      transform: translateX(-50%) rotate(3deg);
       width: 44px; height: 16px; background: var(--tape);
     }
     .hero-sticky-text {
-      font-family: 'Caveat', cursive; font-size: 18px;
+      font-family: 'Caveat', cursive; font-size: 17px;
       line-height: 1.35; color: var(--ink);
     }
     .hero-sticky-sub {
       font-family: 'Caveat', cursive; font-size: 13px;
-      color: var(--grey); margin-top: 8px;
+      color: var(--grey); margin-top: 6px;
     }
 
-    /* Floating drawn arrow from sticky to image */
-    .hero-arrow {
-      position: absolute; right: 150px; top: 40px; z-index: 4;
+    /* "New drop!" green sticky on top-right photo */
+    .hero-sticky-new {
+      position: absolute; right: 14px; top: 200px; z-index: 6;
+      background: var(--green); padding: 12px 14px;
+      box-shadow: var(--shadow-sticky);
+      transform: rotate(3deg);
+      width: 120px;
+    }
+    .hero-sticky-new::before {
+      content: '';
+      position: absolute; top: -9px; left: 50%;
+      transform: translateX(-50%) rotate(-2deg);
+      width: 36px; height: 14px; background: var(--tape);
+    }
+    .hero-sticky-new-text {
+      font-family: 'Caveat', cursive; font-size: 16px; font-weight: 700;
+      color: var(--ink); line-height: 1.3;
+    }
+
+    /* All deco SVG elements in hero-right */
+    .hero-deco { position: absolute; pointer-events: none; }
+    .hero-deco-smiley {
+      position: absolute; bottom: 120px; left: 18px; z-index: 0;
+      opacity: .12; pointer-events: none;
+    }
+    .hero-deco-star {
+      position: absolute; top: 16px; left: 60px; z-index: 6;
+      pointer-events: none; opacity: .55;
+    }
+    .hero-deco-spiral {
+      position: absolute; top: 280px; right: 200px; z-index: 0;
+      pointer-events: none; opacity: .12;
+    }
+    .hero-deco-arrow-1 {
+      position: absolute; left: 160px; bottom: 60px; z-index: 6;
       pointer-events: none;
     }
-
-    /* Small deco smiley */
-    .hero-deco-smiley {
-      position: absolute; bottom: 40px; left: -30px; z-index: 1;
-      opacity: .18;
+    .hero-deco-arrow-2 {
+      position: absolute; right: 130px; top: 170px; z-index: 6;
+      pointer-events: none;
+    }
+    .hero-deco-annotation {
+      position: absolute; z-index: 6; pointer-events: none;
+      font-family: 'Caveat', cursive;
     }
 
     /* ─────────────────────────────
@@ -1040,10 +1107,30 @@
     <div class="hero-left reveal">
       <div class="hero-tape-top"></div>
       <span class="hero-eyebrow">01 / Handmade in Fife, Scotland — Est. in a Home Kitchen</span>
-      <h1 class="hero-headline">
+
+      <!-- Hand-drawn asterisk beside the eyebrow -->
+      <svg style="position:absolute;left:-22px;top:16px;pointer-events:none;opacity:.45;" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+        <path d="M9 1 L9 17 M1 9 L17 9 M2.5 2.5 L15.5 15.5 M15.5 2.5 L2.5 15.5"
+              stroke="#C44835" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+
+      <h1 class="hero-headline" style="position:relative;">
         Chilli<br>
         <em>Bird.</em>
+
+        <!-- Rough scrawled circle around the headline -->
+        <svg style="position:absolute;inset:-18px -28px;width:calc(100% + 56px);height:calc(100% + 36px);pointer-events:none;overflow:visible;" viewBox="0 0 340 200" fill="none" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M18 100 C10 30 60 6 160 4 C260 2 330 28 336 95 C342 162 295 192 180 196 C65 200 12 175 18 100Z"
+                stroke="#C44835" stroke-width="2.5" fill="none" stroke-linecap="round"
+                opacity=".22"
+                stroke-dasharray="860" stroke-dashoffset="860">
+            <animate attributeName="stroke-dashoffset" from="860" to="0"
+                     dur="1.2s" begin="0.2s" fill="freeze" calcMode="spline"
+                     keySplines="0.16 1 0.3 1" keyTimes="0;1"/>
+          </path>
+        </svg>
       </h1>
+
       <div class="hero-underline-wrap">
         <!-- Wobbly hand-drawn underline -->
         <svg viewBox="0 0 460 14" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -1056,27 +1143,121 @@
           </path>
         </svg>
       </div>
-      <p class="hero-sub">Crispy Thai chilli oil. Fragrant. Aromatic.<br>
-        Dangerously addictive. Handmade in small batches in Scotland.</p>
+
+      <p class="hero-sub" style="position:relative;">
+        Crispy Thai chilli oil. Fragrant. Aromatic.<br>
+        <span style="position:relative;display:inline;">Dangerously addictive.
+          <!-- Shaky underline on "Dangerously addictive" -->
+          <svg style="position:absolute;bottom:-5px;left:0;width:100%;pointer-events:none;" viewBox="0 0 220 8" fill="none" aria-hidden="true">
+            <path d="M2 5 C30 2 60 7 90 4 C120 1 160 7 200 4 L218 5"
+                  stroke="#C44835" stroke-width="2" stroke-linecap="round" opacity=".6"/>
+          </svg>
+        </span>
+        Handmade in small batches in Scotland.
+      </p>
+
+      <!-- Award annotation -->
+      <div style="font-family:'Caveat',cursive;font-size:14px;color:var(--grey);margin-bottom:24px;display:flex;align-items:center;gap:8px;transform:rotate(-1deg);">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M12 3 L14.5 9.5 L21 10 L16 14.5 L17.5 21 L12 18 L6.5 21 L8 14.5 L3 10 L9.5 9.5Z"
+                stroke="#C44835" stroke-width="1.8" stroke-linejoin="round" fill="#C44835"/>
+        </svg>
+        Great Taste Award Winner — put it on everything
+      </div>
+
       <div class="hero-ctas" style="position:relative;">
-        <a href="#" class="btn-primary">Shop the Range</a>
+        <a href="#" class="btn-primary" style="position:relative;">
+          Shop the Range
+          <!-- Hand-drawn circle around CTA -->
+          <svg style="position:absolute;inset:-8px -14px;width:calc(100% + 28px);height:calc(100% + 16px);pointer-events:none;overflow:visible;" viewBox="0 0 180 52" fill="none" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M6 26 C4 10 28 2 80 2 C132 2 176 10 178 26 C180 42 156 50 95 50 C34 50 6 42 6 26Z"
+                  stroke="rgba(245,240,232,0.3)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </a>
         <a href="#" class="btn-secondary-hand">Our Story ↗</a>
         <span class="hero-cta-note">* free delivery over £25</span>
       </div>
+
+      <!-- Chunky arrow pointing right toward the photos -->
+      <svg style="margin-top:32px;pointer-events:none;opacity:.3;" width="110" height="36" viewBox="0 0 110 36" fill="none" aria-hidden="true">
+        <path d="M6 18 C28 14 58 12 88 18 M76 8 L92 18 L76 28"
+              stroke="#111" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
     </div>
 
     <div class="hero-right">
-      <!-- Chunky hand-drawn arrow SVG (decorative) -->
-      <div class="hero-arrow" aria-hidden="true">
-        <svg width="90" height="50" viewBox="0 0 90 50" fill="none">
-          <path d="M8 25 C25 22 50 20 72 25 M62 14 L75 25 L62 36"
-                stroke="#111" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" opacity=".25"/>
+
+      <!-- Polaroid 1 — behind, lifestyle table -->
+      <div class="polaroid polaroid-back reveal">
+        <img src="images/lifestyle food table.jpeg" alt="Chilli Bird lifestyle">
+        <p class="polaroid-caption">the full spread 🤌</p>
+      </div>
+
+      <!-- Polaroid 2 — top right, jen portrait -->
+      <div class="polaroid polaroid-top-right reveal d1">
+        <img src="images/jen - best one.jpeg" alt="Jen — Founder">
+        <p class="polaroid-caption">Jen, Fife</p>
+      </div>
+
+      <!-- Polaroid 3 — main, OG aromatics -->
+      <div class="polaroid polaroid-main reveal d2">
+        <img src="images/og aromatics.jpeg" alt="OG Aromatics">
+        <p class="polaroid-caption">OG Aromatics — the original</p>
+      </div>
+
+      <!-- Polaroid 4 — small bottom right, food close up -->
+      <div class="polaroid polaroid-sm reveal d3">
+        <img src="images/food close up.jpeg" alt="Close up">
+        <p class="polaroid-caption">crispy bits ✦</p>
+      </div>
+
+      <!-- Pink sticky note -->
+      <div class="hero-sticky reveal d1">
+        <p class="hero-sticky-text">Small batch.<br>Real aromatics.<br>No shortcuts.</p>
+        <p class="hero-sticky-sub">— Jen, Fife 🌶️</p>
+      </div>
+
+      <!-- Green "New drop!" sticky beside top-right polaroid -->
+      <div class="hero-sticky-new reveal d2">
+        <p class="hero-sticky-new-text">new drop!<br>batch 012 ★</p>
+      </div>
+
+      <!-- Hand-drawn arrow 1: from pink sticky up toward main polaroid -->
+      <div class="hero-deco-arrow-1" aria-hidden="true">
+        <svg width="80" height="60" viewBox="0 0 80 60" fill="none">
+          <path d="M60 52 C40 40 28 20 20 8 M20 8 L14 20 M20 8 L30 16"
+                stroke="#111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".25"/>
         </svg>
       </div>
 
-      <!-- X-eyes smiley deco -->
+      <!-- Hand-drawn arrow 2: from green sticky to top-right polaroid -->
+      <div class="hero-deco-arrow-2" aria-hidden="true">
+        <svg width="60" height="44" viewBox="0 0 60 44" fill="none">
+          <path d="M48 38 C36 24 20 16 8 8 M8 8 L18 10 M8 8 L12 18"
+                stroke="#111" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".22"/>
+        </svg>
+      </div>
+
+      <!-- Floating hand-drawn star burst top-left of collage -->
+      <div class="hero-deco-star" aria-hidden="true">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+          <path d="M18 2 L18 34 M2 18 L34 18 M5.5 5.5 L30.5 30.5 M30.5 5.5 L5.5 30.5"
+                stroke="#C44835" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="18" cy="18" r="3" fill="#C44835"/>
+        </svg>
+      </div>
+
+      <!-- Spiral doodle — background texture -->
+      <div class="hero-deco-spiral" aria-hidden="true">
+        <svg width="60" height="60" viewBox="0 0 60 60" fill="none">
+          <path d="M30 30 C30 22 22 18 18 24 C14 30 18 42 30 42 C42 42 50 32 48 22 C46 12 36 6 26 8 C16 10 8 20 8 32 C8 44 18 54 32 54"
+                stroke="#111" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+
+      <!-- X-eyes smiley deco (bottom left) -->
       <div class="hero-deco-smiley" aria-hidden="true">
-        <svg width="72" height="72" viewBox="0 0 72 72" fill="none">
+        <svg width="64" height="64" viewBox="0 0 72 72" fill="none">
           <circle cx="36" cy="36" r="32" stroke="#111" stroke-width="2.5"/>
           <path d="M22 22 L28 28 M28 22 L22 28" stroke="#111" stroke-width="2" stroke-linecap="round"/>
           <path d="M44 22 L50 28 M50 22 L44 28" stroke="#111" stroke-width="2" stroke-linecap="round"/>
@@ -1084,16 +1265,9 @@
         </svg>
       </div>
 
-      <!-- Floating sticky note -->
-      <div class="hero-sticky reveal d1">
-        <p class="hero-sticky-text">Small batch.<br>Real aromatics.<br>No shortcuts.</p>
-        <p class="hero-sticky-sub">— Jen, Fife 🌶️</p>
-      </div>
-
-      <!-- Main polaroid -->
-      <div class="polaroid reveal d2">
-        <img src="images/og aromatics.jpeg" alt="Chilli Bird OG Aromatics">
-        <p class="polaroid-caption">OG Aromatics — the one that started it all</p>
+      <!-- Handwritten annotation on main polaroid -->
+      <div class="hero-deco-annotation" style="left:82px;top:14px;font-size:13px;color:var(--grey);transform:rotate(-3deg);opacity:.7;" aria-hidden="true">
+        bestseller! ↓
       </div>
     </div>
   </section>
@@ -1636,7 +1810,7 @@
       ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
       requestAnimationFrame(loop);
     })();
-    document.querySelectorAll('a, button, .sticky-card, .test-sticky, .recipe-card, .ig-cell, .press-item, .polaroid, .story-polaroid').forEach(el => {
+    document.querySelectorAll('a, button, .sticky-card, .test-sticky, .recipe-card, .ig-cell, .press-item, .polaroid, .story-polaroid, .hero-sticky, .hero-sticky-new').forEach(el => {
       el.addEventListener('mouseenter', () => document.body.classList.add('hov'));
       el.addEventListener('mouseleave', () => document.body.classList.remove('hov'));
     });

@@ -26,8 +26,8 @@
       --arterial:    #E81010;
       --rust:        #FF3333;
       --bone:        #E8D4C0;
-      --ash:         #AA9080;
-      --grey:        #664444;
+      --ash:         #D0BAA8;
+      --grey:        #C09080;
       --grey-dim:    #3A2020;
       --ease:        cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -135,7 +135,7 @@
       overflow: hidden;
     }
     .status-item {
-      padding: 0 14px; color: rgba(139,0,0,0.65);
+      padding: 0 14px; color: rgba(210,105,85,0.95);
       border-right: 1px solid var(--blood-deep);
       height: 100%; display: flex; align-items: center; gap: 6px;
       white-space: nowrap;
@@ -149,13 +149,13 @@
     }
     @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.15} }
     .status-bar-right { margin-left: auto; }
-    .status-time { padding: 0 14px; color: rgba(139,0,0,0.4); }
+    .status-time { padding: 0 14px; color: rgba(190,120,100,0.85); }
 
     /* ── VERSION LABEL ── */
     .version-label {
       position: fixed; top: 32px; left: 16px; z-index: 198;
       font-size: 7px; letter-spacing: .22em; text-transform: uppercase;
-      color: rgba(139,0,0,0.45);
+      color: rgba(195,115,95,0.87);
       border: 1px solid var(--blood-deep);
       padding: 3px 9px;
       pointer-events: none;
@@ -183,7 +183,7 @@
     }
     .nav-logo-sub {
       font-size: 7px; letter-spacing: .22em; text-transform: uppercase;
-      color: rgba(139,0,0,0.5); margin-top: 2px;
+      color: rgba(200,110,90,0.9); margin-top: 2px;
     }
     .nav-links { display: flex; gap: 28px; list-style: none; }
     .nav-links a {
@@ -350,7 +350,7 @@
     .readout-item:last-child { border-right: none; }
     .readout-label {
       font-size: 7px; letter-spacing: .22em; text-transform: uppercase;
-      color: rgba(139,0,0,0.5);
+      color: rgba(200,110,90,0.9);
     }
     .readout-val {
       font-size: 13px; font-weight: 700; letter-spacing: .08em;
@@ -367,7 +367,7 @@
     }
     .cd-label {
       font-size: 8px; letter-spacing: .3em; text-transform: uppercase;
-      color: rgba(139,0,0,0.5); margin-bottom: 16px;
+      color: rgba(200,110,90,0.9); margin-bottom: 16px;
     }
     .countdown-grid {
       display: flex; align-items: center; justify-content: center; gap: 0;
@@ -387,7 +387,7 @@
     }
     .cd-unit-label {
       font-size: 7px; letter-spacing: .28em; text-transform: uppercase;
-      color: rgba(139,0,0,0.4); margin-top: 4px;
+      color: rgba(190,120,100,0.85); margin-top: 4px;
     }
 
     /* ── TICKER ── */
@@ -415,7 +415,7 @@
     .sec-header { margin-bottom: 80px; }
     .sec-num-label {
       font-size: 8px; letter-spacing: .28em; text-transform: uppercase;
-      color: rgba(139,0,0,0.5); margin-bottom: 12px;
+      color: rgba(200,110,90,0.9); margin-bottom: 12px;
       display: flex; align-items: center; gap: 12px;
     }
     .sec-num-label::before {
@@ -477,7 +477,7 @@
       border-bottom: 1px solid var(--blood-deep);
       display: flex; align-items: center; justify-content: space-between;
       font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
-      color: rgba(139,0,0,0.4);
+      color: rgba(190,120,100,0.85);
     }
     .card-header-status {
       display: flex; align-items: center; gap: 6px;
@@ -552,7 +552,7 @@
     }
     .stamp-code {
       font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
-      color: rgba(139,0,0,0.6); margin-top: 12px;
+      color: rgba(208,108,88,0.92); margin-top: 12px;
     }
     .product-card.sold-out .product-img {
       filter: grayscale(1) contrast(3.5) brightness(0.25) sepia(1) hue-rotate(320deg);
@@ -570,7 +570,7 @@
     .heat-pip.empty { background: var(--blood-deep); opacity: 0.4; }
     .product-meta {
       font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
-      color: rgba(139,0,0,0.5); margin-bottom: 8px;
+      color: rgba(200,110,90,0.9); margin-bottom: 8px;
     }
     .product-name {
       font-family: 'Bebas Neue', sans-serif;
@@ -647,10 +647,10 @@
     }
     .stat-label {
       font-size: 8px; letter-spacing: .24em; text-transform: uppercase;
-      color: rgba(139,0,0,0.6); margin-bottom: 4px;
+      color: rgba(208,108,88,0.92); margin-bottom: 4px;
     }
     .stat-desc {
-      font-size: 9px; color: rgba(232,212,192,0.2); letter-spacing: .04em;
+      font-size: 9px; color: rgba(232,212,192,0.65); letter-spacing: .04em;
     }
     .stat-bar {
       position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
@@ -676,7 +676,7 @@
     .story-eyebrow {
       display: inline-flex; align-items: center; gap: 8px;
       font-size: 8px; letter-spacing: .2em; text-transform: uppercase;
-      color: rgba(139,0,0,0.5);
+      color: rgba(200,110,90,0.9);
       border: 1px solid var(--blood-deep);
       padding: 4px 12px; margin-bottom: 28px;
     }
@@ -747,7 +747,7 @@
     }
     .s-stat-label {
       font-size: 7px; letter-spacing: .18em; text-transform: uppercase;
-      color: rgba(139,0,0,0.45); margin-top: 4px;
+      color: rgba(195,115,95,0.87); margin-top: 4px;
     }
 
     /* ── FIELD DISPATCHES (TESTIMONIALS) ── */
@@ -772,7 +772,7 @@
       padding: 10px 14px;
       background: var(--void); border-bottom: 1px solid var(--blood-deep);
       font-size: 7px; letter-spacing: .16em; text-transform: uppercase;
-      color: rgba(139,0,0,0.4);
+      color: rgba(190,120,100,0.85);
       display: flex; align-items: center; justify-content: space-between;
     }
     .dispatch-body { padding: 28px; }
@@ -795,7 +795,7 @@
       color: var(--bone); font-size: 9px;
     }
     .dispatch-ref {
-      font-size: 8px; color: rgba(139,0,0,0.45);
+      font-size: 8px; color: rgba(195,115,95,0.87);
       margin-top: 3px; letter-spacing: .06em;
     }
 
@@ -845,7 +845,7 @@
     .ritual-img-label {
       position: absolute; bottom: 10px; left: 10px; z-index: 3;
       font-size: 7px; letter-spacing: .14em; text-transform: uppercase;
-      color: rgba(232,212,192,0.45);
+      color: rgba(232,212,192,0.8);
       background: rgba(0,0,0,0.7); border: 1px solid rgba(139,0,0,0.25);
       padding: 2px 6px;
     }
@@ -855,7 +855,7 @@
     }
     .ritual-tag {
       font-size: 7px; letter-spacing: .2em; text-transform: uppercase;
-      color: rgba(139,0,0,0.45); margin-bottom: 8px;
+      color: rgba(195,115,95,0.87); margin-bottom: 8px;
     }
     .ritual-name {
       font-family: 'Bebas Neue', sans-serif;
@@ -883,7 +883,7 @@
     .press-label {
       text-align: center;
       font-size: 8px; letter-spacing: .3em; text-transform: uppercase;
-      color: rgba(139,0,0,0.35); margin-bottom: 48px;
+      color: rgba(185,120,100,0.82); margin-bottom: 48px;
     }
     .press-logos {
       display: flex; align-items: center; justify-content: center;
@@ -896,7 +896,7 @@
     .press-name {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 18px; letter-spacing: .08em;
-      color: rgba(139,0,0,0.3); display: block;
+      color: rgba(180,120,100,0.8); display: block;
       transition: color .3s; white-space: nowrap;
       cursor: none;
     }
@@ -921,7 +921,7 @@
     }
     .infiltrate-eyebrow {
       font-size: 8px; letter-spacing: .28em; text-transform: uppercase;
-      color: rgba(139,0,0,0.45); margin-bottom: 20px;
+      color: rgba(195,115,95,0.87); margin-bottom: 20px;
       display: flex; align-items: center; justify-content: center; gap: 10px;
     }
     .infiltrate-title {
@@ -943,7 +943,7 @@
       font-size: 10px; outline: none; letter-spacing: .04em;
       transition: border-color .2s;
     }
-    .infiltrate-input::placeholder { color: rgba(139,0,0,0.3); }
+    .infiltrate-input::placeholder { color: rgba(180,120,100,0.8); }
     .infiltrate-input:focus { border-color: var(--blood); }
     .infiltrate-btn {
       padding: 16px 22px;
@@ -973,7 +973,7 @@
     }
     .visual-sub {
       font-size: 8px; letter-spacing: .26em; text-transform: uppercase;
-      color: rgba(139,0,0,0.4);
+      color: rgba(190,120,100,0.85);
     }
     .visual-grid {
       display: grid; grid-template-columns: repeat(6,1fr); gap: 2px;
@@ -1022,17 +1022,17 @@
       gap: 48px; margin-bottom: 64px;
     }
     .footer-tagline {
-      font-size: 10px; color: rgba(232,212,192,0.25);
+      font-size: 10px; color: rgba(232,212,192,0.65);
       line-height: 2; max-width: 240px; margin-top: 12px;
     }
     .footer-col-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 18px; letter-spacing: .08em;
-      color: rgba(139,0,0,0.5); margin-bottom: 20px;
+      color: rgba(200,110,90,0.9); margin-bottom: 20px;
     }
     .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
     .footer-col ul a {
-      font-size: 10px; color: rgba(232,212,192,0.25);
+      font-size: 10px; color: rgba(232,212,192,0.65);
       text-decoration: none; letter-spacing: .04em;
       transition: color .2s;
     }
@@ -1042,12 +1042,12 @@
       padding-top: 32px; border-top: 1px solid var(--blood-deep);
     }
     .footer-copy {
-      font-size: 8px; color: rgba(139,0,0,0.3); letter-spacing: .1em;
+      font-size: 8px; color: rgba(180,120,100,0.8); letter-spacing: .1em;
     }
     .social-links { display: flex; gap: 24px; }
     .social-link {
       font-size: 8px; letter-spacing: .16em; text-transform: uppercase;
-      color: rgba(139,0,0,0.3); text-decoration: none; transition: color .2s;
+      color: rgba(180,120,100,0.8); text-decoration: none; transition: color .2s;
     }
     .social-link:hover { color: var(--crimson); }
 
